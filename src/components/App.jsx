@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import "../../public/styles/home.css";
+import "/styles/home.css";
 
 function App() {
   return (
@@ -16,7 +16,6 @@ function App() {
             src="../public/images/bfbg1.png"
             alt="Bigfoot silhouette walking past a sunset"
           />
-          
           <figcaption className="tagLine">
             A news aggregate site that focuses on the fringe topics mainstream media would like to ignore...
           </figcaption>
