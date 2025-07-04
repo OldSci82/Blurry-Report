@@ -13,12 +13,11 @@ const sites =
 
 async function fetchNews() {
   const query =
-    "cryptids OR bigfoot OR mothman OR abduction OR sighting OR monster";
+    '(cryptids OR bigfoot OR mothman OR "loch ness monster" OR chupacabra OR yeti OR sasquatch OR "jersey devil" OR ufo OR "unidentified flying object" OR extraterrestrial OR alien OR "alien sighting" OR paranormal OR "ghost sighting" OR supernatural OR cryptid OR monster OR "unexplained phenomenon") -("illegal alien" OR immigration OR border OR "space exploration" OR astronaut OR nasa)';
   const apiKey = process.env.NEWS_API_KEY;
-  // Use qInTitle to search only in titles; remove this and revert to q for broader search
-  const url = `https://newsapi.org/v2/everything?qInTitle=${encodeURIComponent(
+  const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(
     query
-  )}&language=en&apiKey=${apiKey}`;
+  )}&language=en&sortBy=relevancy&apiKey=${apiKey}`;
 
   try {
     const response = await fetch(url);
@@ -26,16 +25,16 @@ async function fetchNews() {
     const data = await response.json();
 
     // Include additional fields from the API response
-    const articles = data.articles.slice(0, 10).map((article) => ({
-      source: article.source.name || "Unknown source", // Source name
-      author: article.author || "Unknown author", // Author
-      title: article.title, // Title
-      description: article.description || "No description available", // Description
-      url: article.url, // Article URL
-      urlToImage: article.urlToImage || null, // Image URL
-      publishedAt: article.publishedAt || null, // Publication date
+    const articles = data.articles.slice(0, 15).map((article) => ({
+      source: article.source.name || "Unknown source",
+      author: article.author || "Unknown author",
+      title: article.title,
+      description: article.description || "No description available",
+      url: article.url,
+      urlToImage: article.urlToImage || null,
+      publishedAt: article.publishedAt || null,
       content: article.content
-        ? article.content.slice(0, 200) + "..." // Truncate content for brevity
+        ? article.content.slice(0, 200) + "..."
         : "No content available",
     }));
 
