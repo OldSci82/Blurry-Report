@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function fetchNews() {
-  const query = "cryptids";
+  const query = "cryptids bigfoot monster abduction sighting mothman";
   const apiKey = process.env.NEWS_API_KEY;
   const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(
     query
