@@ -157,7 +157,7 @@ footer {
   }
 
   .homePic {
-    border-radius: 10px; /* Remove circular border for smaller screens */
+    border-radius: 50%; /* Remove circular border for smaller screens */
   }
 
   .tagLine {
