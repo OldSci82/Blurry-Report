@@ -1,3 +1,104 @@
 {
-  "articles": []
+  "articles": [
+    {
+      "source": "Gizmodo.com",
+      "author": "Isaiah Colbert",
+      "title": "‘KPop Demon Hunters’ Is a Hilarious, Kaleidoscopic, Monster-Hunting Bop",
+      "description": "Sony Pictures Animation’s latest brings K-pop idols, magical girl powers, and demon-slaying action to Netflix June 20.",
+      "url": "https://gizmodo.com/kpop-demon-hunters-review-netflix-twice-2000614916",
+      "urlToImage": "https://gizmodo.com/app/uploads/2025/06/KpopDemonHunters-topart-1200x675.png",
+      "publishedAt": "2025-06-19T15:00:16Z",
+      "content": "In an era where K-pop music groups have undeniably become a dominant force in the global music scene, Sony Pictures Animation‘s latest film, KPop Demon Hunters, does more than ride the wave of this c…..."
+    },
+    {
+      "source": "Gizmodo.com",
+      "author": "James Whitbrook",
+      "title": "The Simple Joys of Watching a Giant Robot Knee a Giant Monster in the Balls",
+      "description": "Thirty years ago today, 'Mighty Morphin Power Rangers: The Movie' climaxed with perhaps the most absurd way to defeat a giant monster.",
+      "url": "https://gizmodo.com/power-rangers-the-movie-30th-anniversary-ninja-megazord-fight-2000622169",
+      "urlToImage": "https://gizmodo.com/app/uploads/2025/06/power-rangers-the-movie-1990-ninja-megazord-ivan-ooze-fight-1200x675.jpg",
+      "publishedAt": "2025-06-30T19:45:05Z",
+      "content": "Mighty Morphin’ Power Rangers: The Movie is a movie filled with many absurd excesses. A combination of the intense mania surrounding the ’90s phenomenon and a big-picture budget, it is a film that co…..."
+    },
+    {
+      "source": "ABC News",
+      "author": "ABC News",
+      "title": "WATCH: Deep sea squid sighting",
+      "description": "The Gonatus antarcticus squid, a live, rare squid, has been sighted for the first time and caught on camera.",
+      "url": "https://abcnews.go.com/GMA/Living/video/deep-sea-squid-sighting-122687678",
+      "urlToImage": "https://i.abcnewsfe.com/a/f3c01adb-05b8-40a2-abdc-99859cd2192e/250610_gma_champion_squid_hpMain_16x9.jpg?w=992",
+      "publishedAt": "2025-06-10T12:31:01Z",
+      "content": "<ul><li>Protests against immigration raids grip Los Angeles\r\n</li><li>Trump, Newsom clash over deployment of troops in LA\r\n</li><li> RFK Jr. removes all members of CDC's vaccine advisory committee\r\n<…..."
+    },
+    {
+      "source": "Kotaku",
+      "author": "Samuel Moreno",
+      "title": "Monster Hunter Wilds: How To Avoid Playing With Other People",
+      "description": "Whether you’re hunting in a link party or celebrating in the grand hub, Monster Hunter Wilds pushes you to join forces with other players. However, that might not always be your preference. Sometimes you want to play with those who are a bit more predictable …",
+      "url": "https://kotaku.com/monster-hunter-wilds-mh-npc-palico-multiplayer-off-1851784906",
+      "urlToImage": "https://i.kinja-img.com/image/upload/c_fill,h_675,pg_1,q_80,w_1200/2cff212acb44b6fa255eec5a5c93d4e3.jpg",
+      "publishedAt": "2025-06-23T14:51:05Z",
+      "content": "Whether youre hunting in a link party or celebrating in the grand hub, Monster Hunter Wilds pushes you to join forces with other players. However, that might not always be your preference. Sometimes …..."
+    },
+    {
+      "source": "Slashdot.org",
+      "author": "msmash",
+      "title": "CareerBuilder + Monster, Which Once Dominated Online Job Boards, File For Bankruptcy",
+      "description": "CareerBuilder + Monster, which once dominated the online recruitment industry, filed for Chapter 11 bankruptcy protection this week and said it plans to sell its businesses. From a report: Created through the September merger of CareerBuilder and Monster, the…",
+      "url": "https://slashdot.org/story/25/06/26/1356207/careerbuilder--monster-which-once-dominated-online-job-boards-file-for-bankruptcy",
+      "urlToImage": "https://a.fsdn.com/sd/topics/business_64.png",
+      "publishedAt": "2025-06-26T14:40:00Z",
+      "content": "Indeed, LinkedIn, ZipRecruiter and the dozens and dozens of other affiliate, clone, mirror, white labelled sites that operate today. It's a real mess out there.\r\nFeels like job hiring has gone the wa…..."
+    },
+    {
+      "source": "ABC News",
+      "author": "Nadine El-Bawab, Megan Forrester",
+      "title": "Mom charged with murder of daughter after allegedly lying about child's abduction",
+      "description": "A Maryland mother was arrested and charged with the murder of her 3-year-old daughter after lying to police about the child's abduction, officials said.",
+      "url": "https://abcnews.go.com/US/mother-charged-murder-3-year-daughter-after-allegedly/story?id=122738682",
+      "urlToImage": "https://i.abcnewsfe.com/a/8b4ccb0f-af48-42cf-bf2e-fdea95ed7d3b/Nola-Dinkins-ht-gmh-250611_1749652831554_hpMain_16x9.jpg?w=1600",
+      "publishedAt": "2025-06-12T18:10:45Z",
+      "content": "A Maryland mother has been charged with the murder of her 3-year-old daughter after falsely reporting to police that the child was kidnapped at gunpoint, according to Maryland State Police.\r\nDarrian …..."
+    },
+    {
+      "source": "Kotaku",
+      "author": "Samuel Moreno",
+      "title": "Sell The Right Things In Monster Hunter Wilds To Stay Rich",
+      "description": "Monster Hunter Wilds has two currencies for you to accumulate: Zenny and Guild Points. You’re more likely to run low on the latter, especially when you’re using the Rest mechanic to spawn in specific creatures. Still, it is possible to run out of Zenny if you…",
+      "url": "https://kotaku.com/monster-hunter-wilds-mh-zenny-trade-in-material-1851785064",
+      "urlToImage": "https://i.kinja-img.com/image/upload/c_fill,h_675,pg_1,q_80,w_1200/af39b148b40e66f9067e6535d30395df.jpg",
+      "publishedAt": "2025-06-25T16:55:00Z",
+      "content": "Monster Hunter Wilds has two currencies for you to accumulate: Zenny and Guild Points. Youre more likely to run low on the latter, especially when youre using the Rest mechanic to spawn in specific c…..."
+    },
+    {
+      "source": "Kotaku",
+      "author": "Samuel Moreno",
+      "title": "Don't Miss Out On The Diva's Performances Every Night In Monster Hunter Wilds",
+      "description": "From minor bug fixes to new monsters, Monster Hunter Wilds’ first Title Update added a lot. The multiplayer Grand Hub area has also been a welcome addition from the community, especially when it includes a performing singer who provides some fun bonuses. Here…",
+      "url": "https://kotaku.com/monster-hunter-wilds-diva-buffs-performance-grand-hub-1851783501",
+      "urlToImage": "https://i.kinja-img.com/image/upload/c_fill,h_675,pg_1,q_80,w_1200/d950078026406d8d6f4eb23ddda238ef.jpg",
+      "publishedAt": "2025-06-03T18:40:00Z",
+      "content": "From minor bug fixes to new monsters, Monster Hunter Wilds first Title Update added a lot. The multiplayer Grand Hub area has also been a welcome addition from the community, especially when it inclu…..."
+    },
+    {
+      "source": "Kotaku",
+      "author": "Samuel Moreno",
+      "title": "Defeating Monster Hunter Wilds’ Demi Elder Dragon Might Be The Game's Hardest Challenge So Far",
+      "description": "Although Zoh Shia is the thematic boss of Monster Hunter Wilds, other beasts can put up a tougher fight. Gore Magala (and especially its Tempered version) are easily in contention for being the most deadly enemies in the game. Not much is more threatening tha…",
+      "url": "https://kotaku.com/monster-hunter-wilds-gore-magala-frenzy-virus-tempered-1851784424",
+      "urlToImage": "https://i.kinja-img.com/image/upload/c_fill,h_675,pg_1,q_80,w_1200/246456b4767f27657f3e9a042b694c88.jpg",
+      "publishedAt": "2025-06-12T19:20:00Z",
+      "content": "Although Zoh Shia is the thematic boss of Monster Hunter Wilds, other beasts can put up a tougher fight. Gore Magala (and especially its Tempered version) are easily in contention for being the most …..."
+    },
+    {
+      "source": "Kotaku",
+      "author": "Samuel Moreno",
+      "title": "Monster Hunter Wilds’ Has A Giant Fluff Ball Of A Bird You Should Score Items From",
+      "description": "Monster Hunter Wilds certainly loves to hide things for players to discover. From exclusive weapon mechanics to unmapped areas, there is always something you’ve yet to learn about. The recently added Grand Hub is no exception, as the discovery of a humongous …",
+      "url": "https://kotaku.com/monster-hunter-wilds-mh-giant-downy-crake-location-item-1851784123",
+      "urlToImage": "https://i.kinja-img.com/image/upload/c_fill,h_675,pg_1,q_80,w_1200/aef892d354441fefc9373f8e21bc26a1.jpg",
+      "publishedAt": "2025-06-09T18:30:00Z",
+      "content": "Monster Hunter Wilds certainly loves to hide things for players to discover. From exclusive weapon mechanics to unmapped areas, there is always something youve yet to learn about. The recently added …..."
+    }
+  ]
 }
