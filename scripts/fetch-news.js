@@ -8,8 +8,6 @@ dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const sites =
-  "cryptidz.fandom.com, bfro.net, phantomsandmonsters.com, cryptozoology.com, thecryptidzoo.com, cryptoseeker.com, paranormaldatabase.com, atlasobscura.com, mysteriousuniverse.org, cryptozoonews.com, bigfootencounters.com, sasquatchchronicles.com, northamericanbigfoot.com, cryptozoologynews.com, unexplained-mysteries.com, yourghoststories.com, weirdus.com, cryptozoologymuseum.com, blm.gov, americanforests.org, proxi.co, news.maryland.gov, creelighting.com, blogs.loc.gov, fandomania.com, southernstylesweettees.com, theconversation.com, sciencefriday.com, lithub.com, hangar1publishing.com, web.simmons.edu, reddit.com, forbes.com, mattgyver.com, newanimal.org";
 
 async function fetchNews() {
   const query =
