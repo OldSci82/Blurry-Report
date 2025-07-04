@@ -82,6 +82,7 @@ header h1 {
   border-radius: 10px;
   filter: contrast(1.2) brightness(0.9);
   box-shadow: 0 0 15px rgba(177, 59, 255, 0.7);
+  border-radius: 50%;
 }
 
 .content-caption {
@@ -94,7 +95,7 @@ header h1 {
   text-align: center;
   background: rgba(9, 0, 64, 0.7);
   padding: 0.5rem 1rem;
-  border-radius: 5px;
+  border-radius: 25px;
   text-shadow: 0 0 5px #B13BFF;
   text-transform: uppercase;
 }
@@ -256,4 +257,13 @@ footer {
   .news-item p {
     font-size: clamp(0.9rem, 1.8vw, 1rem);
   }
+}
+
+.headline-cont{
+  display: flex;
+  flex-direction: column;
+}
+
+.headline-tag {
+  text-align: center;
 }
