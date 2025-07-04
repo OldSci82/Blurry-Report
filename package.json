@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "name": "blurry-report",
+  "homepage": "https://your-username.github.io/blurry-report",
+  "scripts": {
+    "fetch-news": "node scripts/fetch-news.js",
+    "deploy": "gh-pages -d public"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
+}
