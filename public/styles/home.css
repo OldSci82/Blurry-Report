@@ -48,6 +48,9 @@ header h1 {
   position: relative;
   width: 100%;
   max-width: 800px;
+  display: flex; /* Added to support vertical stacking */
+  flex-direction: column; /* Ensure vertical layout */
+  align-items: center; /* Center content horizontally */
 }
 
 .homePic {
@@ -70,7 +73,6 @@ header h1 {
   font-weight: bold;
   text-align: center;
   background: rgba(9, 0, 64, 0.5);
-  
   padding: 0.5rem 1rem;
   border-radius: 55px;
   text-shadow: 0 0 5px #B13BFF;
@@ -148,6 +150,24 @@ footer {
 @media (max-width: 600px) {
   header h1 {
     font-size: clamp(2rem, 5vw, 3rem);
+  }
+
+  .homePic-container {
+    position: static; /* Remove relative positioning to prevent conflicts */
+  }
+
+  .homePic {
+    border-radius: 10px; /* Remove circular border for smaller screens */
+  }
+
+  .tagLine {
+    position: static; /* Remove absolute positioning */
+    transform: none; /* Remove transform to prevent centering issues */
+    margin-top: 1.5rem; /* Add space between image and tagline */
+    font-size: clamp(1rem, 2.5vw, 1.125rem); /* Slightly smaller font */
+    padding: 0.5rem 1rem; /* Maintain padding */
+    width: auto; /* Allow natural width */
+    background: rgba(9, 0, 64, 0.7); /* Slightly more opaque for readability */
   }
 
   .buttons button {
