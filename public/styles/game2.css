@@ -1,0 +1,70 @@
+body {
+    margin: 0;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Press Start 2P', cursive;
+}
+
+#gameContainer {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background: #111;
+    border: 4px solid #0ff;
+    box-shadow: 0 0 20px #0ff;
+    overflow: hidden;
+}
+
+#gameCanvas {
+    display: block;
+}
+
+/* CRT scanline effect */
+#gameContainer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        transparent 0%,
+        transparent 2px,
+        rgba(0, 0, 0, 0.1) 2px,
+        rgba(0, 0, 0, 0.1) 4px
+    );
+    pointer-events: none;
+}
+
+#score, #gameOver {
+    position: absolute;
+    color: #0ff;
+    font-size: 16px;
+    text-shadow: 0 0 5px #0ff;
+    left: 20px;
+    top: 20px;
+}
+
+#gameOver {
+    display: none;
+    font-size: 24px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+#startMessage {
+    position: absolute;
+    color: #f0f;
+    font-size: 20px;
+    text-shadow: 0 0 5px #f0f;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}

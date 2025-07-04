@@ -1,0 +1,25 @@
+Game ConceptTitle: Pixel Quest
+Objective: Collect coins while avoiding a patrolling enemy.
+Mechanics: Move left/right with arrow keys, jump with the spacebar, collect coins for points, and avoid the enemy. The game ends if the enemy touches you.
+80s Arcade Vibe: Pixelated sprites, bold 8-bit colors, simple sound effects (using JavaScript’s AudioContext), and a score display.
+
+Step-by-Step PlanHTML: Set up a canvas for rendering the game and a score display.
+CSS: Style the page with a retro arcade feel (pixel font, neon colors).
+JavaScript: Handle game logic (player movement, jumping, collision detection, enemy AI, coin collection, and score).
+Assets: Use CSS for pixelated sprites (no external images to keep it simple).
+Sound: Add basic beeps for coin collection and game over.
+
+How to RunCreate three files: index.html, styles.css, and game.js.
+Copy the respective code into each file.
+Save them in the same folder.
+Open index.html in a web browser (e.g., Chrome or Firefox).
+
+How It WorksControls: Arrow keys to move left/right, spacebar to jump.
+Gameplay: The player (red square) starts on the ground. Jump onto platforms to collect coins (yellow circles) for 10 points each. Avoid the enemy (purple square) patrolling the top platform. If the enemy touches you, it’s game over.
+80s Vibe: The game uses a pixelated font (Press Start 2P), bold neon colors (red, green, yellow, purple), and simple square-wave sounds for jumps, coins, and game over, mimicking 80s arcade audio. The canvas rendering keeps graphics blocky and retro.
+Mechanics:Player: Moves left/right, jumps with gravity-based physics.
+Platforms: Static, allow the player to land and jump.
+Coins: Collectible, increase score.
+Enemy: Moves back and forth, ends the game on contact.
+Score: Displayed at the top, updates with coin collection.
+

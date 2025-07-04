@@ -1,0 +1,17 @@
+Run the Game:Open index.html in a web browser (e.g., Chrome, Firefox) by double-clicking it or using a local server (recommended for proper loading).
+Using a Local Server (optional but recommended to avoid CORS issues):If you have Node.js, install http-server globally (npm install -g http-server), navigate to the StarBlitz folder in a terminal, and run http-server.
+Open http://localhost:8080 in your browser.
+
+Alternatively, use a code editor like VS Code with a "Live Server" extension.
+
+Play:Press SPACE to start.
+Use LEFT and RIGHT arrow keys to move the spaceship.
+Press SPACE to shoot.
+Press R to restart after a game over.
+
+NotesThe game functionality remains identical to the single-file version.
+The files are linked correctly: index.html references styles.css via <link> and game.js via <script>.
+Ensure all files are in the same folder to avoid path issues.
+The Google Fonts link requires an internet connection for the retro font. If offline, the font will fall back to a default, but the game will still work.
+If you encounter issues (e.g., JavaScript not loading), use a local server to serve the files.
+
