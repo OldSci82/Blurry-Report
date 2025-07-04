@@ -179,3 +179,81 @@ footer {
 .btn:focus {
   box-shadow: 0 0 8px 2px #B13BFF !important;
 }
+
+/* News item styles */
+.news-item {
+  background: rgba(9, 0, 64, 0.85);
+  border: 3px solid #FFCC00;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 0 15px rgba(177, 59, 255, 0.6), inset 0 0 10px rgba(177, 59, 255, 0.3);
+  transition: all 0.3s ease;
+  animation: neon-pulse 4s ease-in-out infinite;
+}
+
+.news-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 25px rgba(177, 59, 255, 0.8), inset 0 0 15px rgba(177, 59, 255, 0.5);
+}
+
+.news-item h3 {
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  color: #FFCC00;
+  text-shadow: 0 0 8px #B13BFF;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.news-item h3 a {
+  color: #FFCC00;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.news-item h3 a:hover {
+  color: #B13BFF;
+  text-shadow: 0 0 10px #FFCC00;
+}
+
+.news-item p {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: #E6E6FA;
+  text-shadow: 0 0 5px rgba(177, 59, 255, 0.5);
+  line-height: 1.6;
+}
+
+/* Neon pulse animation for news items */
+@keyframes neon-pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(177, 59, 255, 0.6), inset 0 0 10px rgba(177, 59, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(177, 59, 255, 0.8), inset 0 0 15px rgba(177, 59, 255, 0.4);
+  }
+}
+
+/* Ensure news container has proper spacing */
+#news-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* Responsive adjustments for news items */
+@media (max-width: 600px) {
+  .news-item {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .news-item h3 {
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+  }
+
+  .news-item p {
+    font-size: clamp(0.9rem, 1.8vw, 1rem);
+  }
+}
