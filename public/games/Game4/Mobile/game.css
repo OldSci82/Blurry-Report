@@ -46,7 +46,7 @@ body {
   background: linear-gradient(45deg, #471396, #B13BFF);
   border: 3px solid #FFCC00;
   border-radius: 15px;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   text-transform: uppercase;
   text-align: center;
   transition: all 0.3s ease;
@@ -71,6 +71,15 @@ body {
   text-align: center;
   text-transform: uppercase;
   display: none;
+}
+#settings button:hover, #settings input:hover {
+  background: linear-gradient(45deg, #B13BFF, #471396);
+  color: #090040;
+  transform: translateY(-3px);
+  box-shadow: 0 0 20px rgba(177, 59, 255, 0.8);
+}
+#settings button:active, #settings input:focus {
+  box-shadow: 0 0 8px 2px #B13BFF;
 }
 @media (max-width: 600px) {
   #score, #loading {

@@ -14,12 +14,9 @@ body {
   justify-content: center;
   overflow-x: hidden;
   user-select: none;
-  cursor: default;
 }
 #gameCanvas {
   display: block;
-  width: 800px;
-  height: 600px;
   background-color: #000;
   box-shadow: 0 0 15px rgba(177, 59, 255, 0.7);
   border-radius: 15px;
@@ -40,8 +37,12 @@ body {
   text-transform: uppercase;
   display: none;
 }
-@media (max-width: 600px) {
-  #score, #loading {
-    font-size: clamp(0.9rem, 2vw, 1rem);
-  }
+#settings button:hover {
+  background: linear-gradient(45deg, #B13BFF, #471396);
+  color: #090040;
+  transform: translateY(-3px);
+  box-shadow: 0 0 20px rgba(177, 59, 255, 0.8);
+}
+#settings button:active {
+  box-shadow: 0 0 8px 2px #B13BFF;
 }
