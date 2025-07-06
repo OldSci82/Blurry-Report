@@ -15,14 +15,25 @@ body {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#scoreContainer {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  height: 30px; /* Space for score text */
+  text-align: left;
 }
 
 #score {
   position: absolute;
-  top: 50px; /* Moved down to avoid hearts at y=10, height=32 */
+  top: 0;
   left: 10px;
   color: #FFCC00;
-  font-size: clamp(0.9rem, 2.5vw, 1.1rem); /* Slightly smaller for mobile */
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
   text-shadow: 0 0 5px #B13BFF;
   z-index: 10;
 }
@@ -31,30 +42,29 @@ body {
   display: block;
   width: 100%;
   max-width: 800px;
-  height: auto;
+  max-height: calc(100vh - 110px); /* Reserve space for score (30px) and controls (80px) */
   aspect-ratio: 4 / 3;
   background: #090040;
 }
 
 #mobileControls {
-  position: absolute;
-  bottom: 10px;
   width: 100%;
   max-width: 800px;
   display: flex;
   justify-content: space-between;
-  padding: 0 10px;
+  padding: 10px;
   box-sizing: border-box;
+  background: #090040;
 }
 
 .mobile-button {
   font-family: 'VCR OSD Mono';
-  font-size: clamp(1rem, 3vw, 1.25rem);
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
   color: #FFCC00;
   background: linear-gradient(45deg, #471396, #B13BFF);
   border: 3px solid #FFCC00;
   border-radius: 10px;
-  padding: 10px 20px;
+  padding: 8px 16px;
   cursor: pointer;
   touch-action: manipulation;
   width: 30%;

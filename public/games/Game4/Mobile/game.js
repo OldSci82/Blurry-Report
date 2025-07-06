@@ -5,6 +5,20 @@ const scoreDisplay = document.getElementById("score");
 const loadingDisplay = document.getElementById("loading");
 const gameDiv = document.getElementById("game");
 
+// Initialize AudioContext
+let audioCtx = null;
+const activeSounds = [];
+const maxConcurrentSounds = 3;
+
+function initAudioContext() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") {
+      console.log("AudioContext suspended, awaiting user interaction");
+    }
+  }
+}
+
 let score = 0;
 let gameOver = false;
 let levelComplete = false;
@@ -50,15 +64,38 @@ images.forEach(({ img, src, name }) => {
   img.src = src;
   img.onload = () => {
     loadedImages++;
+    console.log(`Loaded ${name}: ${loadedImages}/${images.length}`);
     if (loadedImages === images.length && ctx) {
       loadingDisplay.style.display = "none";
-      gameDiv.style.display = "block";
+      gameDiv.style.display = "flex";
       generateLevel();
       update();
     }
   };
-  img.onerror = () => console.error(`Failed to load ${name}: ${src}`);
+  img.onerror = () => {
+    console.error(`Failed to load ${name}: ${src}`);
+    loadedImages++;
+    if (loadedImages === images.length && ctx) {
+      loadingDisplay.style.display = "none";
+      gameDiv.style.display = "flex";
+      generateLevel();
+      update();
+    }
+  };
 });
+
+// Fallback if images take too long
+setTimeout(() => {
+  if (loadedImages < images.length && ctx) {
+    console.warn(
+      `Image loading timeout, proceeding with ${loadedImages}/${images.length} images`
+    );
+    loadingDisplay.style.display = "none";
+    gameDiv.style.display = "flex";
+    generateLevel();
+    update();
+  }
+}, 5000);
 
 if (loadingDisplay) loadingDisplay.style.display = "block";
 
@@ -111,6 +148,7 @@ const jumpButton = document.getElementById("jumpButton");
 if (leftButton) {
   leftButton.addEventListener("touchstart", (e) => {
     e.preventDefault();
+    initAudioContext(); // Initialize audio on first touch
     keys.left = true;
     player.facingRight = false;
     console.log("Left button pressed:", keys);
@@ -126,6 +164,7 @@ if (leftButton) {
 if (rightButton) {
   rightButton.addEventListener("touchstart", (e) => {
     e.preventDefault();
+    initAudioContext(); // Initialize audio on first touch
     keys.right = true;
     player.facingRight = true;
     console.log("Right button pressed:", keys);
@@ -141,6 +180,7 @@ if (rightButton) {
 if (jumpButton) {
   jumpButton.addEventListener("touchstart", (e) => {
     e.preventDefault();
+    initAudioContext(); // Initialize audio on first touch
     if (!player.isJumping) {
       keys.jump = true;
       playSound(220, 0.1);
@@ -291,13 +331,25 @@ document.addEventListener("keyup", (e) => {
 });
 
 function playSound(frequency, duration) {
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (!audioCtx || activeSounds.length >= maxConcurrentSounds) return;
+  if (audioCtx.state === "suspended") {
+    console.log("AudioContext suspended, attempting to resume");
+    audioCtx.resume();
+  }
+
   const oscillator = audioCtx.createOscillator();
+  const gainNode = audioCtx.createGain();
   oscillator.type = "square";
   oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime);
-  oscillator.connect(audioCtx.destination);
+  gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+  oscillator.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
   oscillator.start();
   oscillator.stop(audioCtx.currentTime + duration);
+  activeSounds.push(oscillator);
+  oscillator.onended = () => {
+    activeSounds.splice(activeSounds.indexOf(oscillator), 1);
+  };
 }
 
 function restartGame() {
@@ -321,13 +373,17 @@ function restartGame() {
 
 if (canvas) {
   canvas.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    initAudioContext(); // Initialize audio on canvas touch
     if (gameOver || levelComplete) {
-      e.preventDefault();
       const rect = canvas.getBoundingClientRect();
       const scaleXCanvas = canvas.width / rect.width;
       const scaleYCanvas = canvas.height / rect.height;
-      const touchX = (e.touches[0].clientX - rect.left) * scaleXCanvas;
-      const touchY = (e.touches[0].clientY - rect.top) * scaleYCanvas;
+      const touchX =
+        ((e.touches[0].clientX - rect.left) * scaleXCanvas) / scaleX;
+      const touchY =
+        ((e.touches[0].clientY - rect.top) * scaleYCanvas) / scaleY;
+      console.log("Touch at:", touchX, touchY);
 
       ctx.font = '24px "VCR OSD Mono"';
       const restartText = "Restart";
@@ -347,6 +403,7 @@ if (canvas) {
         touchY <= restartY
       ) {
         restartGame();
+        playSound(440, 0.1);
       }
       if (
         touchX >= backX &&
@@ -355,8 +412,15 @@ if (canvas) {
         touchY <= backY
       ) {
         window.location.href = "../../../pages/games.html";
+        playSound(440, 0.1);
       }
     }
+  });
+  canvas.addEventListener("touchend", (e) => {
+    e.preventDefault();
+  });
+  canvas.addEventListener("touchmove", (e) => {
+    e.preventDefault();
   });
 }
 
@@ -410,7 +474,7 @@ function update() {
     return;
   }
 
-  console.log("Keys state:", keys); // Debug touch inputs
+  console.log("Keys state:", keys);
 
   camera.x = Math.max(0, player.x - 400 + player.width / 2);
   camera.x = Math.min(camera.x, 6000 - 800);
