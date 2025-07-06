@@ -35,7 +35,7 @@ let gameOver = false;
 let gameStarted = false;
 let player = {
   x: 200,
-  y: 560, // Adjusted from 550 to avoid early bullet hits
+  y: 540, // Adjusted from 560 to ensure visibility
   width: 78,
   height: 38,
   hitWidth: 62,
@@ -193,7 +193,7 @@ function spawnEnemies() {
       for (let j = 0; j < 2; j++) {
         const isShooter = shootersPlaced < shooterCount && Math.random() < 0.5;
         enemies.push({
-          x: 50 + i * 90, // Adjusted from 110 to keep within 400px
+          x: 50 + i * 90,
           y: 50 + j * 60,
           width: 61,
           height: 35,
@@ -327,6 +327,7 @@ function resetGame() {
   isBossWave = false;
   waveTransition = false;
   player.x = 200;
+  player.y = 540; // Adjusted from 560
   player.invincible = false;
   player.image =
     fighterImages[

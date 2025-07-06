@@ -22,6 +22,9 @@ body {
 
 #gameCanvas {
     display: block;
+    width: 100%;
+    max-height: 600px; /* Prevent clipping */
+    box-sizing: border-box;
 }
 
 /* Simplified CRT effect for performance */
@@ -82,12 +85,14 @@ body {
 }
 
 #controls {
-    width: 400px;
+    width: 360px; /* Reduced from 400px */
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Center buttons */
+    gap: 20px; /* Space buttons closer */
     padding: 10px;
     box-sizing: border-box;
     background: #000;
+    margin: 0 auto; /* Center container */
 }
 
 button {
