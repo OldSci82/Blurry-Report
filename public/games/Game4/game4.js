@@ -1,5 +1,9 @@
+// Ensure canvas exists
 const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+if (!canvas) {
+  console.error("Canvas element with ID 'gameCanvas' not found!");
+}
+const ctx = canvas ? canvas.getContext("2d") : null;
 const scoreDisplay = document.getElementById("score");
 
 let score = 0;
@@ -7,64 +11,102 @@ let gameOver = false;
 let levelComplete = false;
 let selectedOption = 0; // 0: Restart, 1: Back to Games
 
+// Detect mobile device
+const isMobile =
+  /Mobi|Android|iPhone|iPad|iPod|Touch/i.test(navigator.userAgent) ||
+  window.matchMedia("(pointer: coarse)").matches;
+
+// Adjust canvas size for mobile
+let scaleX = 1;
+let scaleY = 1;
+if (isMobile && canvas) {
+  const maxWidth = Math.min(window.innerWidth, 800); // Cap at 800px to avoid overscaling
+  canvas.width = maxWidth;
+  canvas.height = maxWidth * 0.75; // Maintain 4:3 aspect ratio
+  scaleX = maxWidth / 800;
+  scaleY = (maxWidth * 0.75) / 600;
+}
+
 // Load sprite sheets, background, platform, heart, temple, skull, and coin images
 const playerSprite = new Image();
-playerSprite.src = "./player-sprite-R.png"; // Player sprite sheet
+playerSprite.src = "./player-sprite-R.png";
+playerSprite.onerror = () =>
+  console.error("Failed to load playerSprite: ./player-sprite-R.png");
+
 const enemySprite = new Image();
-enemySprite.src = "./alligator1.png"; // Enemy sprite sheet (824x23, 8 frames of 103x23)
+enemySprite.src = "./alligator1.png";
+enemySprite.onerror = () =>
+  console.error("Failed to load enemySprite: ./alligator1.png");
+
 const backgroundImage = new Image();
-backgroundImage.src = "./jungle-background3.png"; // Background image (800x560)
+backgroundImage.src = "./jungle-background3.png";
+backgroundImage.onerror = () =>
+  console.error("Failed to load backgroundImage: ./jungle-background3.png");
+
 const platformImage = new Image();
-platformImage.src = "./ancient-platform2.png"; // Platform image (450x90)
+platformImage.src = "./ancient-platform2.png";
+platformImage.onerror = () =>
+  console.error("Failed to load platformImage: ./ancient-platform2.png");
+
 const heartImage = new Image();
-heartImage.src = "./heart-full.png"; // Heart image (32x32)
+heartImage.src = "./heart-full.png";
+heartImage.onerror = () =>
+  console.error("Failed to load heartImage: ./heart-full.png");
+
 const templeImage = new Image();
-templeImage.src = "./ruin-temple1.png"; // Temple image (500x520, unused but loaded)
+templeImage.src = "./ruin-temple1.png";
+templeImage.onerror = () =>
+  console.error("Failed to load templeImage: ./ruin-temple1.png");
+
 const skullImage = new Image();
-skullImage.src = "./elongated-skull2.png"; // Skull image (100x100)
+skullImage.src = "./elongated-skull2.png";
+skullImage.onerror = () =>
+  console.error("Failed to load skullImage: ./elongated-skull2.png");
+
 const coinImage = new Image();
-coinImage.src = "./gold-coin1.png"; // Coin image
+coinImage.src = "./gold-coin1.png";
+coinImage.onerror = () =>
+  console.error("Failed to load coinImage: ./gold-coin1.png");
 
 // Camera for scrolling
 const camera = {
-  x: 0, // Camera offset for background and level scrolling
+  x: 0,
 };
 
-// Player object with animation, direction, hitbox, and health properties
+// Player object
 const player = {
   x: 50,
   y: 390,
-  width: 100, // Sprite size
+  width: 100,
   height: 100,
-  hitboxWidth: 40, // Hitbox size for collisions
+  hitboxWidth: 40,
   hitboxHeight: 60,
-  hitboxOffsetX: 30, // Center hitbox (100-80)/2
+  hitboxOffsetX: 30,
   hitboxOffsetY: 40,
   speed: 5,
   dy: 0,
   gravity: 0.75,
   jumpPower: -15,
   isJumping: false,
-  frame: 0, // Current frame index (0: idle1, 1: walk1, 2: idle2, 3: walk2/jump)
+  frame: 0,
   frameTimer: 0,
   frameInterval: 10,
   facingRight: true,
-  health: 3, // Start with 3 hearts
-  invincibilityTimer: 0, // Tracks grace period
-  invincibilityDuration: 90, // 1.5 seconds at 60 FPS
+  health: 3,
+  invincibilityTimer: 0,
+  invincibilityDuration: 90,
 };
 
 // Platforms (pyramid steps + ground)
 const platforms = [
-  { x: 0, y: 495, width: 2400, height: 20, isGround: true }, // Transparent ground
-  { x: 200, y: 400, width: 200, height: 20, isGround: false }, // Floating platform
-  { x: 500, y: 300, width: 200, height: 20, isGround: false }, // Floating platform
-  // Pyramid steps, centered at x: 2150 (1900 + 250)
-  { x: 1950, y: 400, width: 500, height: 100, isGround: false }, // Base
-  { x: 2050, y: 350, width: 400, height: 80, isGround: false }, // Step 2
-  { x: 2150, y: 300, width: 300, height: 60, isGround: false }, // Step 3
-  { x: 2250, y: 275, width: 200, height: 40, isGround: false }, // Step 4
-  { x: 2350, y: 260, width: 100, height: 20, isGround: false }, // Top
+  { x: 0, y: 495, width: 2400, height: 20, isGround: true },
+  { x: 200, y: 400, width: 200, height: 20, isGround: false },
+  { x: 500, y: 300, width: 200, height: 20, isGround: false },
+  { x: 1950, y: 400, width: 500, height: 100, isGround: false },
+  { x: 2050, y: 350, width: 400, height: 80, isGround: false },
+  { x: 2150, y: 300, width: 300, height: 60, isGround: false },
+  { x: 2250, y: 275, width: 200, height: 40, isGround: false },
+  { x: 2350, y: 260, width: 100, height: 20, isGround: false },
 ];
 
 let coins = [
@@ -103,37 +145,80 @@ let coins = [
 const enemy = {
   x: 600,
   y: 460,
-  width: 140, // Scaled sprite size
+  width: 140,
   height: 38,
   hitboxWidth: 110,
   hitboxHeight: 24,
   hitboxOffsetX: 10,
   hitboxOffsetY: 1,
   speed: 2,
-  direction: -1, // -1: left, 1: right
-  frame: 0, // Current frame index (0-7)
+  direction: -1,
+  frame: 0,
   frameTimer: 0,
   frameInterval: 10,
 };
 
 const skull = {
-  x: 2350, // Center on top step
-  y: 210, // Above top step
+  x: 2350,
+  y: 210,
   width: 50,
   height: 50,
   hitboxWidth: 28,
-  hitboxHeight: 40, // Fixed: Corrected from "hitboxHeight:iyet: 40"
-  hitboxOffsetX: 10, // Center hitbox (100-80)/2
+  hitboxHeight: 40,
+  hitboxOffsetX: 10,
   hitboxOffsetY: 1,
 };
 
-// Keyboard input
+// Keyboard and touch input
 const keys = { right: false, left: false, jump: false };
+
+// Mobile touch controls
+if (isMobile) {
+  const leftButton = document.getElementById("leftButton");
+  const rightButton = document.getElementById("rightButton");
+  const jumpButton = document.getElementById("jumpButton");
+
+  if (leftButton) {
+    leftButton.addEventListener("touchstart", () => {
+      keys.left = true;
+    });
+    leftButton.addEventListener("touchend", () => {
+      keys.left = false;
+    });
+  } else {
+    console.error("Left button not found!");
+  }
+  if (rightButton) {
+    rightButton.addEventListener("touchstart", () => {
+      keys.right = true;
+    });
+    rightButton.addEventListener("touchend", () => {
+      keys.right = false;
+    });
+  } else {
+    console.error("Right button not found!");
+  }
+  if (jumpButton) {
+    jumpButton.addEventListener("touchstart", () => {
+      if (!player.isJumping) {
+        keys.jump = true;
+        playSound(220, 0.1);
+      }
+    });
+    jumpButton.addEventListener("touchend", () => {
+      keys.jump = false;
+    });
+  } else {
+    console.error("Jump button not found!");
+  }
+}
+
+// Keyboard input for desktop and end-screen navigation
 document.addEventListener("keydown", (e) => {
   if (gameOver || levelComplete) {
     if (e.code === "ArrowUp") {
       selectedOption = 0; // Select Restart
-      playSound(220, 0.1); // Feedback sound
+      playSound(220, 0.1);
     }
     if (e.code === "ArrowDown") {
       selectedOption = 1; // Select Back to Games
@@ -179,8 +264,8 @@ function playSound(frequency, duration) {
   oscillator.stop(audioCtx.currentTime + duration);
 }
 
+// Restart function to reset game state
 function restartGame() {
-  // Reset player
   player.x = 50;
   player.y = 390;
   player.dy = 0;
@@ -191,7 +276,6 @@ function restartGame() {
   player.health = 3;
   player.invincibilityTimer = 0;
 
-  // Reset coins
   coins = [
     {
       x: 250,
@@ -225,85 +309,95 @@ function restartGame() {
     },
   ];
 
-  // Reset enemy
   enemy.x = 600;
-  enemy.y = 460;
+  enemy.y = 460; // Fixed: Corrected from player.y
   enemy.direction = -1;
   enemy.frame = 0;
   enemy.frameTimer = 0;
 
-  // Reset game state
   score = 0;
   scoreDisplay.textContent = `Score: ${score}`;
   gameOver = false;
   levelComplete = false;
   camera.x = 0;
-  selectedOption = 0; // Reset to select "Restart" by default
+  selectedOption = 0;
 }
 
 // Click handler for end screen options
-canvas.addEventListener("click", (e) => {
-  if (gameOver || levelComplete) {
-    const rect = canvas.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const clickY = e.clientY - rect.top;
+if (canvas) {
+  canvas.addEventListener("click", (e) => {
+    if (gameOver || levelComplete) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleXCanvas = canvas.width / rect.width;
+      const scaleYCanvas = canvas.height / rect.height;
+      const clickX = (e.clientX - rect.left) * scaleXCanvas;
+      const clickY = (e.clientY - rect.top) * scaleYCanvas;
 
-    // Font settings for measuring text
-    ctx.font = '24px "Press Start 2P"'; // Match font size used for options
-    const restartText = "Restart";
-    const backText = "Back to Games";
-    const restartWidth = ctx.measureText(restartText).width;
-    const backWidth = ctx.measureText(backText).width;
-    const restartX = (canvas.width - restartWidth) / 2;
-    const backX = (canvas.width - backWidth) / 2;
-    const restartY = canvas.height / 2 + 50;
-    const backY = canvas.height / 2 + 100;
-    const textHeight = 24; // Approximate height for click detection
+      ctx.font = '24px "Press Start 2P"';
+      const restartText = "Restart";
+      const backText = "Back to Games";
+      const restartWidth = ctx.measureText(restartText).width;
+      const backWidth = ctx.measureText(backText).width;
+      const restartX = (canvas.width - restartWidth) / 2;
+      const backX = (canvas.width - backWidth) / 2;
+      const restartY = canvas.height / 2 + 50;
+      const backY = canvas.height / 2 + 100;
+      const textHeight = 24;
 
-    // Check if "Restart" was clicked
-    if (
-      clickX >= restartX &&
-      clickX <= restartX + restartWidth &&
-      clickY >= restartY - textHeight &&
-      clickY <= restartY
-    ) {
-      restartGame();
+      if (
+        clickX >= restartX &&
+        clickX <= restartX + restartWidth &&
+        clickY >= restartY - textHeight &&
+        clickY <= restartY
+      ) {
+        restartGame();
+      }
+
+      if (
+        clickX >= backX &&
+        clickX <= backX + backWidth &&
+        clickY >= backY - textHeight &&
+        clickY <= backY
+      ) {
+        window.location.href = "../../pages/games.html";
+      }
     }
-
-    // Check if "Back to Games" was clicked
-    if (
-      clickX >= backX &&
-      clickX <= backX + backWidth &&
-      clickY >= backY - textHeight &&
-      clickY <= backY
-    ) {
-      window.location.href = "../../pages/games.html";
-    }
-  }
-});
+  });
+}
 
 // Game loop
 function update() {
+  if (!ctx) {
+    console.error("Canvas context not available, cannot render!");
+    return;
+  }
+
+  console.log("Update loop running"); // Debug: Confirm loop is running
+
+  // Reset canvas transform to avoid cumulative scaling
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  if (isMobile) {
+    ctx.scale(scaleX, scaleY);
+  }
+
   if (gameOver || levelComplete) {
-    // Draw end screen
-    ctx.fillStyle = "#ff0"; // Yellow
-    ctx.font = '36px "Press Start 2P"'; // Font size for main message
+    ctx.fillStyle = "#ff0";
+    ctx.font = '36px "Press Start 2P"';
     if (gameOver) {
       const text = "GAME OVER";
       const textWidth = ctx.measureText(text).width;
-      const textX = (canvas.width - textWidth) / 2; // Center horizontally
-      const textY = canvas.height / 2; // Center vertically
+      const textX = (canvas.width - textWidth) / 2;
+      const textY = canvas.height / 2;
       ctx.fillText(text, textX, textY);
     } else {
       const text = "That's a big deal!";
       const textWidth = ctx.measureText(text).width;
-      const textX = (canvas.width - textWidth) / 2; // Center horizontally
-      const textY = canvas.height / 2; // Center vertically
+      const textX = (canvas.width - textWidth) / 2;
+      const textY = canvas.height / 2;
       ctx.fillText(text, textX, textY);
     }
 
-    // Draw restart and back options with highlight
-    ctx.font = '24px "Press Start 2P"'; // Smaller font for options
+    ctx.font = '24px "Press Start 2P"';
     const restartText = "Restart";
     const backText = "Back to Games";
     const restartWidth = ctx.measureText(restartText).width;
@@ -313,41 +407,37 @@ function update() {
     const restartY = canvas.height / 2 + 50;
     const backY = canvas.height / 2 + 100;
 
-    // Draw background for selected option
-    ctx.fillStyle = selectedOption === 0 ? "#00f" : "#000"; // Blue for selected, black for unselected
-    ctx.fillRect(restartX - 10, restartY - 24, restartWidth + 20, 34); // Padding around text
+    ctx.fillStyle = selectedOption === 0 ? "#00f" : "#000";
+    ctx.fillRect(restartX - 10, restartY - 24, restartWidth + 20, 34);
     ctx.fillStyle = selectedOption === 1 ? "#00f" : "#000";
     ctx.fillRect(backX - 10, backY - 24, backWidth + 20, 34);
 
-    // Draw text
-    ctx.fillStyle = "#ff0"; // Yellow text
+    ctx.fillStyle = "#ff0";
     ctx.fillText(restartText, restartX, restartY);
     ctx.fillText(backText, backX, backY);
 
-    requestAnimationFrame(update); // Continue rendering end screen
+    requestAnimationFrame(update);
     return;
   }
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Update camera to follow player
+  // Update camera
   camera.x = Math.max(0, player.x - canvas.width / 2 + player.width / 2);
   camera.x = Math.min(camera.x, 2400 - canvas.width);
 
   // Draw tiled background
-  if (backgroundImage.complete) {
-    const bgWidth = 800;
-    const bgHeight = 600;
-    const startX = Math.floor(camera.x / bgWidth) * bgWidth;
-    for (let x = startX - bgWidth; x <= startX + canvas.width; x += bgWidth) {
-      ctx.drawImage(
-        backgroundImage,
-        x - camera.x,
-        canvas.height - bgHeight,
-        bgWidth,
-        bgHeight
-      );
-    }
+  const bgWidth = 800;
+  const bgHeight = 600;
+  const startX = Math.floor(camera.x / bgWidth) * bgWidth;
+  for (let x = startX - bgWidth; x <= startX + canvas.width; x += bgWidth) {
+    ctx.drawImage(
+      backgroundImage,
+      x - camera.x,
+      canvas.height - bgHeight,
+      bgWidth,
+      bgHeight
+    );
   }
 
   // Player movement
@@ -363,7 +453,7 @@ function update() {
   player.dy += player.gravity;
   player.y += player.dy;
 
-  // Boundary checks (using hitbox)
+  // Boundary checks
   if (player.x + player.hitboxOffsetX < 0) player.x = -player.hitboxOffsetX;
   if (player.x + player.hitboxOffsetX + player.hitboxWidth > 2400) {
     player.x = 2400 - player.hitboxWidth - player.hitboxOffsetX;
@@ -374,26 +464,19 @@ function update() {
     player.invincibilityTimer--;
   }
 
-  // Platform collision (using player hitbox)
+  // Platform collision
   for (let platform of platforms) {
     if (
       player.x + player.hitboxOffsetX < platform.x + platform.width &&
       player.x + player.hitboxOffsetX + player.hitboxWidth > platform.x &&
       player.y + player.hitboxOffsetY + player.hitboxHeight > platform.y &&
       player.y + player.hitboxOffsetY < platform.y + platform.height &&
-      player.dy >= 0 // Include dy=0 for edge cases
+      player.dy >= 0
     ) {
       player.y = platform.y - player.hitboxHeight - player.hitboxOffsetY;
       player.dy = 0;
       player.isJumping = false;
     }
-  }
-
-  // Ground collision (using hitbox)
-  if (player.y + player.hitboxOffsetY + player.hitboxHeight > canvas.height) {
-    player.y = canvas.height - player.hitboxHeight - player.hitboxOffsetY;
-    player.dy = 0;
-    player.isJumping = false;
   }
 
   // Animate player
@@ -413,12 +496,12 @@ function update() {
   // Update coin floating animation
   coins.forEach((coin) => {
     if (!coin.collected) {
-      coin.floatTimer += 0.05; // Adjust speed of floating
-      coin.floatOffset = Math.sin(coin.floatTimer) * 5; // Adjust amplitude (5 pixels up/down)
+      coin.floatTimer += 0.05;
+      coin.floatOffset = Math.sin(coin.floatTimer) * 5;
     }
   });
 
-  // Coin collection (using player hitbox)
+  // Coin collection
   coins.forEach((coin) => {
     if (
       !coin.collected &&
@@ -445,7 +528,7 @@ function update() {
     enemy.frameTimer = 0;
   }
 
-  // Enemy collision (player hitbox vs enemy hitbox)
+  // Enemy collision
   if (
     player.invincibilityTimer <= 0 &&
     player.x + player.hitboxOffsetX <
@@ -465,7 +548,7 @@ function update() {
     }
   }
 
-  // Skull collision (player hitbox vs skull hitbox)
+  // Skull collision
   if (
     player.x + player.hitboxOffsetX <
       skull.x + skull.hitboxOffsetX + skull.hitboxWidth &&
@@ -480,7 +563,7 @@ function update() {
     playSound(440, 0.3);
   }
 
-  // Draw platforms (with camera offset)
+  // Draw platforms
   for (let platform of platforms) {
     if (!platform.isGround && platformImage.complete) {
       ctx.drawImage(
@@ -505,18 +588,17 @@ function update() {
     }
   }
 
-  // Draw coins (with camera offset)
+  // Draw coins
   for (let coin of coins) {
     if (!coin.collected && coinImage.complete) {
       ctx.drawImage(
         coinImage,
         coin.x - camera.x,
-        coin.baseY + coin.floatOffset, // Use baseY with floatOffset
+        coin.baseY + coin.floatOffset,
         coin.width,
         coin.height
       );
     } else if (!coin.collected) {
-      // Fallback if image not loaded
       ctx.fillStyle = "#ff0";
       ctx.beginPath();
       ctx.arc(
@@ -530,7 +612,7 @@ function update() {
     }
   }
 
-  // Draw skull (with camera offset)
+  // Draw skull
   if (skullImage.complete) {
     ctx.drawImage(
       skullImage,
@@ -544,17 +626,16 @@ function update() {
     ctx.fillRect(skull.x - camera.x, skull.y, skull.width, skull.height);
   }
 
-  // Draw player with sprite sheet, flipping, and blinking red during invincibility
+  // Draw player
   if (playerSprite.complete) {
     const frameWidth = 45;
     ctx.save();
-    // Apply blinking red effect during invincibility
     if (
       player.invincibilityTimer > 0 &&
       Math.floor(player.invincibilityTimer / 10) % 2 === 0
     ) {
       ctx.filter =
-        "hue-rotate(0deg) sepia(100%) saturate(500%) brightness(50%)"; // Red tint
+        "hue-rotate(0deg) sepia(100%) saturate(500%) brightness(50%)";
     }
     if (!player.facingRight) {
       ctx.scale(-1, 1);
@@ -584,7 +665,7 @@ function update() {
       );
     }
     ctx.restore();
-    ctx.filter = "none"; // Reset filter
+    ctx.filter = "none";
   } else {
     ctx.fillStyle =
       player.invincibilityTimer > 0 &&
@@ -594,7 +675,7 @@ function update() {
     ctx.fillRect(player.x - camera.x, player.y, player.width, player.height);
   }
 
-  // Draw enemy with sprite sheet and flipping
+  // Draw enemy
   if (enemySprite.complete) {
     const frameWidth = 103;
     ctx.save();
@@ -610,7 +691,7 @@ function update() {
         canvas.width - (enemy.x - camera.x + enemy.width),
         enemy.y,
         enemy.width,
-        enemy.height // Fixed: Corrected from "engine.height"
+        enemy.height
       );
     } else {
       ctx.drawImage(
@@ -622,7 +703,7 @@ function update() {
         enemy.x - camera.x,
         enemy.y,
         enemy.width,
-        enemy.height // Fixed: Corrected from "engine.height"
+        enemy.height
       );
     }
     ctx.restore();
@@ -631,29 +712,29 @@ function update() {
     ctx.fillRect(enemy.x - camera.x, enemy.y, enemy.width, enemy.height);
   }
 
-  // Draw hearts (UI, no camera offset)
+  // Draw hearts
   if (heartImage.complete) {
     for (let i = 0; i < player.health; i++) {
       ctx.drawImage(heartImage, 10 + i * 40, 10, 32, 32);
     }
   }
 
-  // Optional: Draw hitboxes for debugging
-  ctx.fillStyle = "rgba(0, 255, 0, 0.3)"; // Player hitbox
+  // Draw hitboxes for debugging
+  ctx.fillStyle = "rgba(0, 255, 0, 0.3)";
   ctx.fillRect(
     player.x - camera.x + player.hitboxOffsetX,
     player.y + player.hitboxOffsetY,
     player.hitboxWidth,
     player.hitboxHeight
   );
-  ctx.fillStyle = "rgba(255, 0, 0, 0.3)"; // Enemy hitbox
+  ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
   ctx.fillRect(
     enemy.x - camera.x + enemy.hitboxOffsetX,
     enemy.y + enemy.hitboxOffsetY,
     enemy.hitboxWidth,
     enemy.hitboxHeight
   );
-  ctx.fillStyle = "rgba(0, 0, 255, 0.3)"; // Skull hitbox
+  ctx.fillStyle = "rgba(0, 0, 255, 0.3)";
   ctx.fillRect(
     skull.x - camera.x + skull.hitboxOffsetX,
     skull.y + skull.hitboxOffsetY,
@@ -665,4 +746,8 @@ function update() {
 }
 
 // Start game
-update();
+if (ctx) {
+  update();
+} else {
+  console.error("Cannot start game: Canvas context unavailable");
+}
