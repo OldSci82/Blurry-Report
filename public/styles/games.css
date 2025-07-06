@@ -104,11 +104,10 @@ header h1 {
   width: 100%;
   height: auto;
   object-fit: cover;
-  border-radius: 10px;
   filter: contrast(1.2) brightness(0.9);
   box-shadow: 0 0 15px rgba(177, 59, 255, 0.7);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-radius: 50%;
+  border-radius: 15px;
 }
 
 .game-img:hover {
@@ -225,4 +224,8 @@ footer {
 
 .btn:focus {
   box-shadow: 0 0 8px 2px #B13BFF !important;
+}
+
+.game-img.tim {
+  height: 10px;
 }
