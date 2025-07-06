@@ -1,22 +1,14 @@
 const canvas = document.getElementById("gameCanvas");
-if (!canvas) {
-  console.error("Canvas element with ID 'gameCanvas' not found!");
-}
+if (!canvas) console.error("Canvas element with ID 'gameCanvas' not found!");
 const ctx = canvas ? canvas.getContext("2d") : null;
 const scoreDisplay = document.getElementById("score");
 const loadingDisplay = document.getElementById("loading");
-const settingsDiv = document.getElementById("settings");
 const gameDiv = document.getElementById("game");
-const startGameButton = document.getElementById("startGame");
-const numPlatformsInput = document.getElementById("numPlatforms");
-const numEnemiesInput = document.getElementById("numEnemies");
 
 let score = 0;
 let gameOver = false;
 let levelComplete = false;
 let selectedOption = 0;
-let numPlatforms = 8;
-let numEnemies = 2;
 
 // Adjust canvas size
 const maxWidth = Math.min(window.innerWidth, 800);
@@ -60,14 +52,15 @@ images.forEach(({ img, src, name }) => {
     loadedImages++;
     if (loadedImages === images.length && ctx) {
       loadingDisplay.style.display = "none";
+      gameDiv.style.display = "block";
+      generateLevel();
+      update();
     }
   };
   img.onerror = () => console.error(`Failed to load ${name}: ${src}`);
 });
 
-if (loadingDisplay) {
-  loadingDisplay.style.display = "block";
-}
+if (loadingDisplay) loadingDisplay.style.display = "block";
 
 const camera = { x: 0 };
 
@@ -99,7 +92,7 @@ let coins = [];
 let enemies = [];
 
 const skull = {
-  x: 3950,
+  x: 5950,
   y: 210,
   width: 50,
   height: 50,
@@ -116,170 +109,130 @@ const rightButton = document.getElementById("rightButton");
 const jumpButton = document.getElementById("jumpButton");
 
 if (leftButton) {
-  leftButton.addEventListener("touchstart", () => {
+  leftButton.addEventListener("touchstart", (e) => {
+    e.preventDefault();
     keys.left = true;
+    player.facingRight = false;
+    console.log("Left button pressed:", keys);
   });
-  leftButton.addEventListener("touchend", () => {
+  leftButton.addEventListener("touchend", (e) => {
+    e.preventDefault();
     keys.left = false;
+    console.log("Left button released:", keys);
   });
 } else {
   console.error("Left button not found!");
 }
 if (rightButton) {
-  rightButton.addEventListener("touchstart", () => {
+  rightButton.addEventListener("touchstart", (e) => {
+    e.preventDefault();
     keys.right = true;
+    player.facingRight = true;
+    console.log("Right button pressed:", keys);
   });
-  rightButton.addEventListener("touchend", () => {
+  rightButton.addEventListener("touchend", (e) => {
+    e.preventDefault();
     keys.right = false;
+    console.log("Right button released:", keys);
   });
 } else {
   console.error("Right button not found!");
 }
 if (jumpButton) {
-  jumpButton.addEventListener("touchstart", () => {
+  jumpButton.addEventListener("touchstart", (e) => {
+    e.preventDefault();
     if (!player.isJumping) {
       keys.jump = true;
       playSound(220, 0.1);
+      console.log("Jump button pressed:", keys);
     }
   });
-  jumpButton.addEventListener("touchend", () => {
+  jumpButton.addEventListener("touchend", (e) => {
+    e.preventDefault();
     keys.jump = false;
+    console.log("Jump button released:", keys);
   });
 } else {
   console.error("Jump button not found!");
 }
 
 function generateLevel() {
-  platforms = [{ x: 0, y: 495, width: 4000, height: 20, isGround: true }];
+  platforms = [{ x: 0, y: 495, width: 6000, height: 20, isGround: true }];
   platforms.push(
-    { x: 3550, y: 400, width: 500, height: 100, isGround: false },
-    { x: 3650, y: 350, width: 400, height: 80, isGround: false },
-    { x: 3750, y: 300, width: 300, height: 60, isGround: false },
-    { x: 3850, y: 275, width: 200, height: 40, isGround: false },
-    { x: 3950, y: 260, width: 100, height: 20, isGround: false }
+    { x: 5550, y: 400, width: 500, height: 100, isGround: false },
+    { x: 5650, y: 350, width: 400, height: 80, isGround: false },
+    { x: 5750, y: 300, width: 300, height: 60, isGround: false },
+    { x: 5850, y: 275, width: 200, height: 40, isGround: false },
+    { x: 5950, y: 260, width: 100, height: 20, isGround: false }
   );
 
-  const minX = 200;
-  const maxX = 3400;
-  const minY = 250;
-  const maxY = 450;
-  const minWidth = 100;
-  const maxWidth = 300;
-  const minSpacingX = 150;
-  const minSpacingY = 50;
-  const maxJumpDistance = 250;
-  const maxJumpHeight = 120;
-
-  let placedPlatforms = 0;
-  for (let i = 0; i < numPlatforms && placedPlatforms < numPlatforms; i++) {
-    let valid = false;
-    let attempts = 0;
-    let platform;
-    while (!valid && attempts < 50) {
-      const x = Math.random() * (maxX - minX - maxWidth) + minX;
-      const y = Math.random() * (maxY - minY) + minY;
-      const width = Math.random() * (maxWidth - minWidth) + minWidth;
-      platform = { x, y, width, height: 20, isGround: false };
-
-      valid = true;
-      for (let other of platforms) {
-        const dx = Math.abs(
-          platform.x + platform.width / 2 - (other.x + other.width / 2)
-        );
-        const dy = Math.abs(platform.y - other.y);
-        if (dx < minSpacingX || (dx < minSpacingX * 1.5 && dy < minSpacingY)) {
-          valid = false;
-          break;
-        }
-      }
-
-      let reachable = false;
-      for (let other of platforms) {
-        if (other === platform) continue;
-        const dx = Math.abs(
-          platform.x + platform.width / 2 - (other.x + other.width / 2)
-        );
-        const dy = Math.abs(platform.y - other.y);
-        if (dx <= maxJumpDistance && dy <= maxJumpHeight) {
-          reachable = true;
-          break;
-        }
-      }
-      if (!reachable && platform.y > 495 - maxJumpHeight) {
-        reachable = true;
-      }
-      if (!reachable) valid = false;
-
-      attempts++;
-    }
-    if (valid) {
-      platforms.push(platform);
-      placedPlatforms++;
-    }
-  }
+  const platformPositions = [
+    { x: 200, y: 350, width: 200, height: 40 },
+    { x: 600, y: 200, width: 150, height: 40 },
+    { x: 900, y: 100, width: 100, height: 30 },
+    { x: 900, y: 350, width: 180, height: 40 },
+    { x: 1300, y: 250, width: 200, height: 40 },
+    { x: 1700, y: 350, width: 150, height: 40 },
+    { x: 2000, y: 150, width: 200, height: 40 },
+    { x: 2300, y: 350, width: 180, height: 40 },
+    { x: 2700, y: 300, width: 100, height: 30 },
+    { x: 3000, y: 200, width: 100, height: 40 },
+    { x: 3200, y: 350, width: 100, height: 30 },
+    { x: 3500, y: 200, width: 50, height: 20 },
+    { x: 3800, y: 300, width: 100, height: 30 },
+    { x: 4100, y: 150, width: 100, height: 30 },
+    { x: 4400, y: 350, width: 50, height: 20 },
+    { x: 4700, y: 250, width: 100, height: 30 },
+    { x: 5000, y: 350, width: 100, height: 30 },
+    { x: 5300, y: 350, width: 50, height: 20 },
+  ];
+  platformPositions.forEach((pos) => platforms.push(pos));
 
   coins = [];
-  const numCoins = Math.floor(numPlatforms / 2) + 1;
-  const availablePlatforms = platforms.slice(1, platforms.length - 5);
-  for (let i = 0; i < numCoins; i++) {
-    let coin;
-    if (i < Math.floor(numCoins * 0.8) && availablePlatforms.length > 0) {
-      const platformIndex = Math.floor(
-        Math.random() * availablePlatforms.length
-      );
-      const platform = availablePlatforms[platformIndex];
-      coin = {
-        x: platform.x + platform.width / 2 - 16,
-        y: platform.y - 40,
-        baseY: platform.y - 40,
-        width: 32,
-        height: 32,
-        collected: false,
-        floatOffset: 0,
-        floatTimer: 0,
-      };
-      availablePlatforms.splice(platformIndex, 1);
-    } else {
-      const platform =
-        availablePlatforms[
-          Math.floor(Math.random() * availablePlatforms.length)
-        ] || platforms[1];
-      const x = platform.x + platform.width / 2 + (Math.random() * 100 - 50);
-      const y = platform.y - Math.random() * 50 - 30;
-      if (x >= 200 && x <= 3400 && y >= 200 && y <= 450) {
-        coin = {
-          x,
-          y,
-          baseY: y,
-          width: 32,
-          height: 32,
-          collected: false,
-          floatOffset: 0,
-          floatTimer: 0,
-        };
-      } else {
-        coin = {
-          x: platform.x + platform.width / 2 - 16,
-          y: platform.y - 40,
-          baseY: platform.y - 40,
-          width: 32,
-          height: 32,
-          collected: false,
-          floatOffset: 0,
-          floatTimer: 0,
-        };
-      }
-    }
-    coins.push(coin);
+  const coinPlatforms = [...platformPositions].sort(() => Math.random() - 0.5);
+  for (let i = 0; i < 15 && i < coinPlatforms.length; i++) {
+    const platform = coinPlatforms[i];
+    coins.push({
+      x: platform.x + platform.width / 2 - 16,
+      y: platform.y - 60,
+      baseY: platform.y - 60,
+      width: 32,
+      height: 32,
+      collected: false,
+      floatOffset: 0,
+      floatTimer: 0,
+    });
+  }
+  const groundCoinX = [500, 1500, 2500, 3500, 4500];
+  for (let x of groundCoinX) {
+    coins.push({
+      x,
+      y: 495 - 60,
+      baseY: 495 - 60,
+      width: 32,
+      height: 32,
+      collected: false,
+      floatOffset: 0,
+      floatTimer: 0,
+    });
   }
 
   enemies = [];
-  for (let i = 0; i < numEnemies; i++) {
-    const patrolWidth = Math.random() * 300 + 200;
-    const patrolStart = Math.random() * (3400 - patrolWidth - 200) + 200;
-    const patrolEnd = patrolStart + patrolWidth;
+  const enemyPositions = [
+    { start: 200, end: 600 },
+    { start: 800, end: 1200 },
+    { start: 1400, end: 1800 },
+    { start: 2000, end: 2400 },
+    { start: 2600, end: 3000 },
+    { start: 3200, end: 3600 },
+    { start: 3800, end: 4200 },
+    { start: 4400, end: 4800 },
+    { start: 5000, end: 5400 },
+    { start: 1000, end: 1400 },
+  ];
+  enemyPositions.forEach(({ start, end }) => {
     enemies.push({
-      x: patrolStart,
+      x: start,
       y: 460,
       width: 140,
       height: 38,
@@ -292,35 +245,10 @@ function generateLevel() {
       frame: 0,
       frameTimer: 0,
       frameInterval: 10,
-      patrolStart,
-      patrolEnd,
+      patrolStart: start,
+      patrolEnd: end,
     });
-  }
-}
-
-if (startGameButton) {
-  const startGameHandler = () => {
-    numPlatforms = Math.max(
-      6,
-      Math.min(12, parseInt(numPlatformsInput.value) || 8)
-    );
-    numEnemies = Math.max(1, Math.min(4, parseInt(numEnemiesInput.value) || 2));
-    settingsDiv.style.display = "none";
-    gameDiv.style.display = "block";
-    generateLevel();
-    if (loadedImages === images.length && ctx) {
-      update();
-    } else {
-      const imageLoadInterval = setInterval(() => {
-        if (loadedImages === images.length && ctx) {
-          clearInterval(imageLoadInterval);
-          update();
-        }
-      }, 100);
-    }
-  };
-  startGameButton.addEventListener("click", startGameHandler);
-  startGameButton.addEventListener("touchstart", startGameHandler);
+  });
 }
 
 document.addEventListener("keydown", (e) => {
@@ -382,7 +310,6 @@ function restartGame() {
   player.facingRight = true;
   player.health = 3;
   player.invincibilityTimer = 0;
-
   score = 0;
   scoreDisplay.textContent = `Score: ${score}`;
   gameOver = false;
@@ -393,13 +320,14 @@ function restartGame() {
 }
 
 if (canvas) {
-  canvas.addEventListener("click", (e) => {
+  canvas.addEventListener("touchstart", (e) => {
     if (gameOver || levelComplete) {
+      e.preventDefault();
       const rect = canvas.getBoundingClientRect();
       const scaleXCanvas = canvas.width / rect.width;
       const scaleYCanvas = canvas.height / rect.height;
-      const clickX = (e.clientX - rect.left) * scaleXCanvas;
-      const clickY = (e.clientY - rect.top) * scaleYCanvas;
+      const touchX = (e.touches[0].clientX - rect.left) * scaleXCanvas;
+      const touchY = (e.touches[0].clientY - rect.top) * scaleYCanvas;
 
       ctx.font = '24px "VCR OSD Mono"';
       const restartText = "Restart";
@@ -413,19 +341,18 @@ if (canvas) {
       const textHeight = 24;
 
       if (
-        clickX >= restartX &&
-        clickX <= restartX + restartWidth &&
-        clickY >= restartY - textHeight &&
-        clickY <= restartY
+        touchX >= restartX &&
+        touchX <= restartX + restartWidth &&
+        touchY >= restartY - textHeight &&
+        touchY <= restartY
       ) {
         restartGame();
       }
-
       if (
-        clickX >= backX &&
-        clickX <= backX + backWidth &&
-        clickY >= backY - textHeight &&
-        clickY <= backY
+        touchX >= backX &&
+        touchX <= backX + backWidth &&
+        touchY >= backY - textHeight &&
+        touchY <= backY
       ) {
         window.location.href = "../../../pages/games.html";
       }
@@ -473,7 +400,7 @@ function update() {
     ctx.fillStyle = selectedOption === 0 ? "#B13BFF" : "#090040";
     ctx.fillRect(restartX - 10, restartY - 24, restartWidth + 20, 34);
     ctx.fillStyle = selectedOption === 1 ? "#B13BFF" : "#090040";
-    ctx.fillRect(backX - 10, backY - 24, backWidth + 34);
+    ctx.fillRect(backX - 10, backY - 24, backWidth + 20, 34);
 
     ctx.fillStyle = "#FFCC00";
     ctx.fillText(restartText, restartX, restartY);
@@ -483,8 +410,10 @@ function update() {
     return;
   }
 
+  console.log("Keys state:", keys); // Debug touch inputs
+
   camera.x = Math.max(0, player.x - 400 + player.width / 2);
-  camera.x = Math.min(camera.x, 4000 - 800);
+  camera.x = Math.min(camera.x, 6000 - 800);
 
   const bgWidth = 800;
   const bgHeight = 600;
@@ -505,8 +434,8 @@ function update() {
   player.y += player.dy;
 
   if (player.x + player.hitboxOffsetX < 0) player.x = -player.hitboxOffsetX;
-  if (player.x + player.hitboxOffsetX + player.hitboxWidth > 4000) {
-    player.x = 4000 - player.hitboxWidth - player.hitboxOffsetX;
+  if (player.x + player.hitboxOffsetX + player.hitboxWidth > 6000) {
+    player.x = 6000 - player.hitboxWidth - player.hitboxOffsetX;
   }
 
   if (player.invincibilityTimer > 0) {
@@ -774,7 +703,7 @@ function update() {
     ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
     ctx.fillRect(
       enemy.x - camera.x + enemy.hitboxOffsetX,
-      employee.y + enemy.hitboxOffsetY,
+      enemy.y + enemy.hitboxOffsetY,
       enemy.hitboxWidth,
       enemy.hitboxHeight
     );

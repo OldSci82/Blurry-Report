@@ -1,92 +1,78 @@
-* {
+body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-}
-body {
-  min-height: 100vh;
-  background: linear-gradient(180deg, #090040 0%, #471396 100%);
-  color: #FFCC00;
-  font-family: 'VCR OSD Mono', 'Courier New', Courier, monospace;
+  overflow: hidden;
+  background: #090040;
+  font-family: 'VCR OSD Mono', monospace;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  overflow-x: hidden;
-  user-select: none;
-  cursor: default;
+  align-items: center;
+  min-height: 100vh;
 }
+
+#game {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+#score {
+  position: absolute;
+  top: 50px; /* Moved down to avoid hearts at y=10, height=32 */
+  left: 10px;
+  color: #FFCC00;
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem); /* Slightly smaller for mobile */
+  text-shadow: 0 0 5px #B13BFF;
+  z-index: 10;
+}
+
 #gameCanvas {
   display: block;
-  width: 100vw;
-  height: calc(100vw * 0.75);
-  background-color: #000;
-  box-shadow: 0 0 15px rgba(177, 59, 255, 0.7);
-  border-radius: 15px;
-  image-rendering: pixelated;
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  background: #090040;
 }
-#score {
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
-  color: #FFCC00;
-  text-shadow: 0 0 10px #B13BFF;
-  text-align: center;
-  text-transform: uppercase;
-  margin: 1rem 0;
-}
+
 #mobileControls {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  max-width: 800px;
   display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1rem;
+  justify-content: space-between;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
+
 .mobile-button {
-  font-family: 'VCR OSD Mono', 'Courier New', Courier, monospace;
-  font-size: clamp(0.9rem, 2vw, 1rem);
+  font-family: 'VCR OSD Mono';
+  font-size: clamp(1rem, 3vw, 1.25rem);
   color: #FFCC00;
   background: linear-gradient(45deg, #471396, #B13BFF);
   border: 3px solid #FFCC00;
-  border-radius: 15px;
-  padding: 0.4rem 0.8rem;
-  text-transform: uppercase;
-  text-align: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(177, 59, 255, 0.5);
+  border-radius: 10px;
+  padding: 10px 20px;
   cursor: pointer;
-  outline: none;
   touch-action: manipulation;
-}
-.mobile-button:hover {
-  background: linear-gradient(45deg, #B13BFF, #471396);
-  color: #090040;
-  transform: translateY(-3px);
-  box-shadow: 0 0 20px rgba(177, 59, 255, 0.8);
-}
-.mobile-button:active, .mobile-button:focus {
-  box-shadow: 0 0 8px 2px #B13BFF;
-}
-#loading {
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
-  color: #FFCC00;
-  text-shadow: 0 0 10px #B13BFF;
+  width: 30%;
   text-align: center;
-  text-transform: uppercase;
-  display: none;
+  user-select: none;
 }
-#settings button:hover, #settings input:hover {
-  background: linear-gradient(45deg, #B13BFF, #471396);
-  color: #090040;
-  transform: translateY(-3px);
-  box-shadow: 0 0 20px rgba(177, 59, 255, 0.8);
+
+.mobile-button:active {
+  transform: scale(0.95);
 }
-#settings button:active, #settings input:focus {
-  box-shadow: 0 0 8px 2px #B13BFF;
-}
-@media (max-width: 600px) {
-  #score, #loading {
-    font-size: clamp(0.8rem, 1.8vw, 0.9rem);
-  }
-  .mobile-button {
-    font-size: clamp(0.8rem, 1.8vw, 0.9rem);
-    padding: 0.4rem 0.8rem;
-  }
+
+#loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #FFCC00;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  text-shadow: 0 0 10px #B13BFF;
+  z-index: 10;
 }
