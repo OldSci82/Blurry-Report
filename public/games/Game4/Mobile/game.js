@@ -811,6 +811,7 @@ function update() {
       }
     }
 
+    /*
     ctx.fillStyle = "rgba(0, 255, 0, 0.3)";
     ctx.fillRect(
       player.x - camera.x + player.hitboxOffsetX,
@@ -833,7 +834,8 @@ function update() {
       skull.y + skull.hitboxOffsetY,
       skull.hitboxWidth,
       skull.hitboxHeight
-    );
+    );*/
+    
   } catch (err) {
     console.error("Error in update loop:", err);
   }

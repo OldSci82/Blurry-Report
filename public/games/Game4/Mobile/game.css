@@ -47,11 +47,22 @@ body {
   background: #090040;
 }
 
-#mobileControls, #gameOverControls {
+#mobileControls {
   width: 100%;
   max-width: 800px;
   display: flex;
   justify-content: space-between;
+  padding: 10px;
+  box-sizing: border-box;
+  background: #090040;
+}
+
+#gameOverControls {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
   padding: 10px;
   box-sizing: border-box;
   background: #090040;

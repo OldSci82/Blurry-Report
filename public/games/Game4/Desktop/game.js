@@ -637,7 +637,7 @@ function update() {
       ctx.drawImage(images[4].img, 10 + i * 40, 10, 32, 32);
     }
   }
-
+  /*
   ctx.fillStyle = "rgba(0, 255, 0, 0.3)";
   ctx.fillRect(
     player.x - camera.x + player.hitboxOffsetX,
@@ -661,6 +661,6 @@ function update() {
     skull.hitboxWidth,
     skull.hitboxHeight
   );
-
+  */
   requestAnimationFrame(update);
 }
