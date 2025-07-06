@@ -1,0 +1,83 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #090040 0%, #471396 100%);
+  color: #FFCC00;
+  font-family: 'VCR OSD Mono', 'Courier New', Courier, monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  user-select: none;
+  cursor: default;
+}
+#gameCanvas {
+  display: block;
+  width: 100vw;
+  height: calc(100vw * 0.75);
+  background-color: #000;
+  box-shadow: 0 0 15px rgba(177, 59, 255, 0.7);
+  border-radius: 15px;
+  image-rendering: pixelated;
+}
+#score {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: #FFCC00;
+  text-shadow: 0 0 10px #B13BFF;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 1rem 0;
+}
+#mobileControls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.mobile-button {
+  font-family: 'VCR OSD Mono', 'Courier New', Courier, monospace;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  color: #FFCC00;
+  background: linear-gradient(45deg, #471396, #B13BFF);
+  border: 3px solid #FFCC00;
+  border-radius: 15px;
+  padding: 0.5rem 1rem;
+  text-transform: uppercase;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(177, 59, 255, 0.5);
+  cursor: pointer;
+  outline: none;
+  touch-action: manipulation;
+}
+.mobile-button:hover {
+  background: linear-gradient(45deg, #B13BFF, #471396);
+  color: #090040;
+  transform: translateY(-3px);
+  box-shadow: 0 0 20px rgba(177, 59, 255, 0.8);
+}
+.mobile-button:active, .mobile-button:focus {
+  box-shadow: 0 0 8px 2px #B13BFF;
+}
+#loading {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: #FFCC00;
+  text-shadow: 0 0 10px #B13BFF;
+  text-align: center;
+  text-transform: uppercase;
+  display: none;
+}
+@media (max-width: 600px) {
+  #score, #loading {
+    font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+  }
+  .mobile-button {
+    font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+    padding: 0.4rem 0.8rem;
+  }
+}

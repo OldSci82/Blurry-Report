@@ -1,0 +1,47 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #090040 0%, #471396 100%);
+  color: #FFCC00;
+  font-family: 'VCR OSD Mono', 'Courier New', Courier, monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  user-select: none;
+  cursor: default;
+}
+#gameCanvas {
+  display: block;
+  width: 800px;
+  height: 600px;
+  background-color: #000;
+  box-shadow: 0 0 15px rgba(177, 59, 255, 0.7);
+  border-radius: 15px;
+}
+#score {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: #FFCC00;
+  text-shadow: 0 0 10px #B13BFF;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 1rem 0;
+}
+#loading {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: #FFCC00;
+  text-shadow: 0 0 10px #B13BFF;
+  text-align: center;
+  text-transform: uppercase;
+  display: none;
+}
+@media (max-width: 600px) {
+  #score, #loading {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+}
