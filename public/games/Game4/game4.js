@@ -4,8 +4,10 @@ const scoreDisplay = document.getElementById("score");
 
 let score = 0;
 let gameOver = false;
+let levelComplete = false;
+let selectedOption = 0; // 0: Restart, 1: Back to Games
 
-// Load sprite sheets, background, platform, and heart image
+// Load sprite sheets, background, platform, heart, temple, skull, and coin images
 const playerSprite = new Image();
 playerSprite.src = "./player-sprite-R.png"; // Player sprite sheet
 const enemySprite = new Image();
@@ -16,6 +18,12 @@ const platformImage = new Image();
 platformImage.src = "./ancient-platform2.png"; // Platform image (450x90)
 const heartImage = new Image();
 heartImage.src = "./heart-full.png"; // Heart image (32x32)
+const templeImage = new Image();
+templeImage.src = "./ruin-temple1.png"; // Temple image (500x520, unused but loaded)
+const skullImage = new Image();
+skullImage.src = "./elongated-skull2.png"; // Skull image (100x100)
+const coinImage = new Image();
+coinImage.src = "./gold-coin1.png"; // Coin image
 
 // Camera for scrolling
 const camera = {
@@ -29,9 +37,9 @@ const player = {
   width: 100, // Sprite size
   height: 100,
   hitboxWidth: 40, // Hitbox size for collisions
-  hitboxHeight: 80,
-  hitboxOffsetX: 28, // Center hitbox (100-80)/2
-  hitboxOffsetY: 20,
+  hitboxHeight: 60,
+  hitboxOffsetX: 30, // Center hitbox (100-80)/2
+  hitboxOffsetY: 40,
   speed: 5,
   dy: 0,
   gravity: 0.75,
@@ -46,57 +54,112 @@ const player = {
   invincibilityDuration: 90, // 1.5 seconds at 60 FPS
 };
 
-// Platforms, coins, enemy
-function getRandomFloat(min, max) {
-  return Math.floor(Math.random() * (max - min) + min);
-}
+// Platforms (pyramid steps + ground)
 const platforms = [
-  { id: 0, x: 0, y: 490, width: 2400, height: 20, isGround: true }, // Ground platform (transparent)
-  { id: 0, x: 200, y: 400, width: 200, height: 20, isGround: false },
-  { id: 0, x: 400, y: 150, width: 200, height: 20, isGround: false },
-  { id: 0, x: 600, y: 300, width: 200, height: 20, isGround: false },
-  { id: 0, x: 1000, y: 375, width: 100, height: 20, isGround: false },
-  { id: 0, x: 1300, y: 275, width: 100, height: 20, isGround: false },
-  { id: 0, x: 1550, y: 150, width: 100, height: 20, isGround: false },
-  { id: 0, x: 1700, y: 400, width: 100, height: 20, isGround: false },
+  { x: 0, y: 495, width: 2400, height: 20, isGround: true }, // Transparent ground
+  { x: 200, y: 400, width: 200, height: 20, isGround: false }, // Floating platform
+  { x: 500, y: 300, width: 200, height: 20, isGround: false }, // Floating platform
+  // Pyramid steps, centered at x: 2150 (1900 + 250)
+  { x: 1950, y: 400, width: 500, height: 100, isGround: false }, // Base
+  { x: 2050, y: 350, width: 400, height: 80, isGround: false }, // Step 2
+  { x: 2150, y: 300, width: 300, height: 60, isGround: false }, // Step 3
+  { x: 2250, y: 275, width: 200, height: 40, isGround: false }, // Step 4
+  { x: 2350, y: 260, width: 100, height: 20, isGround: false }, // Top
 ];
 
 let coins = [
-  { x: 250, y: 360, width: 16, height: 16, collected: false },
-  { x: 550, y: 260, width: 16, height: 16, collected: false },
-  { x: 950, y: 360, width: 16, height: 16, collected: false }, // Extended level
+  {
+    x: 250,
+    y: 360,
+    baseY: 360,
+    width: 32,
+    height: 32,
+    collected: false,
+    floatOffset: 0,
+    floatTimer: 0,
+  },
+  {
+    x: 550,
+    y: 260,
+    baseY: 260,
+    width: 32,
+    height: 32,
+    collected: false,
+    floatOffset: 0,
+    floatTimer: 0,
+  },
+  {
+    x: 950,
+    y: 360,
+    baseY: 360,
+    width: 32,
+    height: 32,
+    collected: false,
+    floatOffset: 0,
+    floatTimer: 0,
+  },
 ];
 
 const enemy = {
   x: 600,
-  y: 465,
-  width: 106, // Scaled sprite size (from 103x23)
-  height: 31,
-  hitboxWidth: 85, // Hitbox size for collisions
-  hitboxHeight: 22,
-  hitboxOffsetX: 12, // Center hitbox (64-48)/2
-  hitboxOffsetY: 1, // Align hitbox vertically
+  y: 460,
+  width: 140, // Scaled sprite size
+  height: 38,
+  hitboxWidth: 110,
+  hitboxHeight: 24,
+  hitboxOffsetX: 10,
+  hitboxOffsetY: 1,
   speed: 2,
   direction: -1, // -1: left, 1: right
   frame: 0, // Current frame index (0-7)
   frameTimer: 0,
-  frameInterval: 10, // Animation speed
+  frameInterval: 10,
+};
+
+const skull = {
+  x: 2350, // Center on top step
+  y: 210, // Above top step
+  width: 50,
+  height: 50,
+  hitboxWidth: 28,
+  hitboxHeight: 40, // Fixed: Corrected from "hitboxHeight:iyet: 40"
+  hitboxOffsetX: 10, // Center hitbox (100-80)/2
+  hitboxOffsetY: 1,
 };
 
 // Keyboard input
 const keys = { right: false, left: false, jump: false };
 document.addEventListener("keydown", (e) => {
-  if (e.code === "ArrowRight") {
-    keys.right = true;
-    player.facingRight = true;
-  }
-  if (e.code === "ArrowLeft") {
-    keys.left = true;
-    player.facingRight = false;
-  }
-  if (e.code === "Space" && !player.isJumping) {
-    keys.jump = true;
-    playSound(220, 0.1);
+  if (gameOver || levelComplete) {
+    if (e.code === "ArrowUp") {
+      selectedOption = 0; // Select Restart
+      playSound(220, 0.1); // Feedback sound
+    }
+    if (e.code === "ArrowDown") {
+      selectedOption = 1; // Select Back to Games
+      playSound(220, 0.1);
+    }
+    if (e.code === "Enter") {
+      if (selectedOption === 0) {
+        restartGame();
+      } else {
+        window.location.href = "../../pages/games.html";
+      }
+      playSound(440, 0.1);
+    }
+  } else {
+    if (e.code === "ArrowRight") {
+      keys.right = true;
+      player.facingRight = true;
+    }
+    if (e.code === "ArrowLeft") {
+      keys.left = true;
+      player.facingRight = false;
+    }
+    if (e.code === "Space" && !player.isJumping) {
+      keys.jump = true;
+      playSound(220, 0.1);
+    }
   }
 });
 document.addEventListener("keyup", (e) => {
@@ -116,12 +179,152 @@ function playSound(frequency, duration) {
   oscillator.stop(audioCtx.currentTime + duration);
 }
 
+function restartGame() {
+  // Reset player
+  player.x = 50;
+  player.y = 390;
+  player.dy = 0;
+  player.isJumping = false;
+  player.frame = 0;
+  player.frameTimer = 0;
+  player.facingRight = true;
+  player.health = 3;
+  player.invincibilityTimer = 0;
+
+  // Reset coins
+  coins = [
+    {
+      x: 250,
+      y: 360,
+      baseY: 360,
+      width: 32,
+      height: 32,
+      collected: false,
+      floatOffset: 0,
+      floatTimer: 0,
+    },
+    {
+      x: 550,
+      y: 260,
+      baseY: 260,
+      width: 32,
+      height: 32,
+      collected: false,
+      floatOffset: 0,
+      floatTimer: 0,
+    },
+    {
+      x: 950,
+      y: 360,
+      baseY: 360,
+      width: 32,
+      height: 32,
+      collected: false,
+      floatOffset: 0,
+      floatTimer: 0,
+    },
+  ];
+
+  // Reset enemy
+  enemy.x = 600;
+  enemy.y = 460;
+  enemy.direction = -1;
+  enemy.frame = 0;
+  enemy.frameTimer = 0;
+
+  // Reset game state
+  score = 0;
+  scoreDisplay.textContent = `Score: ${score}`;
+  gameOver = false;
+  levelComplete = false;
+  camera.x = 0;
+  selectedOption = 0; // Reset to select "Restart" by default
+}
+
+// Click handler for end screen options
+canvas.addEventListener("click", (e) => {
+  if (gameOver || levelComplete) {
+    const rect = canvas.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+
+    // Font settings for measuring text
+    ctx.font = '24px "Press Start 2P"'; // Match font size used for options
+    const restartText = "Restart";
+    const backText = "Back to Games";
+    const restartWidth = ctx.measureText(restartText).width;
+    const backWidth = ctx.measureText(backText).width;
+    const restartX = (canvas.width - restartWidth) / 2;
+    const backX = (canvas.width - backWidth) / 2;
+    const restartY = canvas.height / 2 + 50;
+    const backY = canvas.height / 2 + 100;
+    const textHeight = 24; // Approximate height for click detection
+
+    // Check if "Restart" was clicked
+    if (
+      clickX >= restartX &&
+      clickX <= restartX + restartWidth &&
+      clickY >= restartY - textHeight &&
+      clickY <= restartY
+    ) {
+      restartGame();
+    }
+
+    // Check if "Back to Games" was clicked
+    if (
+      clickX >= backX &&
+      clickX <= backX + backWidth &&
+      clickY >= backY - textHeight &&
+      clickY <= backY
+    ) {
+      window.location.href = "../../pages/games.html";
+    }
+  }
+});
+
 // Game loop
 function update() {
-  if (gameOver) {
-    ctx.fillStyle = "#f00";
-    ctx.font = '48px "Press Start 2P"';
-    ctx.fillText("GAME OVER", 250, 300);
+  if (gameOver || levelComplete) {
+    // Draw end screen
+    ctx.fillStyle = "#ff0"; // Yellow
+    ctx.font = '36px "Press Start 2P"'; // Font size for main message
+    if (gameOver) {
+      const text = "GAME OVER";
+      const textWidth = ctx.measureText(text).width;
+      const textX = (canvas.width - textWidth) / 2; // Center horizontally
+      const textY = canvas.height / 2; // Center vertically
+      ctx.fillText(text, textX, textY);
+    } else {
+      const text = "That's a big deal!";
+      const textWidth = ctx.measureText(text).width;
+      const textX = (canvas.width - textWidth) / 2; // Center horizontally
+      const textY = canvas.height / 2; // Center vertically
+      ctx.fillText(text, textX, textY);
+    }
+
+    // Draw restart and back options with highlight
+    ctx.font = '24px "Press Start 2P"'; // Smaller font for options
+    const restartText = "Restart";
+    const backText = "Back to Games";
+    const restartWidth = ctx.measureText(restartText).width;
+    const backWidth = ctx.measureText(backText).width;
+    const restartX = (canvas.width - restartWidth) / 2;
+    const backX = (canvas.width - backWidth) / 2;
+    const restartY = canvas.height / 2 + 50;
+    const backY = canvas.height / 2 + 100;
+
+    // Draw background for selected option
+    ctx.fillStyle = selectedOption === 0 ? "#00f" : "#000"; // Blue for selected, black for unselected
+    ctx.fillRect(restartX - 10, restartY - 24, restartWidth + 20, 34); // Padding around text
+    ctx.fillStyle = selectedOption === 1 ? "#00f" : "#000";
+    ctx.fillRect(backX - 10, backY - 24, backWidth + 20, 34);
+
+    // Draw text
+    ctx.fillStyle = "#ff0"; // Yellow text
+    ctx.fillText(restartText, restartX, restartY);
+    ctx.fillText(backText, backX, backY);
+
+    requestAnimationFrame(update); // Continue rendering end screen
     return;
   }
 
@@ -134,7 +337,7 @@ function update() {
   // Draw tiled background
   if (backgroundImage.complete) {
     const bgWidth = 800;
-    const bgHeight = 600; // Stretched as per your code
+    const bgHeight = 600;
     const startX = Math.floor(camera.x / bgWidth) * bgWidth;
     for (let x = startX - bgWidth; x <= startX + canvas.width; x += bgWidth) {
       ctx.drawImage(
@@ -153,7 +356,7 @@ function update() {
   if (keys.jump && !player.isJumping) {
     player.dy = player.jumpPower;
     player.isJumping = true;
-    player.frame = 3; // Walk2/jump frame
+    player.frame = 3;
   }
 
   // Apply gravity
@@ -177,9 +380,8 @@ function update() {
       player.x + player.hitboxOffsetX < platform.x + platform.width &&
       player.x + player.hitboxOffsetX + player.hitboxWidth > platform.x &&
       player.y + player.hitboxOffsetY + player.hitboxHeight > platform.y &&
-      player.y + player.hitboxOffsetY + player.hitboxHeight <
-        platform.y + platform.height &&
-      player.dy > 0
+      player.y + player.hitboxOffsetY < platform.y + platform.height &&
+      player.dy >= 0 // Include dy=0 for edge cases
     ) {
       player.y = platform.y - player.hitboxHeight - player.hitboxOffsetY;
       player.dy = 0;
@@ -199,22 +401,22 @@ function update() {
     if (keys.right || keys.left) {
       player.frameTimer++;
       if (player.frameTimer >= player.frameInterval) {
-        player.frame = player.frame === 1 ? 3 : 1; // Cycle walk1 (1) and walk2 (3)
+        player.frame = player.frame === 1 ? 3 : 1;
         player.frameTimer = 0;
       }
     } else {
-      player.frame = 0; // Idle frame (idle1)
+      player.frame = 0;
       player.frameTimer = 0;
-      /*
-      // Optional: Alternate between idle1 (0) and idle2 (2)
-      player.frameTimer++;
-      if (player.frameTimer >= player.frameInterval * 2) {
-        player.frame = player.frame === 0 ? 2 : 0;
-        player.frameTimer = 0;
-      }
-      */
     }
   }
+
+  // Update coin floating animation
+  coins.forEach((coin) => {
+    if (!coin.collected) {
+      coin.floatTimer += 0.05; // Adjust speed of floating
+      coin.floatOffset = Math.sin(coin.floatTimer) * 5; // Adjust amplitude (5 pixels up/down)
+    }
+  });
 
   // Coin collection (using player hitbox)
   coins.forEach((coin) => {
@@ -222,8 +424,10 @@ function update() {
       !coin.collected &&
       player.x + player.hitboxOffsetX < coin.x + coin.width &&
       player.x + player.hitboxOffsetX + player.hitboxWidth > coin.x &&
-      player.y + player.hitboxOffsetY < coin.y + coin.height &&
-      player.y + player.hitboxOffsetY + player.hitboxHeight > coin.y
+      player.y + player.hitboxOffsetY <
+        coin.baseY + coin.floatOffset + coin.height &&
+      player.y + player.hitboxOffsetY + player.hitboxHeight >
+        coin.baseY + coin.floatOffset
     ) {
       coin.collected = true;
       score += 10;
@@ -234,11 +438,10 @@ function update() {
 
   // Enemy movement and animation
   enemy.x += enemy.speed * enemy.direction;
-  if (enemy.x < 150 || enemy.x > 2000) enemy.direction *= -1;
-  // Animate enemy when moving
+  if (enemy.x < 500 || enemy.x > 2000) enemy.direction *= -1;
   enemy.frameTimer++;
   if (enemy.frameTimer >= enemy.frameInterval) {
-    enemy.frame = (enemy.frame + 1) % 8; // Cycle through frames 0-7
+    enemy.frame = (enemy.frame + 1) % 8;
     enemy.frameTimer = 0;
   }
 
@@ -260,6 +463,21 @@ function update() {
     if (player.health <= 0) {
       gameOver = true;
     }
+  }
+
+  // Skull collision (player hitbox vs skull hitbox)
+  if (
+    player.x + player.hitboxOffsetX <
+      skull.x + skull.hitboxOffsetX + skull.hitboxWidth &&
+    player.x + player.hitboxOffsetX + player.hitboxWidth >
+      skull.x + skull.hitboxOffsetX &&
+    player.y + player.hitboxOffsetY <
+      skull.y + skull.hitboxOffsetY + skull.hitboxHeight &&
+    player.y + player.hitboxOffsetY + player.hitboxHeight >
+      skull.y + skull.hitboxOffsetY
+  ) {
+    levelComplete = true;
+    playSound(440, 0.3);
   }
 
   // Draw platforms (with camera offset)
@@ -288,19 +506,56 @@ function update() {
   }
 
   // Draw coins (with camera offset)
-  ctx.fillStyle = "#ff0";
   for (let coin of coins) {
-    if (!coin.collected) {
+    if (!coin.collected && coinImage.complete) {
+      ctx.drawImage(
+        coinImage,
+        coin.x - camera.x,
+        coin.baseY + coin.floatOffset, // Use baseY with floatOffset
+        coin.width,
+        coin.height
+      );
+    } else if (!coin.collected) {
+      // Fallback if image not loaded
+      ctx.fillStyle = "#ff0";
       ctx.beginPath();
-      ctx.arc(coin.x - camera.x + 8, coin.y + 8, 8, 0, Math.PI * 2);
+      ctx.arc(
+        coin.x - camera.x + coin.width / 2,
+        coin.baseY + coin.floatOffset + coin.height / 2,
+        coin.width / 2,
+        0,
+        Math.PI * 2
+      );
       ctx.fill();
     }
   }
 
-  // Draw player with sprite sheet and flipping
+  // Draw skull (with camera offset)
+  if (skullImage.complete) {
+    ctx.drawImage(
+      skullImage,
+      skull.x - camera.x,
+      skull.y,
+      skull.width,
+      skull.height
+    );
+  } else {
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(skull.x - camera.x, skull.y, skull.width, skull.height);
+  }
+
+  // Draw player with sprite sheet, flipping, and blinking red during invincibility
   if (playerSprite.complete) {
     const frameWidth = 45;
     ctx.save();
+    // Apply blinking red effect during invincibility
+    if (
+      player.invincibilityTimer > 0 &&
+      Math.floor(player.invincibilityTimer / 10) % 2 === 0
+    ) {
+      ctx.filter =
+        "hue-rotate(0deg) sepia(100%) saturate(500%) brightness(50%)"; // Red tint
+    }
     if (!player.facingRight) {
       ctx.scale(-1, 1);
       ctx.translate(-canvas.width, 0);
@@ -329,8 +584,13 @@ function update() {
       );
     }
     ctx.restore();
+    ctx.filter = "none"; // Reset filter
   } else {
-    ctx.fillStyle = "#f00";
+    ctx.fillStyle =
+      player.invincibilityTimer > 0 &&
+      Math.floor(player.invincibilityTimer / 10) % 2 === 0
+        ? "#f00"
+        : "#f0f";
     ctx.fillRect(player.x - camera.x, player.y, player.width, player.height);
   }
 
@@ -339,7 +599,6 @@ function update() {
     const frameWidth = 103;
     ctx.save();
     if (enemy.direction === 1) {
-      // Moving right, flip sprite
       ctx.scale(-1, 1);
       ctx.translate(-canvas.width, 0);
       ctx.drawImage(
@@ -351,10 +610,9 @@ function update() {
         canvas.width - (enemy.x - camera.x + enemy.width),
         enemy.y,
         enemy.width,
-        enemy.height
+        enemy.height // Fixed: Corrected from "engine.height"
       );
     } else {
-      // Moving left, no flip (sprite sheet is left-facing)
       ctx.drawImage(
         enemySprite,
         enemy.frame * frameWidth,
@@ -364,7 +622,7 @@ function update() {
         enemy.x - camera.x,
         enemy.y,
         enemy.width,
-        enemy.height
+        enemy.height // Fixed: Corrected from "engine.height"
       );
     }
     ctx.restore();
@@ -381,7 +639,6 @@ function update() {
   }
 
   // Optional: Draw hitboxes for debugging
-
   ctx.fillStyle = "rgba(0, 255, 0, 0.3)"; // Player hitbox
   ctx.fillRect(
     player.x - camera.x + player.hitboxOffsetX,
@@ -395,6 +652,13 @@ function update() {
     enemy.y + enemy.hitboxOffsetY,
     enemy.hitboxWidth,
     enemy.hitboxHeight
+  );
+  ctx.fillStyle = "rgba(0, 0, 255, 0.3)"; // Skull hitbox
+  ctx.fillRect(
+    skull.x - camera.x + skull.hitboxOffsetX,
+    skull.y + skull.hitboxOffsetY,
+    skull.hitboxWidth,
+    skull.hitboxHeight
   );
 
   requestAnimationFrame(update);
