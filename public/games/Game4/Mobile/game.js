@@ -4,25 +4,33 @@ const ctx = canvas ? canvas.getContext("2d") : null;
 const scoreDisplay = document.getElementById("score");
 const loadingDisplay = document.getElementById("loading");
 const gameDiv = document.getElementById("game");
+const gameOverControls = document.getElementById("gameOverControls");
+const restartButton = document.getElementById("restartButton");
+const backButton = document.getElementById("backButton");
 
 // Initialize AudioContext
 let audioCtx = null;
 const activeSounds = [];
-const maxConcurrentSounds = 3;
+const maxConcurrentSounds = 5; // Increased from 3
 
 function initAudioContext() {
-  if (!audioCtx) {
+  if (!audioCtx || audioCtx.state === "closed") {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === "suspended") {
-      console.log("AudioContext suspended, awaiting user interaction");
-    }
+    console.log("AudioContext created, state:", audioCtx.state);
+  }
+  if (audioCtx.state === "suspended") {
+    audioCtx
+      .resume()
+      .then(() => {
+        console.log("AudioContext resumed, state:", audioCtx.state);
+      })
+      .catch((err) => console.error("Failed to resume AudioContext:", err));
   }
 }
 
 let score = 0;
 let gameOver = false;
 let levelComplete = false;
-let selectedOption = 0;
 
 // Adjust canvas size
 const maxWidth = Math.min(window.innerWidth, 800);
@@ -148,7 +156,7 @@ const jumpButton = document.getElementById("jumpButton");
 if (leftButton) {
   leftButton.addEventListener("touchstart", (e) => {
     e.preventDefault();
-    initAudioContext(); // Initialize audio on first touch
+    initAudioContext();
     keys.left = true;
     player.facingRight = false;
     console.log("Left button pressed:", keys);
@@ -164,7 +172,7 @@ if (leftButton) {
 if (rightButton) {
   rightButton.addEventListener("touchstart", (e) => {
     e.preventDefault();
-    initAudioContext(); // Initialize audio on first touch
+    initAudioContext();
     keys.right = true;
     player.facingRight = true;
     console.log("Right button pressed:", keys);
@@ -180,7 +188,7 @@ if (rightButton) {
 if (jumpButton) {
   jumpButton.addEventListener("touchstart", (e) => {
     e.preventDefault();
-    initAudioContext(); // Initialize audio on first touch
+    initAudioContext();
     if (!player.isJumping) {
       keys.jump = true;
       playSound(220, 0.1);
@@ -194,6 +202,29 @@ if (jumpButton) {
   });
 } else {
   console.error("Jump button not found!");
+}
+
+if (restartButton) {
+  restartButton.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    initAudioContext();
+    playSound(440, 0.1);
+    restartGame();
+    console.log("Restart button pressed");
+  });
+} else {
+  console.error("Restart button not found!");
+}
+if (backButton) {
+  backButton.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    initAudioContext();
+    playSound(440, 0.1);
+    window.location.href = "../../../pages/games.html";
+    console.log("Back to Games button pressed");
+  });
+} else {
+  console.error("Back button not found!");
 }
 
 function generateLevel() {
@@ -292,24 +323,7 @@ function generateLevel() {
 }
 
 document.addEventListener("keydown", (e) => {
-  if (gameOver || levelComplete) {
-    if (e.code === "ArrowUp") {
-      selectedOption = 0;
-      playSound(220, 0.1);
-    }
-    if (e.code === "ArrowDown") {
-      selectedOption = 1;
-      playSound(220, 0.1);
-    }
-    if (e.code === "Enter") {
-      if (selectedOption === 0) {
-        restartGame();
-      } else {
-        window.location.href = "../../../pages/games.html";
-      }
-      playSound(440, 0.1);
-    }
-  } else {
+  if (!gameOver && !levelComplete) {
     if (e.code === "ArrowRight") {
       keys.right = true;
       player.facingRight = true;
@@ -331,10 +345,21 @@ document.addEventListener("keyup", (e) => {
 });
 
 function playSound(frequency, duration) {
-  if (!audioCtx || activeSounds.length >= maxConcurrentSounds) return;
+  console.log("playSound called:", frequency, "Hz, duration:", duration, "s");
+  if (!audioCtx || activeSounds.length >= maxConcurrentSounds) {
+    console.log(
+      "Sound skipped: audioCtx null or max sounds reached",
+      activeSounds.length
+    );
+    return;
+  }
   if (audioCtx.state === "suspended") {
-    console.log("AudioContext suspended, attempting to resume");
-    audioCtx.resume();
+    audioCtx
+      .resume()
+      .then(() => {
+        console.log("AudioContext resumed, state:", audioCtx.state);
+      })
+      .catch((err) => console.error("Failed to resume AudioContext:", err));
   }
 
   const oscillator = audioCtx.createOscillator();
@@ -349,6 +374,7 @@ function playSound(frequency, duration) {
   activeSounds.push(oscillator);
   oscillator.onended = () => {
     activeSounds.splice(activeSounds.indexOf(oscillator), 1);
+    console.log("Sound ended, active sounds:", activeSounds.length);
   };
 }
 
@@ -367,61 +393,8 @@ function restartGame() {
   gameOver = false;
   levelComplete = false;
   camera.x = 0;
-  selectedOption = 0;
+  if (gameOverControls) gameOverControls.style.display = "none";
   generateLevel();
-}
-
-if (canvas) {
-  canvas.addEventListener("touchstart", (e) => {
-    e.preventDefault();
-    initAudioContext(); // Initialize audio on canvas touch
-    if (gameOver || levelComplete) {
-      const rect = canvas.getBoundingClientRect();
-      const scaleXCanvas = canvas.width / rect.width;
-      const scaleYCanvas = canvas.height / rect.height;
-      const touchX =
-        ((e.touches[0].clientX - rect.left) * scaleXCanvas) / scaleX;
-      const touchY =
-        ((e.touches[0].clientY - rect.top) * scaleYCanvas) / scaleY;
-      console.log("Touch at:", touchX, touchY);
-
-      ctx.font = '24px "VCR OSD Mono"';
-      const restartText = "Restart";
-      const backText = "Back to Games";
-      const restartWidth = ctx.measureText(restartText).width;
-      const backWidth = ctx.measureText(backText).width;
-      const restartX = (800 - restartWidth) / 2;
-      const backX = (800 - backWidth) / 2;
-      const restartY = 600 / 2 + 50;
-      const backY = 600 / 2 + 100;
-      const textHeight = 24;
-
-      if (
-        touchX >= restartX &&
-        touchX <= restartX + restartWidth &&
-        touchY >= restartY - textHeight &&
-        touchY <= restartY
-      ) {
-        restartGame();
-        playSound(440, 0.1);
-      }
-      if (
-        touchX >= backX &&
-        touchX <= backX + backWidth &&
-        touchY >= backY - textHeight &&
-        touchY <= backY
-      ) {
-        window.location.href = "../../../pages/games.html";
-        playSound(440, 0.1);
-      }
-    }
-  });
-  canvas.addEventListener("touchend", (e) => {
-    e.preventDefault();
-  });
-  canvas.addEventListener("touchmove", (e) => {
-    e.preventDefault();
-  });
 }
 
 function update() {
@@ -435,43 +408,26 @@ function update() {
   ctx.scale(scaleX, scaleY);
 
   if (gameOver || levelComplete) {
+    if (gameOverControls) gameOverControls.style.display = "flex";
     ctx.fillStyle = "#FFCC00";
     ctx.font = '36px "VCR OSD Mono"';
     if (gameOver) {
       const text = "GAME OVER";
       const textWidth = ctx.measureText(text).width;
       const textX = (800 - textWidth) / 2;
-      const textY = 600 / 2;
+      const textY = 600 / 2 - 50;
       ctx.fillText(text, textX, textY);
     } else {
       const text = "That's a big deal!";
       const textWidth = ctx.measureText(text).width;
       const textX = (800 - textWidth) / 2;
-      const textY = 600 / 2;
+      const textY = 600 / 2 - 50;
       ctx.fillText(text, textX, textY);
     }
-
-    ctx.font = '24px "VCR OSD Mono"';
-    const restartText = "Restart";
-    const backText = "Back to Games";
-    const restartWidth = ctx.measureText(restartText).width;
-    const backWidth = ctx.measureText(backText).width;
-    const restartX = (800 - restartWidth) / 2;
-    const backX = (800 - backWidth) / 2;
-    const restartY = 600 / 2 + 50;
-    const backY = 600 / 2 + 100;
-
-    ctx.fillStyle = selectedOption === 0 ? "#B13BFF" : "#090040";
-    ctx.fillRect(restartX - 10, restartY - 24, restartWidth + 20, 34);
-    ctx.fillStyle = selectedOption === 1 ? "#B13BFF" : "#090040";
-    ctx.fillRect(backX - 10, backY - 24, backWidth + 20, 34);
-
-    ctx.fillStyle = "#FFCC00";
-    ctx.fillText(restartText, restartX, restartY);
-    ctx.fillText(backText, backX, backY);
-
     requestAnimationFrame(update);
     return;
+  } else {
+    if (gameOverControls) gameOverControls.style.display = "none";
   }
 
   console.log("Keys state:", keys);
