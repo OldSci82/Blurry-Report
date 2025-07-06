@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAP Invader - Splash</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Press Start 2P', cursive;
+            color: #0ff;
+            text-align: center;
+            text-shadow: 0 0 5px #0ff;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        #cover {
+            max-width: 80%;
+            height: auto;
+            border: 4px solid #f0f;
+            box-shadow: 0 0 20px #f0f;
+        }
+        #fighters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .fighter {
+            width: 60px;
+            height: 30px;
+            border: 2px solid #0ff;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        .fighter.selected {
+            border-color: #f00;
+            box-shadow: 0 0 10px #f00;
+        }
+        button {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 16px;
+            padding: 10px 20px;
+            background: #111;
+            color: #0ff;
+            border: 2px solid #0ff;
+            cursor: pointer;
+            text-shadow: 0 0 5px #0ff;
+        }
+        button:hover {
+            background: #0ff;
+            color: #111;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img id="cover" src="images/game-cover.png" alt="UAP Invader Cover">
+        <h3>Select Your Fighter</h3>
+        <div id="fighters">
+            <img class="fighter" src="images/space-fighter1.png" data-fighter="space-fighter1.png">
+            <img class="fighter" src="images/space-fighter2.png" data-fighter="space-fighter2.png">
+            <img class="fighter" src="images/space-fighter3.png" data-fighter="space-fighter3.png">
+            <img class="fighter" src="images/space-fighter4.png" data-fighter="space-fighter4.png">
+            <img class="fighter" src="images/space-fighter5.png" data-fighter="space-fighter5.png">
+        </div>
+        <button onclick="goBack()">Back</button>
+        <button onclick="playGame()">Play</button>
+    </div>
+    <script>
+        let selectedFighter = null;
+        const fighters = document.querySelectorAll('.fighter');
+
+        fighters.forEach(fighter => {
+            fighter.addEventListener('click', () => {
+                fighters.forEach(f => f.classList.remove('selected'));
+                fighter.classList.add('selected');
+                selectedFighter = fighter.dataset.fighter;
+                localStorage.setItem('selectedFighter', selectedFighter);
+            });
+        });
+
+        function goBack() {
+            window.location.href = '../../pages/games.html';
+        }
+
+        function playGame() {
+            if (!selectedFighter) {
+                alert('Please select a fighter!');
+                return;
+            }
+            if (window.innerWidth < 600) {
+                window.location.href = 'Mobile/game.html';
+            } else {
+                window.location.href = 'Desktop/game.html';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -40,7 +40,7 @@ body {
     pointer-events: none;
 }
 
-#score, #gameOver {
+#score, #gameOver, #waveMessage {
     position: absolute;
     color: #0ff;
     font-size: 16px;
@@ -64,6 +64,17 @@ body {
     font-size: 20px;
     text-shadow: 0 0 5px #f0f;
     top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+#waveMessage {
+    display: none;
+    font-size: 18px;
+    color: #f00;
+    text-shadow: 0 0 5px #f00;
+    top: 25%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
