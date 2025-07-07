@@ -2,20 +2,20 @@ body {
     margin: 0;
     background: #000;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    overflow: hidden;
     font-family: 'Press Start 2P', cursive;
 }
 
 #gameContainer {
     position: relative;
-    width: 800px;
-    height: 600px;
+    width: 600px;
+    height: 800px;
     background: #111;
-    border: 4px solid #0ff;
-    box-shadow: 0 0 20px #0ff;
+    border: 2px solid #0ff;
+    box-shadow: 0 0 10px #0ff;
     overflow: hidden;
 }
 
@@ -23,7 +23,6 @@ body {
     display: block;
 }
 
-/* CRT scanline effect */
 #gameContainer::before {
     content: '';
     position: absolute;
@@ -33,29 +32,89 @@ body {
     height: 100%;
     background: repeating-linear-gradient(
         transparent 0%,
-        transparent 2px,
-        rgba(0, 0, 0, 0.1) 2px,
-        rgba(0, 0, 0, 0.1) 4px
+        transparent 4px,
+        rgba(0, 0, 0, 0.1) 4px,
+        rgba(0, 0, 0, 0.1) 8px
     );
     pointer-events: none;
 }
 
-#score, #gameOver, #waveMessage {
+#score, #bossHealth, #gameOver, #waveMessage, #highScorePrompt, #highScoreList {
     position: absolute;
     color: #0ff;
     font-size: 16px;
-    text-shadow: 0 0 5px #0ff;
-    left: 20px;
-    top: 20px;
+    text-shadow: 0 0 3px #0ff;
+    left: 10px;
+}
+
+#score {
+    top: 10px;
+}
+
+#bossHealth {
+    display: none;
+    top: 40px; /* Below #score, adjusted for larger font */
 }
 
 #gameOver {
     display: none;
     font-size: 24px;
-    top: 50%;
+    top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
+}
+
+#highScorePrompt {
+    display: none;
+    font-size: 16px;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #f0f;
+    text-shadow: 0 0 3px #f0f;
+}
+
+#highScorePrompt input {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 16px;
+    width: 80px;
+    text-align: center;
+    text-transform: uppercase;
+    background: #111;
+    color: #0ff;
+    border: 2px solid #0ff;
+    padding: 8px;
+    margin: 8px;
+}
+
+#highScorePrompt button, #restartBtn, #backBtn {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 16px;
+    padding: 12px 24px;
+    background: #111;
+    color: #0ff;
+    border: 2px solid #0ff;
+    text-shadow: 0 0 3px #0ff;
+    cursor: pointer;
+}
+
+#highScorePrompt button:active, #restartBtn:active, #backBtn:active {
+    background: #0ff;
+    color: #111;
+}
+
+#highScoreList {
+    display: none;
+    font-size: 16px;
+    line-height: 24px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: left;
+    color: #0ff;
+    text-shadow: 0 0 3px #0ff;
 }
 
 #startMessage {
@@ -78,4 +137,15 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
+}
+
+#controls {
+    width: 400px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px;
+    box-sizing: border-box;
+    background: #000;
+    margin: 0 auto;
 }

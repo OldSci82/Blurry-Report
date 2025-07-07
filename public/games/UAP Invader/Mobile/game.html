@@ -11,13 +11,22 @@
     <div id="gameContainer">
         <canvas id="gameCanvas" width="340" height="500"></canvas>
         <div id="score">Score: 0</div>
-        <div id="gameOver">Game Over!<br>Tap or Press R to Restart</div>
+        <div id="bossHealth" style="display: none;">Boss Health: </div>
+        <div id="gameOver">Game Over!</div>
+        <div id="highScorePrompt" style="display: none;">
+            <p>New High Score!</p>
+            <input id="initialsInput" type="text" maxlength="3" placeholder="AAA">
+            <button id="submitScoreBtn">Submit</button>
+        </div>
+        <div id="highScoreList" style="display: none;"></div>
         <div id="startMessage">Tap Screen or Press SPACE to Start</div>
     </div>
     <div id="controls">
         <button id="leftBtn">←</button>
         <button id="rightBtn">→</button>
         <button id="shootBtn">Shoot</button>
+        <button id="restartBtn" style="display: none;">Restart</button>
+        <button id="backBtn" style="display: none;">Back to Games</button>
     </div>
     <script>
         // Scroll to bottom on load to focus on player

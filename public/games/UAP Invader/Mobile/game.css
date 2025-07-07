@@ -12,7 +12,7 @@ body {
 
 #gameContainer {
     position: relative;
-    width: 340px; /* Match canvas width */
+    width: 340px;
     height: 500px;
     background: #111;
     border: 2px solid #0ff;
@@ -44,28 +44,88 @@ body {
     pointer-events: none;
 }
 
-#score, #gameOver, #waveMessage {
+#score, #bossHealth, #gameOver, #waveMessage, #highScorePrompt, #highScoreList {
     position: absolute;
     color: #0ff;
-    font-size: 10px; /* Reduced from 12px */
-    text-shadow: 0 0 2px #0ff; /* Reduced shadow */
-    left: 5px; /* Adjusted from 10px */
+    font-size: 10px;
+    text-shadow: 0 0 2px #0ff;
+    left: 5px;
+}
+
+#score {
     top: 10px;
+}
+
+#bossHealth {
+    display: none;
+    top: 30px; /* Below #score */
 }
 
 #gameOver {
     display: none;
-    font-size: 16px; /* Adjusted for smaller canvas */
-    top: 50%;
+    font-size: 16px;
+    top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
 }
 
+#highScorePrompt {
+    display: none;
+    font-size: 10px;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #f0f;
+    text-shadow: 0 0 2px #f0f;
+}
+
+#highScorePrompt input {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    width: 60px;
+    text-align: center;
+    text-transform: uppercase;
+    background: #111;
+    color: #0ff;
+    border: 2px solid #0ff;
+    padding: 5px;
+    margin: 5px;
+}
+
+#highScorePrompt button, #restartBtn, #backBtn {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 12px;
+    padding: 8px 16px;
+    background: #111;
+    color: #0ff;
+    border: 2px solid #0ff;
+    text-shadow: 0 0 3px #0ff;
+    cursor: pointer;
+}
+
+#highScorePrompt button:active, #restartBtn:active, #backBtn:active {
+    background: #0ff;
+    color: #111;
+}
+
+#highScoreList {
+    display: none;
+    font-size: 10px;
+    line-height: 18px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: left;
+    color: #0ff;
+    text-shadow: 0 0 2px #0ff;
+}
+
 #startMessage {
     position: absolute;
     color: #f0f;
-    font-size: 14px; /* Adjusted for smaller canvas */
+    font-size: 14px;
     text-shadow: 0 0 3px #f0f;
     top: 50%;
     left: 50%;
@@ -75,7 +135,7 @@ body {
 
 #waveMessage {
     display: none;
-    font-size: 12px; /* Adjusted for smaller canvas */
+    font-size: 12px;
     color: #f00;
     text-shadow: 0 0 3px #f00;
     top: 25%;
@@ -85,10 +145,10 @@ body {
 }
 
 #controls {
-    width: 300px; /* Reduced from 320px */
+    width: 300px;
     display: flex;
     justify-content: center;
-    gap: 15px; /* Reduced from 20px */
+    gap: 15px;
     padding: 10px;
     box-sizing: border-box;
     background: #000;
@@ -97,8 +157,8 @@ body {
 
 button {
     font-family: 'Press Start 2P', cursive;
-    font-size: 12px; /* Reduced from 14px */
-    padding: 8px 16px; /* Reduced from 10px 20px */
+    font-size: 12px;
+    padding: 8px 16px;
     background: #111;
     color: #0ff;
     border: 2px solid #0ff;

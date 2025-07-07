@@ -4,15 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UAP Invader - Desktop</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="game.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="gameContainer">
-        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <canvas id="gameCanvas" width="600" height="800"></canvas>
         <div id="score">Score: 0</div>
-        <div id="gameOver">Game Over!<br>Press R to Restart</div>
+        <div id="bossHealth" style="display: none;">Boss Health: </div>
+        <div id="gameOver">Game Over!</div>
+        <div id="highScorePrompt" style="display: none;">
+            <p>New High Score!</p>
+            <input id="initialsInput" type="text" maxlength="3" placeholder="AAA">
+            <button id="submitScoreBtn">Submit</button>
+        </div>
+        <div id="highScoreList" style="display: none;"></div>
         <div id="startMessage">Press SPACE to Start</div>
+    </div>
+    <div id="controls">
+        <button id="restartBtn" style="display: none;">Restart</button>
+        <button id="backBtn" style="display: none;">Back to Games</button>
     </div>
     <script src="game.js"></script>
 </body>
