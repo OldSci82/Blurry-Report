@@ -5,15 +5,15 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Changed from height to min-height */
-    overflow-x: hidden; /* Prevent horizontal scrolling */
+    min-height: 100vh;
+    overflow-x: hidden;
     font-family: 'Press Start 2P', cursive;
 }
 
 #gameContainer {
     position: relative;
-    width: 360px; /* Match canvas width */
-    height: 500px; /* Match canvas height */
+    width: 340px; /* Match canvas width */
+    height: 500px;
     background: #111;
     border: 2px solid #0ff;
     box-shadow: 0 0 10px #0ff;
@@ -47,15 +47,15 @@ body {
 #score, #gameOver, #waveMessage {
     position: absolute;
     color: #0ff;
-    font-size: 12px;
-    text-shadow: 0 0 3px #0ff;
-    left: 10px;
+    font-size: 10px; /* Reduced from 12px */
+    text-shadow: 0 0 2px #0ff; /* Reduced shadow */
+    left: 5px; /* Adjusted from 10px */
     top: 10px;
 }
 
 #gameOver {
     display: none;
-    font-size: 18px;
+    font-size: 16px; /* Adjusted for smaller canvas */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -65,7 +65,7 @@ body {
 #startMessage {
     position: absolute;
     color: #f0f;
-    font-size: 16px;
+    font-size: 14px; /* Adjusted for smaller canvas */
     text-shadow: 0 0 3px #f0f;
     top: 50%;
     left: 50%;
@@ -75,7 +75,7 @@ body {
 
 #waveMessage {
     display: none;
-    font-size: 14px;
+    font-size: 12px; /* Adjusted for smaller canvas */
     color: #f00;
     text-shadow: 0 0 3px #f00;
     top: 25%;
@@ -85,10 +85,10 @@ body {
 }
 
 #controls {
-    width: 320px; /* Reduced from 360px */
+    width: 300px; /* Reduced from 320px */
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 15px; /* Reduced from 20px */
     padding: 10px;
     box-sizing: border-box;
     background: #000;
@@ -97,8 +97,8 @@ body {
 
 button {
     font-family: 'Press Start 2P', cursive;
-    font-size: 14px;
-    padding: 10px 20px;
+    font-size: 12px; /* Reduced from 14px */
+    padding: 8px 16px; /* Reduced from 10px 20px */
     background: #111;
     color: #0ff;
     border: 2px solid #0ff;

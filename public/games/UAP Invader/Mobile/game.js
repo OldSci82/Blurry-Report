@@ -34,8 +34,8 @@ let score = 0;
 let gameOver = false;
 let gameStarted = false;
 let player = {
-  x: 180, // Adjusted for 360px canvas
-  y: 440, // Adjusted for 500px canvas
+  x: 170, // Adjusted for 340px canvas
+  y: 440,
   width: 78,
   height: 38,
   hitWidth: 62,
@@ -170,7 +170,7 @@ function spawnEnemies() {
     const bossImage =
       bossImages[`UFOs-boss${Math.floor(Math.random() * 2) + 1}.png`];
     enemies.push({
-      x: canvas.width / 2 - 61, // 180 - 61 = 119
+      x: canvas.width / 2 - 61, // 170 - 61 = 109
       y: 50,
       width: 122,
       height: 78,
@@ -193,7 +193,7 @@ function spawnEnemies() {
       for (let j = 0; j < 2; j++) {
         const isShooter = shootersPlaced < shooterCount && Math.random() < 0.5;
         enemies.push({
-          x: 45 + i * 80, // Adjusted for 360px canvas
+          x: 45 + i * 75, // Adjusted for 340px canvas
           y: 50 + j * 60,
           width: 61,
           height: 35,
@@ -239,7 +239,6 @@ function updateEnemies() {
       enemy.y += 40;
     }
     if (enemy.y >= canvas.height - 50) {
-      // Adjusted for 500px canvas
       gameOver = true;
       gameOverDisplay.textContent =
         "Game Over!\nEnemies Reached Base!\nTap or Press R to Restart";
@@ -252,7 +251,7 @@ function updateEnemies() {
       ) {
         enemyBullets.push({
           x: enemy.x + enemy.width / 2 - 2.5,
-          y: enemy.y + enemy.height,
+          y: player.y + player.height,
           width: 5,
           height: 10,
           speed: 5,
@@ -327,7 +326,7 @@ function resetGame() {
   baseEnemySpeed = 1.5;
   isBossWave = false;
   waveTransition = false;
-  player.x = 180;
+  player.x = 170;
   player.y = 440;
   player.invincible = false;
   player.image =
