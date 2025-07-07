@@ -9,7 +9,7 @@
 </head>
 <body>
     <div id="gameContainer">
-        <canvas id="gameCanvas" width="400" height="600"></canvas>
+        <canvas id="gameCanvas" width="360" height="500"></canvas>
         <div id="score">Score: 0</div>
         <div id="gameOver">Game Over!<br>Tap or Press R to Restart</div>
         <div id="startMessage">Tap Screen or Press SPACE to Start</div>
@@ -19,6 +19,12 @@
         <button id="rightBtn">→</button>
         <button id="shootBtn">Shoot</button>
     </div>
+    <script>
+        // Scroll to bottom on load to focus on player
+        window.onload = () => {
+            window.scrollTo(0, document.body.scrollHeight);
+        };
+    </script>
     <script src="game.js"></script>
 </body>
 </html>
