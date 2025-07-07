@@ -11,18 +11,39 @@ const __dirname = path.dirname(__filename);
 
 async function fetchNews() {
   const query =
-    '(cryptids OR bigfoot OR mothman OR "loch ness monster" OR chupacabra OR yeti OR sasquatch OR "jersey devil" OR ufo OR "unidentified flying object" OR extraterrestrial OR alien OR "alien sighting" OR paranormal OR "ghost sighting" OR supernatural OR cryptid OR "unexplained phenomenon") -("illegal alien" OR immigration OR border OR "space exploration" OR astronaut OR nasa OR movie OR trailer OR "Monster Hunter" OR celebrity OR celebrities OR "film review" OR "movie review" OR hollywood OR "video game" OR gaming OR "elon musk" OR theater OR theatre OR mcu OR "marvel cinematic universe" OR nyt OR "new york times" OR kpop OR "tv series" OR trump)';
+    "cryptids OR bigfoot OR mothman OR 'loch ness monster' OR chupacabra OR yeti OR sasquatch OR 'jersey devil' -('illegal alien' OR immigration OR movie OR hollywood OR gaming)";
   const apiKey = process.env.NEWS_API_KEY;
+
+  // Validate API key
+  if (!apiKey) {
+    console.error("Error: NEWS_API_KEY environment variable is not set");
+    return;
+  }
+
   const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(
     query
-  )}&language=en&sortBy=relevancy&apiKey=${apiKey}`;
+  )}&language=en&sortBy=relevancy&pageSize=100&apiKey=${apiKey}`;
 
   try {
+    console.log("Fetching URL:", url);
+    console.log("URL length:", url.length);
+
     const response = await fetch(url);
-    if (!response.ok) throw new Error("Network error or invalid API key");
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Network error: ${response.status} - ${errorText}`);
+    }
+
     const data = await response.json();
 
-    // Include additional fields from the API response
+    // Check for API errors
+    if (data.status === "error") {
+      throw new Error(`API error: ${data.message}`);
+    }
+
+    console.log("Total results:", data.totalResults);
+
+    // Map articles to desired format
     const articles = data.articles.slice(0, 15).map((article) => ({
       source: article.source.name || "Unknown source",
       author: article.author || "Unknown author",
@@ -36,9 +57,12 @@ async function fetchNews() {
         : "No content available",
     }));
 
-    const outputPath = path.join(__dirname, "..", "public", "news.json");
+    // Ensure output directory exists
+    const outputDir = path.join(__dirname, "..", "public");
+    await fs.mkdir(outputDir, { recursive: true });
+    const outputPath = path.join(outputDir, "news.json");
     await fs.writeFile(outputPath, JSON.stringify({ articles }, null, 2));
-    console.log("News data saved to public/news.json");
+    console.log("News data saved to", outputPath);
   } catch (error) {
     console.error("Error fetching news:", error.message);
   }
