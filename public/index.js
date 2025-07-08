@@ -18,27 +18,35 @@ async function displayNews() {
       const div = document.createElement("div");
       div.className = "news-item";
 
-      // Clean the title: Take text before " | " and trim
-      const cleanTitle = article.title.split("|")[0].trim();
+      // Clean the title: Take text before " | " or use the whole title
+      const baseTitle = article.title.includes("|")
+        ? article.title.split("|")[0].trim()
+        : article.title.trim();
 
-      // Truncate title to 150 characters
+      // Further shorten to first sentence or 10 words
+      let cleanTitle;
+      const sentenceMatch = baseTitle.match(/[^.]+?\./); // Match first sentence (up to first period)
+      const words = baseTitle.split(/\s+/); // Split by whitespace
+
+      if (sentenceMatch && sentenceMatch[0].length < baseTitle.length) {
+        cleanTitle = sentenceMatch[0].trim(); // Use first sentence if it exists and is shorter
+      } else {
+        cleanTitle = words.slice(0, 10).join(" ").trim(); // Take first 10 words
+      }
+
+      // Truncate to 150 characters
       const truncatedTitle =
         cleanTitle.length > 150
           ? cleanTitle.substring(0, 147) + "..."
           : cleanTitle;
 
-      // Sanitize content with DOMPurify
-      const cleanContent = DOMPurify.sanitize(article.content, {
-        ALLOWED_TAGS: ["p", "b", "i", "strong", "em", "a"], // Allow specific tags
-        ALLOWED_ATTR: ["href"], // Allow specific attributes
-      }).trim();
-
-      // Optionally truncate content to avoid overly long descriptions
-      const textContent = cleanContent.replace(/<[^>]+>/g, ""); // Extract text for truncation
+      // Sanitize content: Basic HTML stripping for plain text
+      const cleanContent = article.content.replace(/<[^>]+>/g, "").trim();
+      // Truncate content to 200 characters
       const truncatedContent =
-        textContent.length > 200
-          ? textContent.substring(0, 197) + "..."
-          : cleanContent; // Use cleanContent to preserve HTML if not truncated
+        cleanContent.length > 200
+          ? cleanContent.substring(0, 197) + "..."
+          : cleanContent;
 
       div.innerHTML = `
         <h3><a href="${article.url}" target="_blank">${truncatedTitle}</a></h3>
