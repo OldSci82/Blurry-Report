@@ -275,7 +275,7 @@ footer {
 }
 .source-domain {
   font-weight: bold;
-  color: #555;
+  color: rgba(177, 59, 255, 0.6);
   margin-bottom: 5px;
   font-size: 0.9em;
 }
