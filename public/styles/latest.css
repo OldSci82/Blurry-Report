@@ -267,3 +267,12 @@ footer {
 .headline-tag {
   text-align: center;
 }
+
+.source-domain {
+  font-weight: bold;
+  color: #555;
+  margin-right: 10px;
+}
+.news-item {
+  margin-bottom: 20px;
+}
