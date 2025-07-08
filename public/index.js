@@ -25,11 +25,11 @@ async function displayNews() {
 
       // Shorten to first sentence or 10 words
       let cleanTitle;
-      const sentenceMatch = baseTitle.match(/[^.]+?\./); // Match first sentence (up to first period)
+      const sentenceMatch = baseTitle.match(/[^.]+?\./); // Match first sentence
       const words = baseTitle.split(/\s+/); // Split by whitespace
 
       if (sentenceMatch && sentenceMatch[0].length < baseTitle.length) {
-        cleanTitle = sentenceMatch[0].trim(); // Use first sentence if it exists and is shorter
+        cleanTitle = sentenceMatch[0].trim(); // Use first sentence
       } else {
         cleanTitle = words.slice(0, 10).join(" ").trim(); // Take first 10 words
       }
@@ -40,16 +40,19 @@ async function displayNews() {
           ? cleanTitle.substring(0, 147) + "..."
           : cleanTitle;
 
-      // Extract base domain from URL
-      let sourceDomain = "Unknown";
+      // Extract root domain from URL
+      let rootDomain = "Unknown";
       try {
         const url = new URL(article.url);
-        sourceDomain = url.hostname; // e.g., "science.howstuffworks.com"
+        // Simplistic root domain extraction: take last two parts (e.g., howstuffworks.com)
+        const parts = url.hostname.split(".");
+        rootDomain =
+          parts.length >= 2 ? parts.slice(-2).join(".") : url.hostname;
       } catch (e) {
         console.warn(`Invalid URL: ${article.url}`);
       }
 
-      // Sanitize content: Basic HTML stripping for plain text
+      // Sanitize content: Basic HTML stripping
       const cleanContent = article.content.replace(/<[^>]+>/g, "").trim();
       // Truncate content to 200 characters
       const truncatedContent =
@@ -57,11 +60,11 @@ async function displayNews() {
           ? cleanContent.substring(0, 197) + "..."
           : cleanContent;
 
+      // Option 1: Root domain above the article
       div.innerHTML = `
+        <div class="source-domain">${rootDomain}</div>
         <h3><a href="${article.url}" target="_blank">${truncatedTitle}</a></h3>
-        <p><span class="source-domain">${sourceDomain}</span> ${
-        truncatedContent || "No description available"
-      }</p>
+        <p>${truncatedContent || "No description available"}</p>
       `;
       container.appendChild(div);
     });

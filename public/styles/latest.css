@@ -268,11 +268,14 @@ footer {
   text-align: center;
 }
 
+.news-item {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
 .source-domain {
   font-weight: bold;
   color: #555;
-  margin-right: 10px;
-}
-.news-item {
-  margin-bottom: 20px;
+  margin-bottom: 5px;
+  font-size: 0.9em;
 }
