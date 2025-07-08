@@ -31,111 +31,10 @@ const twitterClient = new TwitterApi({
   accessSecret: xAccessTokenSecret,
 });
 
-// Search terms
-const searchTerms = [
-  "bigfoot",
-  "sasquatch",
-  "yeti",
-  '"abominable snowman"',
-  "mothman",
-  '"mothman museum"',
-  "chupacabra",
-  '"loch ness monster"',
-  "nessie",
-  '"jersey devil"',
-  "wendigo",
-  "skinwalker",
-  "thunderbird",
-  "ogopogo",
-  "champ",
-  '"flatwoods monster"',
-  '"dover demon"',
-  '"loveland frog"',
-  '"mokele-mbembe"',
-  "bunyip",
-  "yowie",
-  "ropen",
-  '"lizard man"',
-  '"beast of bray road"',
-  "goatman",
-  "kraken",
-  "megalodon",
-  "jackalope",
-  "hodag",
-  "pukwudgie",
-  "snallygaster",
-  "chessie",
-  '"altamaha-ha"',
-  '"bear lake monster"',
-  '"mongolian death worm"',
-  '"nandi bear"',
-  '"ozark howler"',
-  '"honey island swamp monster"',
-  '"fouke monster"',
-  '"mothman prophecies"',
-  "ufo",
-  '"unidentified flying object"',
-  "extraterrestrial",
-  "alien",
-  '"alien sighting"',
-  '"flying saucer"',
-  "roswell",
-  '"area 51"',
-  '"crop circle"',
-  '"alien abduction"',
-  '"grey alien"',
-  "reptilian",
-  '"men in black"',
-  '"ufo sighting"',
-  '"extraterrestrial life"',
-  '"close encounter"',
-  '"alien invasion"',
-  "uap",
-  '"foo fighter"',
-  "martian",
-  '"zeta reticuli"',
-  '"little green men"',
-  '"alien encounter"',
-  '"ufo crash"',
-  '"extraterrestrial contact"',
-  '"kecksburg ufo"',
-  '"phoenix lights"',
-  '"rendlesham forest"',
-  '"betty and barney hill"',
-  '"ancient aliens"',
-  "werewolf",
-  "vampire",
-  "zombie",
-  "ghost",
-  '"ghost sighting"',
-  "poltergeist",
-  "banshee",
-  "demon",
-  "djinn",
-  "golem",
-  "changelings",
-  "dullahan",
-  "kelpie",
-  "selkie",
-  "leprechaun",
-  "troll",
-  "ogre",
-  '"bigfoot-like creature"',
-  '"sea monster"',
-  '"lake monster"',
-  '"supernatural creature"',
-  '"paranormal activity"',
-  '"unexplained phenomenon"',
-  '"shadow person"',
-  "hellhound",
-  '"black-eyed children"',
-  '"moth-like creature"',
-  '"spectral entity"',
-  "phantom",
-  '"cryptid creature"',
-];
+// Simple test query
+const searchTerms = ["cryptid"];
 
-// URLs to include (previously skipped)
+// URLs to include
 const includeUrls = [
   "https://science.howstuffworks.com/science-vs-myth/strange-creatures/cryptids.htm",
   "https://www.quora.com/Which-mythical-creatures-Bigfoot-Loch-Ness-Monster-Chupacabras-Jersey-Devil-Kraken-Yeti-etc-have-the-most-convincing-evidence-of-their-supposed-existence",
@@ -203,25 +102,6 @@ function isRecent(content, $, result) {
 // Function to delay execution
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Function to check remaining rate limit
-async function checkRateLimit() {
-  try {
-    const response = await twitterClient.v2.get("users/me", {
-      "user.fields": "id",
-    });
-    const headers = response._headers;
-    const remaining = headers["x-rate-limit-remaining"];
-    const resetTime = headers["x-rate-limit-reset"];
-    return {
-      remaining: parseInt(remaining, 10),
-      resetTime: parseInt(resetTime, 10) * 1000,
-    };
-  } catch (error) {
-    console.error("Error checking rate limit:", error.message);
-    return { remaining: 0, resetTime: Date.now() + 15 * 60 * 1000 };
-  }
-}
-
 // Function to fetch X posts with rate limit handling and exponential backoff
 async function fetchXPosts(terms, maxResults) {
   if (!xApiKey || !xApiKeySecret || !xAccessToken || !xAccessTokenSecret) {
@@ -229,89 +109,82 @@ async function fetchXPosts(terms, maxResults) {
     return [];
   }
 
-  const chunkSize = 10;
-  const termChunks = [];
-  for (let i = 0; i < terms.length; i += chunkSize) {
-    termChunks.push(terms.slice(i, i + chunkSize).join(" OR "));
+  const query = `${terms.join(" OR ")} -is:retweet -is:reply`;
+  if (query.length > 512) {
+    console.warn(`Query too long: ${query.slice(0, 50)}...`);
+    return [];
   }
 
+  let attempts = 0;
+  const maxAttempts = 3;
+  let backoff = 1000; // Initial backoff: 1 second
   const posts = [];
-  for (const chunk of termChunks) {
-    const query = `${chunk} -is:retweet -is:reply`;
-    if (query.length > 512) {
-      console.warn(`Query too long, skipping chunk: ${chunk.slice(0, 50)}...`);
-      continue;
-    }
 
-    let attempts = 0;
-    const maxAttempts = 3;
-    let backoff = 1000; // Initial backoff: 1 second
+  while (attempts < maxAttempts && posts.length < maxResults) {
+    try {
+      console.log(`Fetching X posts with query: ${query}`);
+      const response = await twitterClient.v2.search(query, {
+        "tweet.fields": "created_at,author_id",
+        max_results: maxResults,
+        start_time: "2025-06-08T00:00:00Z",
+        end_time: "2025-07-08T23:59:59Z",
+      });
 
-    while (attempts < maxAttempts) {
-      const rateLimit = await checkRateLimit();
-      if (rateLimit.remaining <= 0) {
-        const waitTime = rateLimit.resetTime - Date.now();
-        if (waitTime > 0) {
-          console.log(
-            `Rate limit reached, waiting ${Math.ceil(
-              waitTime / 1000
-            )} seconds...`
-          );
-          await delay(waitTime);
+      // Log response headers
+      console.log("X API Response Headers:", response._headers);
+
+      let postCount = 0;
+      for await (const tweet of response) {
+        if (postCount >= maxResults) break;
+        if (
+          !tweet.text.match(
+            /(amazon|ebay|walmart|etsy|shopify|target|teepublic|redbubble|cryptozootees|\/shop|\/store|\/buy|\/cart|\/product|imdb|rottentomatoes|netflix|hulu|disneyplus|\/movie|\/film|\/watch|balatro)/i
+          )
+        ) {
+          posts.push({
+            url: `https://x.com/statuses/${tweet.id}`,
+            title: `X Post by ${tweet.author_id}`,
+            content: tweet.text.slice(0, 500),
+            created_at: tweet.created_at,
+          });
+          postCount++;
         }
       }
-
-      try {
-        const response = await twitterClient.v2.search(query, {
-          "tweet.fields": "created_at,author_id",
-          max_results: Math.ceil(maxResults / termChunks.length),
-          start_time: "2025-06-08T00:00:00Z",
-          end_time: "2025-07-08T23:59:59Z",
-        });
-
-        for await (const tweet of response) {
-          if (
-            !tweet.text.match(
-              /(amazon|ebay|walmart|etsy|shopify|target|teepublic|redbubble|cryptozootees|\/shop|\/store|\/buy|\/cart|\/product|imdb|rottentomatoes|netflix|hulu|disneyplus|\/movie|\/film|\/watch|balatro)/i
-            )
-          ) {
-            posts.push({
-              url: `https://x.com/statuses/${tweet.id}`,
-              title: `X Post by ${tweet.author_id}`,
-              content: tweet.text.slice(0, 500),
-              created_at: tweet.created_at,
-            });
+      console.log(`Fetched ${posts.length} X posts`);
+      break; // Success, exit loop
+    } catch (error) {
+      if (error.code === 429) {
+        attempts++;
+        const retryAfter = error.headers?.["retry-after"]
+          ? parseInt(error.headers["retry-after"], 10) * 1000
+          : backoff;
+        console.error(
+          `429 error for query "${query.slice(
+            0,
+            50
+          )}...": Attempt ${attempts}/${maxAttempts}, waiting ${Math.ceil(
+            retryAfter / 1000
+          )} seconds...`,
+          {
+            headers: error.headers,
           }
-        }
-        break; // Success, move to next chunk
-      } catch (error) {
-        if (error.code === 429) {
-          attempts++;
-          const retryAfter = error.headers?.["x-rate-limit-reset"]
-            ? parseInt(error.headers["x-rate-limit-reset"], 10) * 1000 -
-              Date.now()
-            : backoff;
-          console.error(
-            `429 error for chunk "${chunk.slice(
-              0,
-              50
-            )}...": Attempt ${attempts}/${maxAttempts}, waiting ${Math.ceil(
-              retryAfter / 1000
-            )} seconds...`
-          );
-          await delay(retryAfter);
-          backoff *= 2; // Exponential backoff
-        } else {
-          console.error(
-            `Error fetching X posts for chunk "${chunk.slice(0, 50)}...": ${
-              error.message
-            }`
-          );
-          break;
-        }
+        );
+        await delay(retryAfter);
+        backoff *= 2; // Exponential backoff
+      } else {
+        console.error(
+          `Error fetching X posts for query "${query.slice(0, 50)}...":`,
+          {
+            message: error.message,
+            code: error.code,
+            status: error.response?.status,
+            data: error.response?.data,
+            headers: error.response?.headers,
+          }
+        );
+        break;
       }
     }
-    await delay(1000); // Avoid overwhelming API even within limits
   }
   return posts.slice(0, maxResults);
 }
@@ -359,6 +232,7 @@ async function scrapeWebForContent(
     });
 
     // Step 1: Fetch X posts (target ~10)
+    console.log("Starting X post fetch...");
     const xPosts = await fetchXPosts(searchTerms, Math.min(10, maxResults));
     for (const post of xPosts) {
       if (results.length >= maxResults) break;
@@ -368,8 +242,10 @@ async function scrapeWebForContent(
         skippedUrls.push({ url: post.url, reason: "Not from past month" });
       }
     }
+    console.log(`Added ${xPosts.length} X posts to results`);
 
     // Step 2: Scrape included URLs
+    console.log("Scraping included URLs...");
     for (const url of includeUrls) {
       if (results.length >= maxResults) break;
       try {
@@ -377,12 +253,13 @@ async function scrapeWebForContent(
         await page.setUserAgent(
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         );
+        console.log(`Navigating to ${url}`);
         await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 2; i++) {
           await page.evaluate(() =>
             window.scrollTo(0, document.body.scrollHeight)
           );
-          await delay(3000);
+          await delay(500);
         }
         const html = await page.content();
         await page.close();
@@ -405,27 +282,21 @@ async function scrapeWebForContent(
           title: $("title").text() || url,
           content: content || "No content extracted",
         });
+        console.log(`Scraped ${url}`);
       } catch (error) {
         console.error(`Error scraping ${url}:`, error.message);
         skippedUrls.push({ url, reason: `Scraping failed: ${error.message}` });
       }
     }
 
-    // Step 3: Search Brave for additional web results (target remaining slots)
-    const termChunks = [];
-    for (let i = 0; i < searchTerms.length; i += 10) {
-      termChunks.push(searchTerms.slice(i, i + 10).join(" OR "));
-    }
-
-    for (const chunk of termChunks) {
-      if (results.length >= maxResults) break;
-      const newsQuery = `${subject} (${chunk})`;
+    // Step 3: Search Brave for additional web results
+    console.log("Fetching additional web results from Brave...");
+    const newsQuery = `${subject}`;
+    if (results.length < maxResults) {
       try {
+        console.log(`Brave search query: ${newsQuery}`);
         const searchResponse = await axios.get(braveApiUrl, {
-          params: {
-            q: newsQuery,
-            count: Math.ceil((maxResults - results.length) / termChunks.length),
-          },
+          params: { q: newsQuery, count: maxResults - results.length },
           headers: {
             Accept: "application/json",
             "X-Subscription-Token": braveApiKey,
@@ -433,9 +304,9 @@ async function scrapeWebForContent(
         });
 
         const searchResults = searchResponse.data.web?.results || [];
+        console.log(`Brave returned ${searchResults.length} results`);
         if (!searchResults.length) {
-          console.log(`No results for chunk: ${newsQuery}`);
-          continue;
+          console.log(`No results for query: ${newsQuery}`);
         }
 
         for (const result of searchResults) {
@@ -459,15 +330,16 @@ async function scrapeWebForContent(
             await page.setUserAgent(
               "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
             );
+            console.log(`Navigating to ${result.url}`);
             await page.goto(result.url, {
               waitUntil: "networkidle2",
               timeout: 30000,
             });
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 2; i++) {
               await page.evaluate(() =>
                 window.scrollTo(0, document.body.scrollHeight)
               );
-              await delay(3000);
+              await delay(500);
             }
             const html = await page.content();
             await page.close();
@@ -501,6 +373,7 @@ async function scrapeWebForContent(
               title: result.title,
               content: content || "No content extracted",
             });
+            console.log(`Scraped ${result.url}`);
           } catch (error) {
             console.error(`Error scraping ${result.url}:`, error.message);
             skippedUrls.push({
@@ -510,7 +383,12 @@ async function scrapeWebForContent(
           }
         }
       } catch (error) {
-        console.error(`Error with query chunk "${chunk}":`, error.message);
+        console.error(`Error with Brave query "${newsQuery}":`, {
+          message: error.message,
+          status: error.response?.status,
+          data: error.response?.data,
+          headers: error.response?.headers,
+        });
         if (error.response?.status === 429) {
           const retryAfter = error.response?.headers["retry-after"]
             ? parseInt(error.response.headers["retry-after"], 10) * 1000
@@ -521,99 +399,8 @@ async function scrapeWebForContent(
             )} seconds...`
           );
           await delay(retryAfter);
-          // Retry logic
-          try {
-            const retryResponse = await axios.get(braveApiUrl, {
-              params: {
-                q: newsQuery,
-                count: Math.ceil(
-                  (maxResults - results.length) / termChunks.length
-                ),
-              },
-              headers: {
-                Accept: "application/json",
-                "X-Subscription-Token": braveApiKey,
-              },
-            });
-            const searchResults = retryResponse.data.web?.results || [];
-            for (const result of searchResults) {
-              if (results.length >= maxResults) break;
-              if (includeUrls.includes(result.url)) continue;
-
-              const isExcluded = result.url.match(
-                /(amazon|ebay|walmart|etsy|shopify|target|teepublic|redbubble|cryptozootees|\/shop|\/store|\/buy|\/cart|\/product|imdb|rottentomatoes|netflix|hulu|disneyplus|\/movie|\/film|\/watch|balatro)/i
-              );
-
-              if (isExcluded) {
-                skippedUrls.push({ url: result.url, reason: "Excluded site" });
-                continue;
-              }
-
-              try {
-                const page = await browser.newPage();
-                await page.setUserAgent(
-                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-                );
-                await page.goto(result.url, {
-                  waitUntil: "networkidle2",
-                  timeout: 30000,
-                });
-                for (let i = 0; i < 3; i++) {
-                  await page.evaluate(() =>
-                    window.scrollTo(0, document.body.scrollHeight)
-                  );
-                  await delay(3000);
-                }
-                const html = await page.content();
-                await page.close();
-
-                const $ = cheerio.load(html);
-                const content = $(
-                  "p, article, .post-content, .article-body, .post-body, .content, .post, .tweet, .status"
-                )
-                  .not(
-                    "script, style, nav, footer, .advertisement, .sidebar, .login, .paywall"
-                  )
-                  .map((i, el) => $(el).text().trim())
-                  .get()
-                  .filter((text) => text.length > 20)
-                  .join(" ")
-                  .slice(0, 500);
-
-                if (
-                  !isRecent(content, $, result) &&
-                  !includeUrls.includes(result.url)
-                ) {
-                  skippedUrls.push({
-                    url: result.url,
-                    reason: "Content not from past month",
-                  });
-                  continue;
-                }
-
-                results.push({
-                  url: result.url,
-                  title: result.title,
-                  content: content || "No content extracted",
-                });
-              } catch (error) {
-                console.error(`Error scraping ${result.url}:`, error.message);
-                skippedUrls.push({
-                  url: result.url,
-                  reason: `Scraping failed: ${error.message}`,
-                });
-              }
-            }
-          } catch (retryError) {
-            console.error(
-              `Retry failed for chunk "${chunk}":`,
-              retryError.message
-            );
-          }
         }
-        continue;
       }
-      await delay(3000);
     }
 
     // Step 4: Save results to ../public/news.json
@@ -654,9 +441,10 @@ async function scrapeWebForContent(
   } catch (error) {
     if (browser) await browser.close();
     console.error("Search error details:", {
+      message: error.message,
       status: error.response?.status,
       data: error.response?.data,
-      message: error.message,
+      headers: error.response?.headers,
     });
     return {
       message: "Error performing search",
@@ -672,5 +460,5 @@ async function scrapeWebForContent(
 (async () => {
   const subject = "cryptid";
   const result = await scrapeWebForContent(subject, 20, false);
-  console.log(result);
+  console.log(JSON.stringify(result, null, 2));
 })();
