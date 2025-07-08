@@ -23,7 +23,7 @@ async function displayNews() {
         ? article.title.split("|")[0].trim()
         : article.title.trim();
 
-      // Further shorten to first sentence or 10 words
+      // Shorten to first sentence or 10 words
       let cleanTitle;
       const sentenceMatch = baseTitle.match(/[^.]+?\./); // Match first sentence (up to first period)
       const words = baseTitle.split(/\s+/); // Split by whitespace
@@ -40,6 +40,15 @@ async function displayNews() {
           ? cleanTitle.substring(0, 147) + "..."
           : cleanTitle;
 
+      // Extract base domain from URL
+      let sourceDomain = "Unknown";
+      try {
+        const url = new URL(article.url);
+        sourceDomain = url.hostname; // e.g., "science.howstuffworks.com"
+      } catch (e) {
+        console.warn(`Invalid URL: ${article.url}`);
+      }
+
       // Sanitize content: Basic HTML stripping for plain text
       const cleanContent = article.content.replace(/<[^>]+>/g, "").trim();
       // Truncate content to 200 characters
@@ -50,7 +59,9 @@ async function displayNews() {
 
       div.innerHTML = `
         <h3><a href="${article.url}" target="_blank">${truncatedTitle}</a></h3>
-        <p>${truncatedContent || "No description available"}</p>
+        <p><span class="source-domain">${sourceDomain}</span> ${
+        truncatedContent || "No description available"
+      }</p>
       `;
       container.appendChild(div);
     });
