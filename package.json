@@ -11,10 +11,12 @@
     "cheerio": "^1.1.0",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
+    "fs": "^0.0.1-security",
     "googleapis": "^150.0.1",
     "node-fetch": "^2.7.0",
     "oauth-1.0a": "^2.2.6",
     "path": "^0.12.7",
+    "phaser": "^3.90.0",
     "puppeteer": "^24.12.0",
     "twitter-api-v2": "^1.24.0",
     "url": "^0.11.4"

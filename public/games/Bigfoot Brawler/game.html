@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bigfoot Brawler</title>
+  <link rel="stylesheet" href="game.css">
+</head>
+<body>
+  <div id="game"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.60.0/phaser.min.js"></script>
+  <script type="module" src="game.js"></script>
+  <script type="module" src="scripts/BootScene.js"></script>
+  <script type="module" src="scripts/TitleScene.js"></script>
+  <script type="module" src="scripts/CharacterSelectScene.js"></script>
+  <script type="module" src="scripts/GameScene.js"></script>
+  <script type="module" src="scripts/LevelCompleteScene.js"></script>
+  <script type="module" src="scripts/GameOverScene.js"></script>
+  <script>
+    console.log("game.html loaded, Phaser version:", Phaser ? Phaser.VERSION : "not loaded");
+  </script>
+</body>
+</html>
