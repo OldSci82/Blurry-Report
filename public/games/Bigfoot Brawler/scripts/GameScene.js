@@ -47,15 +47,15 @@ export class GameScene extends Phaser.Scene {
   }
 
   create() {
+    this.cameras.main.fadeIn(500, 0, 0, 0);
     // Reset input and physics systems
     this.input.keyboard.resetKeys();
     this.input.keyboard.clearCaptures();
-    this.physics.world.overlaps = []; // Clear overlaps on create
+    this.physics.world.overlaps = [];
 
-    // Ensure selectedFighter is valid
-    console.log("GameScene: selectedFighter =", gameState.selectedFighter);
-    if (!gameState.selectedFighter) {
-      console.error("No fighter selected, defaulting to 'black'");
+    // Validate selected fighter
+    if (!["black", "red"].includes(gameState.selectedFighter)) {
+      console.error("Invalid fighter selected, defaulting to 'black'");
       gameState.selectedFighter = "black";
     }
 
@@ -82,59 +82,59 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
-    // Set background color based on level
-    const bgColors = [
-      "#A8A8A8",
-      "#6A5ACD",
-      "#4682B4",
-      "#556B2F",
-      "#8B4513",
-      "#696969",
-      "#2F4F4F",
-      "#4B0082",
-      "#708090",
-      "#DC143C",
-    ];
-    this.cameras.main.setBackgroundColor(
-      bgColors[gameState.currentLevel - 1] || "#000"
+    // World & Camera Bounds
+    this.worldWidth = 3000;
+    this.worldHeight = config.height;
+    this.physics.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
+    this.cameras.main.setBounds(0, 0, this.worldWidth, this.worldHeight);
+
+    // Background Setup
+    const bgImage = this.textures.get("background_level1").getSourceImage();
+    const bgScale = config.height / bgImage.height; // Scale to fit 600px height
+    this.bgScale = bgScale;
+    this.background = this.add
+      .tileSprite(
+        0,
+        config.height - bgImage.height * bgScale,
+        this.worldWidth,
+        bgImage.height * bgScale,
+        "background_level1"
+      )
+      .setOrigin(0, 0)
+      .setScale(bgScale)
+      .setScrollFactor(0)
+      .setDepth(-10);
+    console.log(
+      "Background dimensions:",
+      bgImage.width,
+      bgImage.height,
+      "Scale:",
+      bgScale,
+      "Position:",
+      0,
+      config.height - bgImage.height * bgScale
     );
 
-    // Set camera bounds for scrolling
-    this.cameras.main.setBounds(0, 0, 2816, 1536);
-
-    //===================================================================
-    //===================BACKGROUND SETUP================================
-    //===================================================================
-    // Add and scale background for level 1
-    if (gameState.currentLevel === 1) {
-      const bg = this.add.image(0, 0, "background_level1");
-      bg.setOrigin(0); // Top-left corner as origin
-      bg.setDisplaySize(1600, 400); // Match camera bounds
-      bg.setDepth(-10); // Ensure background is behind everything
-    }
-
-    //===================================================================
-    //===================PLAYER SETUP================================
-    //===================================================================
-    // Create player body (for collisions)
+    // Player Setup
     this.player = this.add.rectangle(
       150,
-      config.height / 2,
-      40,
-      40,
+      config.height - 100,
+      30,
+      30,
       0x00ff00,
       0.3
-    );
+    ); // Adjusted hitbox and y-position
     this.physics.add.existing(this.player);
     this.player.body.setCollideWorldBounds(true);
+    this.player.body.setBoundsRectangle(
+      new Phaser.Geom.Rectangle(0, 0, this.worldWidth, this.worldHeight)
+    );
     this.player.canTakeDamage = true;
 
-    // Create player sprite for visuals
-    this.playerSprite = this.add.sprite(
-      this.player.x,
-      this.player.y,
-      this.walkSheetKey
-    );
+    // Player Sprite
+    this.playerSprite = this.add
+      .sprite(this.player.x, this.player.y, this.walkSheetKey)
+      .setScale(0.6); // Reduced from 2
     try {
       this.playerSprite.play(`idle_${gameState.selectedFighter}`);
       console.log(`Playing idle animation: idle_${gameState.selectedFighter}`);
@@ -144,21 +144,27 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
-    // Enemy setup
+    // Camera Follow
+    this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+    this.cameras.main.setFollowOffset(-config.width / 4, 0);
+
+    // Enemy Setup
     this.enemies = this.physics.add.group();
     const numEnemies = 3 + gameState.currentLevel;
     if (!this.anims.exists("walk_zombie1")) {
       console.error("Animation walk_zombie1 missing");
     }
     for (let i = 0; i < numEnemies; i++) {
-      const enemy = this.add.sprite(
-        Phaser.Math.Between(config.width / 2, config.width - 50),
-        Phaser.Math.Between(50, config.height - 50),
-        "enemy_zombie1_walk"
-      );
+      const enemy = this.add
+        .sprite(
+          Phaser.Math.Between(config.width / 2, config.width - 50),
+          Phaser.Math.Between(config.height - 200, config.height - 50), // Adjusted y to stay on road
+          "enemy_zombie1_walk"
+        )
+        .setScale(0.6); // Reduced from 1.5
       this.physics.add.existing(enemy);
-      enemy.body.setSize(30, 40);
-      enemy.body.setOffset((enemy.width - 30) / 2, enemy.height - 40);
+      enemy.body.setSize(20, 30); // Adjusted hitbox
+      enemy.body.setOffset((enemy.width - 20) / 2, enemy.height - 30);
       enemy.body.setCollideWorldBounds(true);
       enemy.body.setImmovable(true);
       enemy.health = 1;
@@ -180,7 +186,7 @@ export class GameScene extends Phaser.Scene {
     this.bossHealth = 100;
     this.bossSpawned = false;
 
-    // Input setup
+    // Input Setup
     this.cursors = this.input.keyboard.createCursorKeys();
     this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
@@ -199,32 +205,51 @@ export class GameScene extends Phaser.Scene {
     // HUD
     this.levelText = this.add
       .text(
-        10,
-        10,
+        20,
+        20,
         `Level ${gameState.currentLevel}: ${
           gameState.levelNames[gameState.currentLevel - 1]
         }`,
         {
-          fontSize: "16px",
+          fontFamily: "Press Start 2P",
+          fontSize: "24px",
           fill: "#FFF",
+          stroke: "#000",
+          strokeThickness: 4,
         }
       )
+      .setOrigin(0)
+      .setScrollFactor(0);
+    this.healthBarBg = this.add
+      .rectangle(20, 60, 300, 30, 0x333333)
+      .setOrigin(0)
+      .setScrollFactor(0);
+    this.healthBar = this.add
+      .rectangle(20, 60, gameState.playerHealth * 3, 30, 0xff0000)
+      .setOrigin(0)
       .setScrollFactor(0);
     this.healthText = this.add
-      .text(10, 30, `Health: ${gameState.playerHealth}`, {
-        fontSize: "16px",
+      .text(20, 100, `Health: ${gameState.playerHealth}`, {
+        fontFamily: "Press Start 2P",
+        fontSize: "24px",
         fill: "#FFF",
+        stroke: "#000",
+        strokeThickness: 4,
       })
+      .setOrigin(0)
       .setScrollFactor(0);
     this.scoreText = this.add
-      .text(config.width - 10, 10, `Score: ${gameState.score}`, {
-        fontSize: "16px",
+      .text(config.width - 20, 20, `Score: ${gameState.score}`, {
+        fontFamily: "Press Start 2P",
+        fontSize: "24px",
         fill: "#FFF",
+        stroke: "#000",
+        strokeThickness: 4,
       })
       .setOrigin(1, 0)
       .setScrollFactor(0);
 
-    // Overlap handlers
+    // Overlap Handlers
     this.physics.add.overlap(
       this.player,
       this.enemies,
@@ -244,8 +269,72 @@ export class GameScene extends Phaser.Scene {
 
     this.events.on("shutdown", this.shutdown, this);
 
-    // Force check win condition on create
+    // Force check win condition
     this.checkWinCondition();
+  }
+
+  handlePlayerTakeDamage(player, source) {
+    if (!player.canTakeDamage) return;
+
+    const damage = source === this.boss ? 10 : 5;
+    gameState.playerHealth -= damage;
+    this.healthBar.width = gameState.playerHealth * 3;
+    this.healthText.setText(`Health: ${gameState.playerHealth}`);
+    player.canTakeDamage = false;
+
+    this.showDamageSprite(source.x);
+
+    const angle = Phaser.Math.Angle.Between(
+      source.x,
+      source.y,
+      player.x,
+      player.y
+    );
+    const knockbackDistance = 80; // Reduced from 100
+    const knockbackX = player.x + Math.cos(angle) * knockbackDistance;
+    const knockbackY = player.y + Math.sin(angle) * knockbackDistance;
+
+    if (player.body) {
+      player.body.setVelocity(0);
+      player.body.moves = false;
+    }
+
+    this.tweens.add({
+      targets: player,
+      x: knockbackX,
+      y: knockbackY,
+      duration: 800, // Reduced from 1000
+      ease: "Power2",
+      onUpdate: () => {
+        this.playerSprite.setPosition(player.x, player.y);
+        this.cameras.main.scrollX = Phaser.Math.Clamp(
+          player.x - config.width / 2,
+          0,
+          this.worldWidth - config.width
+        );
+      },
+      onComplete: () => {
+        if (player.body) player.body.moves = true;
+      },
+    });
+
+    this.tweens.add({
+      targets: this.playerSprite,
+      alpha: 0.4,
+      yoyo: true,
+      repeat: 4,
+      duration: 100,
+    });
+
+    this.time.delayedCall(800, () => {
+      // Reduced from 1000
+      player.canTakeDamage = true;
+      this.playerSprite.setAlpha(1);
+    });
+
+    if (gameState.playerHealth <= 0) {
+      this.scene.start("GameOverScene");
+    }
   }
 
   handlePunch() {
@@ -496,6 +585,44 @@ export class GameScene extends Phaser.Scene {
   }
 
   //===================================================================
+  //===================WORLD EXTEND=================================
+  //===================================================================
+  extendWorld() {
+    const extensionSize = 2000; // How much to extend each time
+    this.worldWidth += extensionSize;
+
+    console.log("Extending world to:", this.worldWidth);
+
+    // Update world bounds
+    this.physics.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
+    this.cameras.main.setBounds(0, 0, this.worldWidth, this.worldHeight);
+
+    // Rebind player world constraint
+    this.player.body.setBoundsRectangle(
+      new Phaser.Geom.Rectangle(0, 0, this.worldWidth, this.worldHeight)
+    );
+
+    // Optional: spawn new enemies or objects here
+    for (let i = 0; i < 3; i++) {
+      const enemy = this.add.sprite(
+        Phaser.Math.Between(this.worldWidth - 600, this.worldWidth - 100),
+        Phaser.Math.Between(50, this.worldHeight - 50),
+        "enemy_zombie1_walk"
+      );
+      this.physics.add.existing(enemy);
+      enemy.body.setSize(30, 40);
+      enemy.body.setOffset((enemy.width - 30) / 2, enemy.height - 40);
+      enemy.body.setCollideWorldBounds(true);
+      enemy.body.setImmovable(true);
+      enemy.health = 1;
+      enemy.isHitByAttack = false;
+      enemy.type = i % 2 === 0 ? "fast" : "standard";
+      enemy.play("walk_zombie1");
+      this.enemies.add(enemy);
+    }
+  }
+
+  //===================================================================
   //===================END LEVEL CHECK=================================
   //===================================================================
   checkWinCondition() {
@@ -516,19 +643,13 @@ export class GameScene extends Phaser.Scene {
     ) {
       console.log("Boss defeated, spawning portal...");
       if (this.portal) {
-        if (this.portalText) {
-          this.portalText.destroy();
-          this.portalText = null;
-        }
-        if (this.portal.body) {
-          this.physics.world.disable(this.portal);
-        }
+        if (this.portalText) this.portalText.destroy();
+        if (this.portal.body) this.physics.world.disable(this.portal);
         this.portal.destroy();
-        this.portal = null;
       }
 
       this.portal = this.add.rectangle(
-        config.width - 40,
+        this.worldWidth - 40, // Place at world’s end
         config.height / 2,
         40,
         80,
@@ -547,27 +668,20 @@ export class GameScene extends Phaser.Scene {
         })
         .setOrigin(0.5);
 
+      console.log("Portal spawned at:", this.portal.x, this.portal.y);
+
       this.physics.add.overlap(
         this.player,
         this.portal,
         () => {
           this.physics.world.isPaused = true;
           this.physics.world.overlaps = [];
-
-          if (this.portal.body) {
-            this.physics.world.disable(this.portal);
-          }
-
+          if (this.portal.body) this.physics.world.disable(this.portal);
           this.time.delayedCall(300, () => {
             if (this.portal && this.portal.active) {
-              if (this.portalText) {
-                this.portalText.destroy();
-                this.portalText = null;
-              }
+              if (this.portalText) this.portalText.destroy();
               this.portal.destroy();
-              this.portal = null;
             }
-
             if (gameState.currentLevel < 10) {
               gameState.currentLevel++;
               this.scene.start("LevelCompleteScene");
@@ -649,6 +763,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   update() {
+    this.background.tilePositionX = this.cameras.main.scrollX;
     if (this.isPaused) return;
 
     const body = this.player.body;
@@ -670,21 +785,16 @@ export class GameScene extends Phaser.Scene {
       isMoving = true;
     }
 
-    if (up) {
-      body.setVelocityY(-this.playerSpeed);
-      isMoving = true;
-    } else if (down) {
-      body.setVelocityY(this.playerSpeed);
-      isMoving = true;
-    }
+    const scaledYMin = Math.min(220 * this.bgScale, config.height / 2 - 50);
+    const scaledYMax = Math.max(550 * this.bgScale, config.height / 2 + 50);
+    let newY = this.player.y;
+    if (up) newY -= (this.playerSpeed * this.game.loop.delta) / 1000;
+    else if (down) newY += (this.playerSpeed * this.game.loop.delta) / 1000;
+    this.player.y = Phaser.Math.Clamp(newY, scaledYMin, scaledYMax);
+    this.player.body.setVelocityY(0);
 
     if (body.velocity.length() > 0) {
       body.velocity.normalize().scale(this.playerSpeed);
-      this.cameras.main.scrollX = Phaser.Math.Clamp(
-        this.player.x - config.width / 2,
-        0,
-        1600 - config.width
-      );
     }
 
     this.playerSprite.setPosition(this.player.x, this.player.y);
@@ -711,6 +821,11 @@ export class GameScene extends Phaser.Scene {
         this.boss.y -= 1.5;
       }
       // Damage player if overlapping is handled elsewhere
+    }
+    const extensionTriggerX = this.worldWidth - 600;
+
+    if (this.player.x > extensionTriggerX) {
+      this.extendWorld();
     }
   }
 

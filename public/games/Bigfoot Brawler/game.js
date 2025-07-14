@@ -3,37 +3,28 @@ import { BootScene } from "./scripts/BootScene.js";
 import { TitleScene } from "./scripts/TitleScene.js";
 import { CharacterSelectScene } from "./scripts/CharacterSelectScene.js";
 import { GameScene } from "./scripts/GameScene.js";
-import { LevelCompleteScene } from "./scripts/LevelCompleteScene.js";
 import { GameOverScene } from "./scripts/GameOverScene.js";
+import { LevelCompleteScene } from "./scripts/LevelCompleteScene.js";
 
+// Game configuration
 export const config = {
-  width: 800,
-  height: 400,
-};
-
-export const gameState = {
-  currentLevel: 1,
-  playerHealth: 100,
-  score: 0,
-  selectedFighter: null,
-  levelNames: [
-    "Forest Frenzy",
-    "Mountain Mayhem",
-    "Cave Clash",
-    "River Rampage",
-    "Desert Duel",
-    "Swamp Showdown",
-    "Volcano Vengeance",
-    "Snowy Skirmish",
-    "Jungle Jamboree",
-    "Bigfoot's Lair",
-  ],
-};
-
-const game = new Phaser.Game({
   type: Phaser.AUTO,
-  width: config.width,
-  height: config.height,
+  width: 800, // Was 1500
+  height: 600, // Was 1500
+  backgroundColor: "#0f1128",
+  parent: "game-container",
+  physics: {
+    default: "arcade",
+    arcade: {
+      gravity: { y: 0 },
+      debug: false,
+    },
+  },
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    parent: "game-container",
+  },
   scene: [
     BootScene,
     TitleScene,
@@ -42,8 +33,27 @@ const game = new Phaser.Game({
     LevelCompleteScene,
     GameOverScene,
   ],
-  physics: {
-    default: "arcade",
-    arcade: { debug: false },
-  },
-});
+};
+
+// Game state
+export const gameState = {
+  currentLevel: 1,
+  playerHealth: 100,
+  score: 0,
+  selectedFighter: null,
+  levelNames: [
+    "City Street",
+    "Night Market",
+    "Train Yard",
+    "Forest",
+    "Junkyard",
+    "Underpass",
+    "Lab Facility",
+    "Warehouse",
+    "Highway",
+    "Volcano Lair",
+  ],
+};
+
+// Launch game
+new Phaser.Game(config);

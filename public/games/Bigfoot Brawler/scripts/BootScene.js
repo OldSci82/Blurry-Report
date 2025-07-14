@@ -6,6 +6,10 @@ export class BootScene extends Phaser.Scene {
 
   preload() {
     console.log("BootScene: Preloading assets...");
+    this.load.html(
+      "font",
+      "https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+    );
     this.load.spritesheet(
       "black_fighter_walk",
       "images/black_fighter_walk_sheet.png",
@@ -29,11 +33,24 @@ export class BootScene extends Phaser.Scene {
     this.load.image("red_fighter_kick", "images/red_fighter_kick.png");
     this.load.image("red_fighter_damage", "images/red_fighter_damage.png");
     this.load.image("background_level1", "images/background_level1.png");
+    this.load.image("BBCover1", "images/BBCover1.png");
+    this.load.image("BBCover2", "images/BBCover2.png");
+    this.load.image("TBG1", "images/Transition_Backgrounds/TBG1.png");
+    this.load.image("TBG2", "images/Transition_Backgrounds/TBG2.png");
+    this.load.image("TBG3", "images/Transition_Backgrounds/TBG3.png");
+    this.load.image("TBG4", "images/Transition_Backgrounds/TBG4.png");
+    this.load.image("TBG5", "images/Transition_Backgrounds/TBG5.png");
+    this.load.image("TBG6", "images/Transition_Backgrounds/TBG6.png");
+    this.load.image("TBG7", "images/Transition_Backgrounds/TBG7.png");
+    this.load.image("TBG8", "images/Transition_Backgrounds/TBG8.png");
+    this.load.image("TBG9", "images/Transition_Backgrounds/TBG9.png");
+    this.load.image("TBG10", "images/Transition_Backgrounds/TBG10.png");
+    this.load.image("TBG11", "images/Transition_Backgrounds/TBG11.png");
     this.load.spritesheet(
       "enemy_zombie1_walk",
       "images/enemy_zombie1_walk.png",
       {
-        frameWidth: 100, // Updated to match 100x100 frames
+        frameWidth: 100,
         frameHeight: 100,
       }
     );
@@ -77,7 +94,7 @@ export class BootScene extends Phaser.Scene {
         frames: this.anims.generateFrameNumbers("enemy_zombie1_walk", {
           start: 0,
           end: 7,
-        }), // 8 frames
+        }),
         frameRate: 8,
         repeat: -1,
       });
@@ -85,9 +102,17 @@ export class BootScene extends Phaser.Scene {
     } catch (error) {
       console.error("BootScene: Failed to create animations:", error.message);
     }
-    console.log(
-      "BootScene: Assets and animations loaded, starting TitleScene."
-    );
-    this.scene.start("TitleScene");
+
+    // Wait for font to load
+    document.fonts
+      .load('32px "Press Start 2P"')
+      .then(() => {
+        console.log("BootScene: Font loaded, starting TitleScene");
+        this.scene.start("TitleScene");
+      })
+      .catch((error) => {
+        console.error("BootScene: Font loading failed:", error.message);
+        this.scene.start("TitleScene"); // Fallback to start anyway
+      });
   }
 }
