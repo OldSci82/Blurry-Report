@@ -54,11 +54,58 @@ export class BootScene extends Phaser.Scene {
         frameHeight: 100,
       }
     );
+    this.load.spritesheet("portal", "images/portal.png", {
+      frameWidth: 100,
+      frameHeight: 200,
+    });
+    this.load.spritesheet(
+      "enemy_zombie_boss_walk",
+      "images/enemy_zombie_Boss_walk.png",
+      {
+        frameWidth: 200,
+        frameHeight: 200,
+      }
+    );
+    this.load.spritesheet(
+      "enemy_zombie_boss_attack1",
+      "images/enemy_zombie_Boss_attack1.png",
+      {
+        frameWidth: 200,
+        frameHeight: 200,
+      }
+    );
   }
 
   create() {
     console.log("BootScene: Creating animations...");
     try {
+      this.anims.create({
+        key: "portal",
+        frames: this.anims.generateFrameNumbers("portal", {
+          start: 0,
+          end: 5,
+        }),
+        frameRate: 5,
+        repeat: -1,
+      });
+      this.anims.create({
+        key: "zombie_boss_walk",
+        frames: this.anims.generateFrameNumbers("enemy_zombie_boss_walk", {
+          start: 0,
+          end: 6,
+        }),
+        frameRate: 7,
+        repeat: -1,
+      });
+      this.anims.create({
+        key: "zombie_boss_attack1",
+        frames: this.anims.generateFrameNumbers("enemy_zombie_boss_attack1", {
+          start: 0,
+          end: 6,
+        }),
+        frameRate: 7,
+        repeat: -1,
+      });
       this.anims.create({
         key: "walk_black",
         frames: this.anims.generateFrameNumbers("black_fighter_walk", {

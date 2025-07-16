@@ -12,8 +12,8 @@ export class LevelCompleteScene extends Phaser.Scene {
     const screenHeight = this.cameras.main.height;
 
     // === DEFINE VIRTUAL CANVAS SIZE ===
-    const canvasWidth = 800;
-    const canvasHeight = 600;
+    const canvasWidth = 1280;
+    const canvasHeight = 720;
     const centerX = screenWidth / 2;
     const centerY = screenHeight / 2;
 

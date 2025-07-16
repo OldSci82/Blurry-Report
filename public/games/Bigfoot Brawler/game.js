@@ -9,21 +9,20 @@ import { LevelCompleteScene } from "./scripts/LevelCompleteScene.js";
 // Game configuration
 export const config = {
   type: Phaser.AUTO,
-  width: 800, // Was 1500
-  height: 600, // Was 1500
+  width: 1280, // Was 1500
+  height: 720, // Was 1500
   backgroundColor: "#0f1128",
   parent: "game-container",
+  scale: {
+    mode: Phaser.Scale.FIT, // Scale to fit window while maintaining aspect ratio
+    autoCenter: Phaser.Scale.CENTER_BOTH, // Center horizontally and vertically
+  },
   physics: {
     default: "arcade",
     arcade: {
       gravity: { y: 0 },
       debug: false,
     },
-  },
-  scale: {
-    mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH,
-    parent: "game-container",
   },
   scene: [
     BootScene,
@@ -39,6 +38,7 @@ export const config = {
 export const gameState = {
   currentLevel: 1,
   playerHealth: 100,
+  maxHealth: 100,
   score: 0,
   selectedFighter: null,
   levelNames: [

@@ -26,8 +26,16 @@ export class GameScene extends Phaser.Scene {
 
     this.enemies = null;
     this.boss = null;
+    this.bossHealth = 100;
+    this.bossSpawned = false;
+    this.bossText = null;
+    this.bossHealthBar = null;
+    this.bossHealthBarBg = null;
+    this.bossDefeated = false;
+
     this.portal = null;
     this.portalText = null;
+    this.portalCollider = null;
 
     this.levelText = null;
     this.healthText = null;
@@ -40,57 +48,41 @@ export class GameScene extends Phaser.Scene {
 
     this.isPaused = false;
     this.pauseMenu = null;
+
+    this.worldLocked = false; // Prevents world extension after boss spawn
   }
 
-  preload() {
-    // Assets loaded in BootScene
-  }
+  preload() {}
 
+  //===================================================================
+  //===================CREATE GAME WORLD===============================
+  //===================================================================
   create() {
+    this.bossDefeated = false; // Reset for new level
+    this.bossSpawned = false; // Ensure boss hasn't spawned
     this.cameras.main.fadeIn(500, 0, 0, 0);
-    // Reset input and physics systems
     this.input.keyboard.resetKeys();
-    this.input.keyboard.clearCaptures();
     this.physics.world.overlaps = [];
 
-    // Validate selected fighter
     if (!["black", "red"].includes(gameState.selectedFighter)) {
-      console.error("Invalid fighter selected, defaulting to 'black'");
       gameState.selectedFighter = "black";
     }
 
-    // Set keys based on selected fighter
     this.walkSheetKey = `${gameState.selectedFighter}_fighter_walk`;
     this.punchKey = `${gameState.selectedFighter}_fighter_punch`;
     this.kickKey = `${gameState.selectedFighter}_fighter_kick`;
     this.walkAnimKey = `walk_${gameState.selectedFighter}`;
 
-    // Verify spritesheet and animations
-    if (!this.textures.exists(this.walkSheetKey)) {
-      console.error(`Spritesheet ${this.walkSheetKey} not found`);
-      this.scene.start("TitleScene");
-      return;
-    }
-    if (
-      !this.anims.exists(this.walkAnimKey) ||
-      !this.anims.exists(`idle_${gameState.selectedFighter}`)
-    ) {
-      console.error(
-        `Animations missing: walk=${this.walkAnimKey}, idle=idle_${gameState.selectedFighter}`
-      );
-      this.scene.start("TitleScene");
-      return;
-    }
-
-    // World & Camera Bounds
+    // Set world bounds
     this.worldWidth = 3000;
     this.worldHeight = config.height;
+    this.maxWorldWidth = 3000;
     this.physics.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
     this.cameras.main.setBounds(0, 0, this.worldWidth, this.worldHeight);
 
-    // Background Setup
+    // Background
     const bgImage = this.textures.get("background_level1").getSourceImage();
-    const bgScale = config.height / bgImage.height; // Scale to fit 600px height
+    const bgScale = config.height / bgImage.height;
     this.bgScale = bgScale;
     this.background = this.add
       .tileSprite(
@@ -104,18 +96,10 @@ export class GameScene extends Phaser.Scene {
       .setScale(bgScale)
       .setScrollFactor(0)
       .setDepth(-10);
-    console.log(
-      "Background dimensions:",
-      bgImage.width,
-      bgImage.height,
-      "Scale:",
-      bgScale,
-      "Position:",
-      0,
-      config.height - bgImage.height * bgScale
-    );
 
-    // Player Setup
+    //===================================================================
+    //===================PLAYER SETUP====================================
+    //===================================================================
     this.player = this.add.rectangle(
       150,
       config.height - 100,
@@ -123,7 +107,7 @@ export class GameScene extends Phaser.Scene {
       30,
       0x00ff00,
       0.3
-    ); // Adjusted hitbox and y-position
+    );
     this.physics.add.existing(this.player);
     this.player.body.setCollideWorldBounds(true);
     this.player.body.setBoundsRectangle(
@@ -131,62 +115,17 @@ export class GameScene extends Phaser.Scene {
     );
     this.player.canTakeDamage = true;
 
-    // Player Sprite
     this.playerSprite = this.add
       .sprite(this.player.x, this.player.y, this.walkSheetKey)
-      .setScale(0.6); // Reduced from 2
-    try {
-      this.playerSprite.play(`idle_${gameState.selectedFighter}`);
-      console.log(`Playing idle animation: idle_${gameState.selectedFighter}`);
-    } catch (error) {
-      console.error(`Failed to play idle animation: ${error.message}`);
-      this.scene.start("TitleScene");
-      return;
-    }
+      .setScale(1)
+      .play(`idle_${gameState.selectedFighter}`);
 
-    // Camera Follow
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setFollowOffset(-config.width / 4, 0);
 
-    // Enemy Setup
-    this.enemies = this.physics.add.group();
-    const numEnemies = 3 + gameState.currentLevel;
-    if (!this.anims.exists("walk_zombie1")) {
-      console.error("Animation walk_zombie1 missing");
-    }
-    for (let i = 0; i < numEnemies; i++) {
-      const enemy = this.add
-        .sprite(
-          Phaser.Math.Between(config.width / 2, config.width - 50),
-          Phaser.Math.Between(config.height - 200, config.height - 50), // Adjusted y to stay on road
-          "enemy_zombie1_walk"
-        )
-        .setScale(0.6); // Reduced from 1.5
-      this.physics.add.existing(enemy);
-      enemy.body.setSize(20, 30); // Adjusted hitbox
-      enemy.body.setOffset((enemy.width - 20) / 2, enemy.height - 30);
-      enemy.body.setCollideWorldBounds(true);
-      enemy.body.setImmovable(true);
-      enemy.health = 1;
-      enemy.isHitByAttack = false;
-      enemy.type = i % 2 === 0 ? "fast" : "standard";
-      try {
-        enemy.play("walk_zombie1");
-        console.log(`Playing walk_zombie1 for enemy ${i}`);
-      } catch (error) {
-        console.error(
-          `Failed to play zombie animation for enemy ${i}: ${error.message}`
-        );
-      }
-      this.enemies.add(enemy);
-    }
-
-    // Boss
-    this.boss = null;
-    this.bossHealth = 100;
-    this.bossSpawned = false;
-
-    // Input Setup
+    //===================================================================
+    //===================INPUT SETUP=====================================
+    //===================================================================
     this.cursors = this.input.keyboard.createCursorKeys();
     this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
@@ -197,59 +136,44 @@ export class GameScene extends Phaser.Scene {
     this.keyESC = this.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.ESC
     );
-
     this.keyZ.on("down", this.handlePunch, this);
     this.keyX.on("down", this.handleKick, this);
     this.keyESC.on("down", this.togglePause, this);
 
-    // HUD
-    this.levelText = this.add
-      .text(
-        20,
-        20,
-        `Level ${gameState.currentLevel}: ${
-          gameState.levelNames[gameState.currentLevel - 1]
-        }`,
-        {
-          fontFamily: "Press Start 2P",
-          fontSize: "24px",
-          fill: "#FFF",
-          stroke: "#000",
-          strokeThickness: 4,
-        }
-      )
-      .setOrigin(0)
-      .setScrollFactor(0);
-    this.healthBarBg = this.add
-      .rectangle(20, 60, 300, 30, 0x333333)
-      .setOrigin(0)
-      .setScrollFactor(0);
-    this.healthBar = this.add
-      .rectangle(20, 60, gameState.playerHealth * 3, 30, 0xff0000)
-      .setOrigin(0)
-      .setScrollFactor(0);
-    this.healthText = this.add
-      .text(20, 100, `Health: ${gameState.playerHealth}`, {
-        fontFamily: "Press Start 2P",
-        fontSize: "24px",
-        fill: "#FFF",
-        stroke: "#000",
-        strokeThickness: 4,
-      })
-      .setOrigin(0)
-      .setScrollFactor(0);
-    this.scoreText = this.add
-      .text(config.width - 20, 20, `Score: ${gameState.score}`, {
-        fontFamily: "Press Start 2P",
-        fontSize: "24px",
-        fill: "#FFF",
-        stroke: "#000",
-        strokeThickness: 4,
-      })
-      .setOrigin(1, 0)
-      .setScrollFactor(0);
+    //===================================================================
+    //===================HUD SETUP=======================================
+    //===================================================================
+    this.setupHUD();
 
-    // Overlap Handlers
+    //===================================================================
+    //===================ENEMY SETUP=====================================
+    //===================================================================
+    this.enemies = this.physics.add.group();
+    const numEnemies = 3 + gameState.currentLevel;
+    for (let i = 0; i < numEnemies; i++) {
+      const enemy = this.add
+        .sprite(
+          Phaser.Math.Between(config.width / 2, config.width - 50),
+          Phaser.Math.Between(config.height - 200, config.height - 50),
+          "enemy_zombie1_walk"
+        )
+        .setScale(1)
+        .play("walk_zombie1");
+      this.physics.add.existing(enemy);
+      enemy.body
+        .setSize(20, 30)
+        .setOffset((enemy.width - 20) / 2, enemy.height - 30);
+      enemy.body.setCollideWorldBounds(true);
+      enemy.body.setImmovable(true);
+      enemy.health = 1;
+      enemy.isHitByAttack = false;
+      enemy.type = i % 2 === 0 ? "fast" : "standard";
+      this.enemies.add(enemy);
+    }
+
+    //===================================================================
+    //===================COLLISION SETUP=================================
+    //===================================================================
     this.physics.add.overlap(
       this.player,
       this.enemies,
@@ -257,40 +181,95 @@ export class GameScene extends Phaser.Scene {
       null,
       this
     );
-    if (this.boss) {
-      this.physics.add.overlap(
-        this.player,
-        this.boss,
-        this.handlePlayerTakeDamage,
-        null,
-        this
-      );
-    }
 
     this.events.on("shutdown", this.shutdown, this);
 
-    // Force check win condition
+    //===================================================================
+    //===================CHECK INITIAL WIN CONDITION=====================
+    //===================================================================
     this.checkWinCondition();
   }
 
+  //===================================================================
+  //===================END LEVEL BOSS SPAWN============================
+  //===================================================================
+  spawnBoss() {
+    if (this.bossSpawned || this.bossDefeated) {
+      console.log("Boss spawn skipped: already spawned or defeated");
+      return;
+    }
+    console.log(
+      "Spawning boss at:",
+      this.worldWidth - 100,
+      config.height - 100
+    );
+    this.boss = this.physics.add
+      .sprite(this.worldWidth - 100, config.height - 100, "zombie_boss_walk")
+      .setScale(0.6)
+      .setDepth(1);
+    this.boss.body.setSize(60, 80).setOffset(70, 80);
+    this.boss.body.setImmovable(true);
+    this.boss.body.setCollideWorldBounds(true);
+    this.boss.isHitByAttack = false;
+    this.boss.play("zombie_boss_walk");
+
+    this.bossText = this.add
+      .text(this.boss.x, this.boss.y - 80, "BOSS!", {
+        fontFamily: "Press Start 2P",
+        fontSize: "24px",
+        fill: "#FFF",
+        stroke: "#000",
+        strokeThickness: 4,
+      })
+      .setOrigin(0.5)
+      .setDepth(2);
+
+    this.physics.add.overlap(
+      this.player,
+      this.boss,
+      this.handlePlayerTakeDamage,
+      null,
+      this
+    );
+
+    this.bossHealth = 100;
+    this.bossSpawned = true;
+    this.bossDefeated = false;
+    this.worldLocked = true;
+  }
+
+  //===================================================================
+  //===================PLAYER TAKES DAMAGE==============================
+  //===================================================================
   handlePlayerTakeDamage(player, source) {
     if (!player.canTakeDamage) return;
 
     const damage = source === this.boss ? 10 : 5;
     gameState.playerHealth -= damage;
-    this.healthBar.width = gameState.playerHealth * 3;
+    this.healthBar.width = (gameState.playerHealth / gameState.maxHealth) * 300;
     this.healthText.setText(`Health: ${gameState.playerHealth}`);
     player.canTakeDamage = false;
 
+    // Boss attack animation (optional)
+    if (source === this.boss) {
+      this.boss.play("attack_zombie_boss", true);
+      this.time.delayedCall(700, () => {
+        if (this.boss && this.boss.active) {
+          this.boss.play("walk_zombie_boss");
+        }
+      });
+    }
+
     this.showDamageSprite(source.x);
 
+    // Knockback logic
     const angle = Phaser.Math.Angle.Between(
       source.x,
       source.y,
       player.x,
       player.y
     );
-    const knockbackDistance = 80; // Reduced from 100
+    const knockbackDistance = 80;
     const knockbackX = player.x + Math.cos(angle) * knockbackDistance;
     const knockbackY = player.y + Math.sin(angle) * knockbackDistance;
 
@@ -303,15 +282,10 @@ export class GameScene extends Phaser.Scene {
       targets: player,
       x: knockbackX,
       y: knockbackY,
-      duration: 800, // Reduced from 1000
+      duration: 800,
       ease: "Power2",
       onUpdate: () => {
         this.playerSprite.setPosition(player.x, player.y);
-        this.cameras.main.scrollX = Phaser.Math.Clamp(
-          player.x - config.width / 2,
-          0,
-          this.worldWidth - config.width
-        );
       },
       onComplete: () => {
         if (player.body) player.body.moves = true;
@@ -327,7 +301,6 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.time.delayedCall(800, () => {
-      // Reduced from 1000
       player.canTakeDamage = true;
       this.playerSprite.setAlpha(1);
     });
@@ -337,64 +310,38 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
+  //===================================================================
+  //===================ATTACK INPUT WRAPPERS===========================
+  //===================================================================
   handlePunch() {
-    if (!this.canAttack || this.isPaused) return;
-    this.performAttack(this.punchKey);
+    const punchKey =
+      gameState.selectedFighter === "red"
+        ? "red_fighter_punch"
+        : "black_fighter_punch";
+    this.performAttack(punchKey);
   }
 
   handleKick() {
-    if (!this.canAttack || this.isPaused) return;
-    this.performAttack(this.kickKey);
-  }
-
-  //===================================================================
-  //===================END LEVEL BOSS SPAWN============================
-  //===================================================================
-  spawnBoss() {
-    this.boss = this.add.rectangle(
-      config.width - 100,
-      config.height / 2,
-      60,
-      80,
-      0x8a2be2
-    );
-    this.physics.add.existing(this.boss);
-    this.boss.body.setImmovable(true);
-    this.boss.body.setCollideWorldBounds(true);
-    this.boss.isHitByAttack = false;
-
-    this.add
-      .text(this.boss.x, this.boss.y - 50, "BOSS!", {
-        fontSize: "24px",
-        fill: "#FFF",
-      })
-      .setOrigin(0.5);
-
-    // Enable collision
-    this.physics.add.overlap(
-      this.player,
-      this.boss,
-      this.handlePlayerTakeDamage,
-      null,
-      this
-    );
-
-    this.bossHealth = 100;
-    this.bossSpawned = true;
+    const kickKey =
+      gameState.selectedFighter === "red"
+        ? "red_fighter_kick"
+        : "black_fighter_kick";
+    this.performAttack(kickKey);
   }
 
   //===================================================================
   //===================PLAYER ATTACK===================================
   //===================================================================
   performAttack(imageKey) {
-    this.canAttack = false;
+    if (!this.canAttack || this.isPaused) return;
 
+    this.canAttack = false;
     this.playerSprite.setVisible(false);
 
     if (this.attackSprite) this.attackSprite.destroy();
     if (this.attackHitbox) this.attackHitbox.destroy();
 
-    const offsetX = this.playerFacingRight ? 30 : -30;
+    const offsetX = this.playerFacingRight ? 40 : -40;
     this.attackSprite = this.add
       .image(this.player.x + offsetX, this.player.y, imageKey)
       .setScale(1);
@@ -403,8 +350,8 @@ export class GameScene extends Phaser.Scene {
     this.attackHitbox = this.add.rectangle(
       this.attackSprite.x,
       this.attackSprite.y,
-      40,
-      40,
+      50,
+      50,
       0xffff00,
       0.3
     );
@@ -452,10 +399,11 @@ export class GameScene extends Phaser.Scene {
   }
 
   //===================================================================
-  //===================ENEMY HIT===================================
+  //===================ENEMY HIT=======================================
   //===================================================================
   handleEnemyHit(enemy, damage) {
     if (!enemy.active) return;
+
     enemy.health -= damage;
     gameState.score += 10;
     this.scoreText.setText(`Score: ${gameState.score}`);
@@ -470,24 +418,31 @@ export class GameScene extends Phaser.Scene {
   }
 
   //===================================================================
-  //===================BOSS HIT===================================
+  //===================BOSS HIT========================================
   //===================================================================
   handleBossHit(boss, damage) {
-    if (!boss.active) return;
+    if (!boss.active || this.bossDefeated) return;
+
     this.bossHealth -= damage;
     gameState.score += 100;
     this.scoreText.setText(`Score: ${gameState.score}`);
 
     if (this.bossHealth <= 0) {
+      if (this.bossText) this.bossText.destroy();
       boss.destroy();
+      this.boss = null;
+      this.bossSpawned = false;
+      this.bossDefeated = true; // Flag to prevent boss from respawning
       gameState.score += 1000;
       this.scoreText.setText(`Score: ${gameState.score}`);
+
+      // Trigger portal check
       this.checkWinCondition();
     }
   }
 
   //===================================================================
-  //===================SHOW SPRITE DAMAGE==============================
+  //===================SPRITE DAMAGE===================================
   //===================================================================
   showDamageSprite(sourceX) {
     if (!this.playerSprite) return;
@@ -498,11 +453,10 @@ export class GameScene extends Phaser.Scene {
     const damageSprite = this.add
       .image(this.player.x, this.player.y, damageKey)
       .setDepth(10)
-      .setTint(0xff0000); // Red flash
+      .setTint(0xff0000);
 
     if (!this.playerFacingRight) damageSprite.flipX = true;
 
-    // Optional: knockback visuals follow player position
     this.time.delayedCall(200, () => {
       damageSprite.destroy();
       this.playerSprite.clearTint();
@@ -512,176 +466,64 @@ export class GameScene extends Phaser.Scene {
   }
 
   //===================================================================
-  //===================PLAYER DAMAGE===================================
-  //===================================================================
-  handlePlayerTakeDamage(player, source) {
-    if (!player.canTakeDamage) return;
-
-    const damage = source === this.boss ? 10 : 5;
-    gameState.playerHealth -= damage;
-    this.healthText.setText(`Health: ${gameState.playerHealth}`);
-
-    player.canTakeDamage = false;
-
-    // Flash damage visual
-    this.showDamageSprite(source.x);
-
-    // Knockback direction
-    const angle = Phaser.Math.Angle.Between(
-      source.x,
-      source.y,
-      player.x,
-      player.y
-    );
-    const knockbackDistance = 100;
-    const knockbackX = player.x + Math.cos(angle) * knockbackDistance;
-    const knockbackY = player.y + Math.sin(angle) * knockbackDistance;
-
-    // Stop movement during tween
-    if (player.body) {
-      player.body.setVelocity(0);
-      player.body.moves = false;
-    }
-
-    // Tween player back and update camera and sprite position
-    this.tweens.add({
-      targets: player,
-      x: knockbackX,
-      y: knockbackY,
-      duration: 1000,
-      ease: "Power2",
-      onUpdate: () => {
-        this.playerSprite.setPosition(player.x, player.y);
-
-        // 👇 Smooth camera follow during tween
-        this.cameras.main.scrollX = Phaser.Math.Clamp(
-          player.x - config.width / 2,
-          0,
-          1600 - config.width
-        );
-      },
-      onComplete: () => {
-        if (player.body) player.body.moves = true;
-      },
-    });
-
-    // Damage flicker effect
-    this.tweens.add({
-      targets: this.playerSprite,
-      alpha: 0.4,
-      yoyo: true,
-      repeat: 4,
-      duration: 100,
-    });
-
-    this.time.delayedCall(1000, () => {
-      player.canTakeDamage = true;
-      this.playerSprite.setAlpha(1);
-    });
-
-    if (gameState.playerHealth <= 0) {
-      this.scene.start("GameOverScene");
-    }
-  }
-
-  //===================================================================
-  //===================WORLD EXTEND=================================
-  //===================================================================
-  extendWorld() {
-    const extensionSize = 2000; // How much to extend each time
-    this.worldWidth += extensionSize;
-
-    console.log("Extending world to:", this.worldWidth);
-
-    // Update world bounds
-    this.physics.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
-    this.cameras.main.setBounds(0, 0, this.worldWidth, this.worldHeight);
-
-    // Rebind player world constraint
-    this.player.body.setBoundsRectangle(
-      new Phaser.Geom.Rectangle(0, 0, this.worldWidth, this.worldHeight)
-    );
-
-    // Optional: spawn new enemies or objects here
-    for (let i = 0; i < 3; i++) {
-      const enemy = this.add.sprite(
-        Phaser.Math.Between(this.worldWidth - 600, this.worldWidth - 100),
-        Phaser.Math.Between(50, this.worldHeight - 50),
-        "enemy_zombie1_walk"
-      );
-      this.physics.add.existing(enemy);
-      enemy.body.setSize(30, 40);
-      enemy.body.setOffset((enemy.width - 30) / 2, enemy.height - 40);
-      enemy.body.setCollideWorldBounds(true);
-      enemy.body.setImmovable(true);
-      enemy.health = 1;
-      enemy.isHitByAttack = false;
-      enemy.type = i % 2 === 0 ? "fast" : "standard";
-      enemy.play("walk_zombie1");
-      this.enemies.add(enemy);
-    }
-  }
-
-  //===================================================================
   //===================END LEVEL CHECK=================================
   //===================================================================
   checkWinCondition() {
     const enemiesRemaining = this.enemies.countActive(true);
-    const bossAlive = this.boss && this.boss.active;
+    console.log(
+      "Win condition check: enemies=",
+      enemiesRemaining,
+      "bossSpawned=",
+      this.bossSpawned,
+      "bossDefeated=",
+      this.bossDefeated,
+      "bossActive=",
+      this.boss && this.boss.active
+    );
 
-    if (enemiesRemaining <= 0 && !this.bossSpawned) {
+    // Spawn boss when all enemies are defeated and boss hasn't been spawned or defeated
+    if (enemiesRemaining <= 0 && !this.bossSpawned && !this.bossDefeated) {
       console.log("Enemies defeated, spawning boss...");
       this.spawnBoss();
-      return; // Wait for boss defeat before checking portal
+      return;
     }
 
-    if (
-      enemiesRemaining <= 0 &&
-      this.bossSpawned &&
-      !bossAlive &&
-      !this.portal
-    ) {
+    // Spawn portal when boss is defeated and no enemies remain
+    if (enemiesRemaining <= 0 && this.bossDefeated && !this.portal) {
       console.log("Boss defeated, spawning portal...");
-      if (this.portal) {
-        if (this.portalText) this.portalText.destroy();
-        if (this.portal.body) this.physics.world.disable(this.portal);
-        this.portal.destroy();
-      }
-
-      this.portal = this.add.rectangle(
-        this.worldWidth - 40, // Place at world’s end
-        config.height / 2,
-        40,
-        80,
-        0x00ffff,
-        0.5
-      );
-      this.physics.add.existing(this.portal);
+      this.portal = this.physics.add
+        .sprite(this.worldWidth - 100, config.height - 200, "portal")
+        .setScale(2)
+        .setDepth(1);
+      this.portal.body.setSize(40, 80).setOffset(30, 80);
       this.portal.body.setAllowGravity(false);
       this.portal.body.setImmovable(true);
       this.portal.body.enable = true;
+      this.portal.play("portal");
 
       this.portalText = this.add
-        .text(this.portal.x, this.portal.y - 50, "EXIT", {
+        .text(this.portal.x, this.portal.y - 80, "EXIT", {
+          fontFamily: "Press Start 2P",
           fontSize: "18px",
           fill: "#FFF",
+          stroke: "#000",
+          strokeThickness: 4,
         })
-        .setOrigin(0.5);
+        .setOrigin(0.5)
+        .setDepth(2);
 
-      console.log("Portal spawned at:", this.portal.x, this.portal.y);
-
-      this.physics.add.overlap(
+      this.portalCollider = this.physics.add.overlap(
         this.player,
         this.portal,
         () => {
           this.physics.world.isPaused = true;
-          this.physics.world.overlaps = [];
-          if (this.portal.body) this.physics.world.disable(this.portal);
+          if (this.portalCollider) {
+            this.physics.world.removeCollider(this.portalCollider);
+            this.portalCollider = null;
+          }
           this.time.delayedCall(300, () => {
-            if (this.portal && this.portal.active) {
-              if (this.portalText) this.portalText.destroy();
-              this.portal.destroy();
-            }
+            if (this.portalText) this.portalText.destroy();
+            if (this.portal) this.portal.destroy();
             if (gameState.currentLevel < 10) {
               gameState.currentLevel++;
               this.scene.start("LevelCompleteScene");
@@ -694,6 +536,179 @@ export class GameScene extends Phaser.Scene {
         this
       );
     }
+  }
+
+  //===================================================================
+  //===================EXTEND WORLD (LOCKED AFTER BOSS)================
+  //===================================================================
+  extendWorld() {
+    if (this.worldLocked) return;
+
+    const extensionSize = 2000;
+    this.worldWidth += extensionSize;
+
+    this.physics.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
+    this.cameras.main.setBounds(0, 0, this.worldWidth, this.worldHeight);
+
+    this.player.body.setBoundsRectangle(
+      new Phaser.Geom.Rectangle(0, 0, this.worldWidth, this.worldHeight)
+    );
+
+    // Spawn extra enemies
+    for (let i = 0; i < 3; i++) {
+      const enemy = this.add
+        .sprite(
+          Phaser.Math.Between(this.worldWidth - 600, this.worldWidth - 100),
+          Phaser.Math.Between(config.height - 200, config.height - 50),
+          "enemy_zombie1_walk"
+        )
+        .setScale(0.6)
+        .play("walk_zombie1");
+      this.physics.add.existing(enemy);
+      enemy.body.setSize(30, 40);
+      enemy.body.setOffset((enemy.width - 30) / 2, enemy.height - 40);
+      enemy.body.setCollideWorldBounds(true);
+      enemy.body.setImmovable(true);
+      enemy.health = 1;
+      enemy.isHitByAttack = false;
+      enemy.type = i % 2 === 0 ? "fast" : "standard";
+      this.enemies.add(enemy);
+    }
+  }
+
+  //===================================================================
+  //===================UPDATE LOOP=====================================
+  //===================================================================
+  update() {
+    this.background.tilePositionX = this.cameras.main.scrollX;
+    if (this.isPaused) return;
+
+    const body = this.player.body;
+    body.setVelocity(0);
+
+    const left = this.cursors.left.isDown || this.keyA.isDown;
+    const right = this.cursors.right.isDown || this.keyD.isDown;
+    const up = this.cursors.up.isDown || this.keyW.isDown;
+    const down = this.cursors.down.isDown || this.keyS.isDown;
+
+    let isMoving = false;
+    if (left) {
+      body.setVelocityX(-this.playerSpeed);
+      this.playerFacingRight = false;
+      isMoving = true;
+    } else if (right) {
+      body.setVelocityX(this.playerSpeed);
+      this.playerFacingRight = true;
+      isMoving = true;
+    }
+
+    const scaledYMin = Math.min(220 * this.bgScale, config.height / 2 - 50);
+    const scaledYMax = Math.max(550 * this.bgScale, config.height / 2 + 50);
+    let newY = this.player.y;
+    if (up) {
+      newY -= (this.playerSpeed * this.game.loop.delta) / 1000;
+      isMoving = true; // Add for vertical movement
+    } else if (down) {
+      newY += (this.playerSpeed * this.game.loop.delta) / 1000;
+      isMoving = true; // Add for vertical movement
+    }
+    this.player.y = Phaser.Math.Clamp(newY, scaledYMin, scaledYMax);
+    this.player.body.setVelocityY(0);
+
+    if (body.velocity.length() > 0) {
+      body.velocity.normalize().scale(this.playerSpeed);
+    }
+
+    this.playerSprite.setPosition(this.player.x, this.player.y);
+    this.playerSprite.flipX = !this.playerFacingRight;
+    this.playerSprite.play(
+      isMoving ? this.walkAnimKey : `idle_${gameState.selectedFighter}`,
+      true
+    );
+
+    this.enemies.children.each((enemy) => {
+      if (enemy.active) {
+        const speed = enemy.type === "fast" ? 60 : 40;
+        this.physics.moveToObject(enemy, this.player, speed);
+        enemy.flipX = enemy.x > this.player.x;
+      }
+    });
+
+    if (this.boss && this.boss.active) {
+      if (this.boss.y < this.player.y) this.boss.y += 1.5;
+      else if (this.boss.y > this.player.y) this.boss.y -= 1.5;
+      this.bossText.setPosition(this.boss.x, this.boss.y - 80);
+      this.boss.flipX = this.boss.x > this.player.x;
+    }
+
+    const extensionTriggerX = this.worldWidth - 600;
+    if (
+      this.player.x > extensionTriggerX &&
+      this.worldWidth < this.maxWorldWidth
+    ) {
+      this.extendWorld();
+    }
+  }
+
+  //===================================================================
+  //===================HUD SETUP=======================================
+  //===================================================================
+  setupHUD() {
+    this.levelText = this.add
+      .text(
+        20,
+        20,
+        `Level ${gameState.currentLevel}: ${
+          gameState.levelNames[gameState.currentLevel - 1]
+        }`,
+        {
+          fontFamily: "Press Start 2P",
+          fontSize: "24px",
+          fill: "#FFF",
+          stroke: "#000",
+          strokeThickness: 4,
+        }
+      )
+      .setOrigin(0)
+      .setScrollFactor(0);
+
+    this.healthBarBg = this.add
+      .rectangle(20, 60, 300, 30, 0x333333)
+      .setOrigin(0)
+      .setScrollFactor(0);
+
+    this.healthBar = this.add
+      .rectangle(
+        20,
+        60,
+        (gameState.playerHealth / gameState.maxHealth) * 300,
+        30,
+        0xff0000
+      )
+      .setOrigin(0)
+      .setScrollFactor(0);
+
+    this.healthText = this.add
+      .text(20, 100, `Health: ${gameState.playerHealth}`, {
+        fontFamily: "Press Start 2P",
+        fontSize: "24px",
+        fill: "#FFF",
+        stroke: "#000",
+        strokeThickness: 4,
+      })
+      .setOrigin(0)
+      .setScrollFactor(0);
+
+    this.scoreText = this.add
+      .text(config.width - 20, 20, `Score: ${gameState.score}`, {
+        fontFamily: "Press Start 2P",
+        fontSize: "24px",
+        fill: "#FFF",
+        stroke: "#000",
+        strokeThickness: 4,
+      })
+      .setOrigin(1, 0)
+      .setScrollFactor(0);
   }
 
   //===================================================================
@@ -762,73 +777,9 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  update() {
-    this.background.tilePositionX = this.cameras.main.scrollX;
-    if (this.isPaused) return;
-
-    const body = this.player.body;
-    body.setVelocity(0);
-
-    const left = this.cursors.left.isDown || this.keyA.isDown;
-    const right = this.cursors.right.isDown || this.keyD.isDown;
-    const up = this.cursors.up.isDown || this.keyW.isDown;
-    const down = this.cursors.down.isDown || this.keyS.isDown;
-
-    let isMoving = false;
-    if (left) {
-      body.setVelocityX(-this.playerSpeed);
-      this.playerFacingRight = false;
-      isMoving = true;
-    } else if (right) {
-      body.setVelocityX(this.playerSpeed);
-      this.playerFacingRight = true;
-      isMoving = true;
-    }
-
-    const scaledYMin = Math.min(220 * this.bgScale, config.height / 2 - 50);
-    const scaledYMax = Math.max(550 * this.bgScale, config.height / 2 + 50);
-    let newY = this.player.y;
-    if (up) newY -= (this.playerSpeed * this.game.loop.delta) / 1000;
-    else if (down) newY += (this.playerSpeed * this.game.loop.delta) / 1000;
-    this.player.y = Phaser.Math.Clamp(newY, scaledYMin, scaledYMax);
-    this.player.body.setVelocityY(0);
-
-    if (body.velocity.length() > 0) {
-      body.velocity.normalize().scale(this.playerSpeed);
-    }
-
-    this.playerSprite.setPosition(this.player.x, this.player.y);
-    this.playerSprite.flipX = !this.playerFacingRight;
-    if (isMoving) {
-      this.playerSprite.play(this.walkAnimKey, true);
-    } else {
-      this.playerSprite.play(`idle_${gameState.selectedFighter}`, true);
-    }
-
-    this.enemies.children.each((enemy) => {
-      if (enemy.active) {
-        const speed = enemy.type === "fast" ? 60 : 40;
-        this.physics.moveToObject(enemy, this.player, speed);
-        enemy.flipX = enemy.x > this.player.x;
-      }
-    });
-
-    if (this.boss && this.boss.active) {
-      // Simple boss AI movement towards player on y-axis only
-      if (this.boss.y < this.player.y) {
-        this.boss.y += 1.5;
-      } else if (this.boss.y > this.player.y) {
-        this.boss.y -= 1.5;
-      }
-      // Damage player if overlapping is handled elsewhere
-    }
-    const extensionTriggerX = this.worldWidth - 600;
-
-    if (this.player.x > extensionTriggerX) {
-      this.extendWorld();
-    }
-  }
-
+  //===================================================================
+  //===================SHUTDOWN CLEANUP===============================
+  //===================================================================
   shutdown() {
     // Cleanup all event listeners and objects
     if (this.keyZ) this.keyZ.off("down", this.handlePunch, this);
@@ -843,6 +794,10 @@ export class GameScene extends Phaser.Scene {
       this.player.destroy();
     }
     if (this.playerSprite) this.playerSprite.destroy();
+    if (this.attackHitbox) {
+      this.attackHitbox.destroy();
+      this.attackHitbox = null;
+    }
 
     if (this.portal) {
       if (this.portal.body) this.physics.world.disable(this.portal);
@@ -852,6 +807,11 @@ export class GameScene extends Phaser.Scene {
     if (this.portalText) {
       this.portalText.destroy();
       this.portalText = null;
+    }
+
+    if (this.portalCollider) {
+      this.physics.world.removeCollider(this.portalCollider);
+      this.portalCollider = null;
     }
 
     if (this.enemies && typeof this.enemies.destroy === "function") {
@@ -867,6 +827,10 @@ export class GameScene extends Phaser.Scene {
       if (this.boss.body) this.boss.body.destroy();
       this.boss.destroy();
       this.boss = null;
+    }
+    if (this.bossText) {
+      this.bossText.destroy();
+      this.bossText = null;
     }
 
     if (this.pauseMenu) {

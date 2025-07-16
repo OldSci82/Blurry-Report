@@ -132,7 +132,7 @@ export class CharacterSelectScene extends Phaser.Scene {
     blackFighter.on("pointerover", () => {
       blackFighter.setTint(0x00ff00);
       blackFighterName.setStyle({ fill: "#FF0" });
-      this.tweens.add({ targets: blackFighter, scale: 2.75, duration: 200 });
+      this.tweens.add({ targets: blackFighter, scale: 2, duration: 200 });
       this.tweens.add({ targets: blackFighterName, scale: 1.1, duration: 200 });
     });
     blackFighter.on("pointerout", () => {
@@ -152,7 +152,7 @@ export class CharacterSelectScene extends Phaser.Scene {
     redFighter.on("pointerover", () => {
       redFighter.setTint(0xff0000);
       redFighterName.setStyle({ fill: "#FF0" });
-      this.tweens.add({ targets: redFighter, scale: 2.75, duration: 200 });
+      this.tweens.add({ targets: redFighter, scale: 2, duration: 200 });
       this.tweens.add({ targets: redFighterName, scale: 1.1, duration: 200 });
     });
     redFighter.on("pointerout", () => {
