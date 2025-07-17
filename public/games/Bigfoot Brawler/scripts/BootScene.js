@@ -50,7 +50,7 @@ export class BootScene extends Phaser.Scene {
       "enemy_zombie1_walk",
       "images/enemy_zombie1_walk.png",
       {
-        frameWidth: 100,
+        frameWidth: 70,
         frameHeight: 100,
       }
     );

@@ -80,7 +80,9 @@ export class GameScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
     this.cameras.main.setBounds(0, 0, this.worldWidth, this.worldHeight);
 
-    // Background
+    //===================================================================
+    //===================BACKGROUND SETUP====================================
+    //===================================================================
     const bgImage = this.textures.get("background_level1").getSourceImage();
     const bgScale = config.height / bgImage.height;
     this.bgScale = bgScale;
@@ -103,10 +105,10 @@ export class GameScene extends Phaser.Scene {
     this.player = this.add.rectangle(
       150,
       config.height - 100,
-      30,
-      30,
-      0x00ff00,
-      0.3
+      40, //hitbox width
+      100, //Hitbox height
+      0x00ff00, //Hitbox color
+      1 //Transparency 0=see through
     );
     this.physics.add.existing(this.player);
     this.player.body.setCollideWorldBounds(true);
@@ -168,6 +170,18 @@ export class GameScene extends Phaser.Scene {
       enemy.health = 1;
       enemy.isHitByAttack = false;
       enemy.type = i % 2 === 0 ? "fast" : "standard";
+      // Add hitbox visual (corrected to match physics body)
+      enemy.hitboxVisual = this.add
+        .rectangle(
+          enemy.x + (enemy.width - 20) / 2,
+          enemy.y + (enemy.height - 30),
+          20, // Match physics body width
+          30, // Match physics body height
+          0xff0000, // Red
+          0.5 // Semi-transparent
+        )
+        .setOrigin(0.5, 1) // Align with physics body
+        .setDepth(5);
       this.enemies.add(enemy);
     }
 
@@ -195,16 +209,21 @@ export class GameScene extends Phaser.Scene {
   //===================================================================
   spawnBoss() {
     if (this.bossSpawned || this.bossDefeated) {
-      console.log("Boss spawn skipped: already spawned or defeated");
+      console.log(
+        "spawnBoss: Skipped - bossSpawned:",
+        this.bossSpawned,
+        "bossDefeated:",
+        this.bossDefeated
+      );
       return;
     }
     console.log(
-      "Spawning boss at:",
-      this.worldWidth - 100,
+      "spawnBoss: Spawning boss at",
+      this.worldWidth - 200,
       config.height - 100
     );
     this.boss = this.physics.add
-      .sprite(this.worldWidth - 100, config.height - 100, "zombie_boss_walk")
+      .sprite(this.worldWidth - 200, config.height - 100, "zombie_boss_walk")
       .setScale(0.6)
       .setDepth(1);
     this.boss.body.setSize(60, 80).setOffset(70, 80);
@@ -212,6 +231,19 @@ export class GameScene extends Phaser.Scene {
     this.boss.body.setCollideWorldBounds(true);
     this.boss.isHitByAttack = false;
     this.boss.play("zombie_boss_walk");
+
+    // Add boss hitbox visual (corrected to match physics body)
+    this.bossHitboxVisual = this.add
+      .rectangle(
+        this.boss.x + 70,
+        this.boss.y + 80,
+        60,
+        80,
+        0x800080, // Purple
+        0.5 // Semi-transparent
+      )
+      .setOrigin(0.5, 1) // Align with physics body
+      .setDepth(5);
 
     this.bossText = this.add
       .text(this.boss.x, this.boss.y - 80, "BOSS!", {
@@ -252,10 +284,10 @@ export class GameScene extends Phaser.Scene {
 
     // Boss attack animation (optional)
     if (source === this.boss) {
-      this.boss.play("attack_zombie_boss", true);
+      this.boss.play("enemy_zombie_boss_attack1", true);
       this.time.delayedCall(700, () => {
         if (this.boss && this.boss.active) {
-          this.boss.play("walk_zombie_boss");
+          this.boss.play("enemy_zombie_boss_attack1");
         }
       });
     }
@@ -341,7 +373,7 @@ export class GameScene extends Phaser.Scene {
     if (this.attackSprite) this.attackSprite.destroy();
     if (this.attackHitbox) this.attackHitbox.destroy();
 
-    const offsetX = this.playerFacingRight ? 40 : -40;
+    const offsetX = this.playerFacingRight ? 60 : -60;
     this.attackSprite = this.add
       .image(this.player.x + offsetX, this.player.y, imageKey)
       .setScale(1);
@@ -350,10 +382,10 @@ export class GameScene extends Phaser.Scene {
     this.attackHitbox = this.add.rectangle(
       this.attackSprite.x,
       this.attackSprite.y,
-      50,
-      50,
-      0xffff00,
-      0.3
+      80, // Increased width for better overlap
+      60, // Increased height for better overlap
+      0xffff00, // Yellow
+      0.5 // Semi-transparent for visibility
     );
     this.physics.add.existing(this.attackHitbox);
     this.attackHitbox.body.setAllowGravity(false);
@@ -365,34 +397,78 @@ export class GameScene extends Phaser.Scene {
       this.enemies,
       (hitbox, enemy) => {
         if (!enemy.isHitByAttack) {
+          console.log(
+            "Enemy overlap detected at:",
+            enemy.x,
+            enemy.y,
+            "Hitbox:",
+            hitbox.x,
+            hitbox.y,
+            "Enemy type:",
+            enemy.type
+          );
           this.handleEnemyHit(enemy, 20);
           enemy.isHitByAttack = true;
         }
-      }
+      },
+      (hitbox, enemy) => {
+        // Process callback to validate overlap
+        return (
+          hitbox.isAttacking &&
+          enemy.active &&
+          !enemy.isHitByAttack &&
+          Phaser.Geom.Rectangle.Overlaps(hitbox.body, enemy.body)
+        );
+      },
+      this
     );
 
     if (this.boss) {
-      this.physics.add.overlap(this.attackHitbox, this.boss, (hitbox, boss) => {
-        if (!boss.isHitByAttack) {
-          this.handleBossHit(boss, 25);
-          boss.isHitByAttack = true;
-        }
-      });
+      this.physics.add.overlap(
+        this.attackHitbox,
+        this.boss,
+        (hitbox, boss) => {
+          if (!boss.isHitByAttack) {
+            console.log(
+              "Boss overlap detected at:",
+              boss.x,
+              boss.y,
+              "Hitbox:",
+              hitbox.x,
+              hitbox.y
+            );
+            this.handleBossHit(boss, 25);
+            boss.isHitByAttack = true;
+          }
+        },
+        (hitbox, boss) => {
+          return (
+            hitbox.isAttacking &&
+            boss.active &&
+            !boss.isHitByAttack &&
+            Phaser.Geom.Rectangle.Overlaps(hitbox.body, boss.body)
+          );
+        },
+        this
+      );
     }
 
-    this.time.delayedCall(200, () => {
+    this.time.delayedCall(300, () => {
+      // Extended duration to 300ms
       if (this.attackSprite) this.attackSprite.destroy();
       if (this.attackHitbox) this.attackHitbox.destroy();
       this.attackSprite = null;
       this.attackHitbox = null;
 
-      this.enemies.children.each((enemy) => (enemy.isHitByAttack = false));
-      if (this.boss) this.boss.isHitByAttack = false;
+      this.enemies.children.each((enemy) => {
+        if (enemy.active) enemy.isHitByAttack = false;
+      });
+      if (this.boss && this.boss.active) this.boss.isHitByAttack = false;
 
       this.playerSprite.setVisible(true);
       this.playerSprite.play(`idle_${gameState.selectedFighter}`);
       this.time.delayedCall(
-        this.attackCooldown - 200,
+        this.attackCooldown - 300, // Adjusted for new duration
         () => (this.canAttack = true)
       );
     });
@@ -409,6 +485,7 @@ export class GameScene extends Phaser.Scene {
     this.scoreText.setText(`Score: ${gameState.score}`);
 
     if (enemy.health <= 0) {
+      if (enemy.hitboxVisual) enemy.hitboxVisual.destroy(); // Destroy hitbox visual
       enemy.destroy();
       this.enemies.remove(enemy, true, true);
       gameState.score += 50;
@@ -429,6 +506,7 @@ export class GameScene extends Phaser.Scene {
 
     if (this.bossHealth <= 0) {
       if (this.bossText) this.bossText.destroy();
+      if (this.bossHitboxVisual) this.bossHitboxVisual.destroy(); // Destroy hitbox visual
       boss.destroy();
       this.boss = null;
       this.bossSpawned = false;
@@ -572,6 +650,18 @@ export class GameScene extends Phaser.Scene {
       enemy.health = 1;
       enemy.isHitByAttack = false;
       enemy.type = i % 2 === 0 ? "fast" : "standard";
+      // Add hitbox visual
+      enemy.hitboxVisual = this.add
+        .rectangle(
+          enemy.x + (enemy.width - 30) / 2,
+          enemy.y + (enemy.height - 40),
+          30,
+          40,
+          0xff0000, // Red for enemy hitbox
+          0.5 // Semi-transparent
+        )
+        .setOrigin(0.5, 1) // Align with physics body
+        .setDepth(5);
       this.enemies.add(enemy);
     }
   }
@@ -607,10 +697,10 @@ export class GameScene extends Phaser.Scene {
     let newY = this.player.y;
     if (up) {
       newY -= (this.playerSpeed * this.game.loop.delta) / 1000;
-      isMoving = true; // Add for vertical movement
+      isMoving = true;
     } else if (down) {
       newY += (this.playerSpeed * this.game.loop.delta) / 1000;
-      isMoving = true; // Add for vertical movement
+      isMoving = true;
     }
     this.player.y = Phaser.Math.Clamp(newY, scaledYMin, scaledYMax);
     this.player.body.setVelocityY(0);
@@ -631,14 +721,27 @@ export class GameScene extends Phaser.Scene {
         const speed = enemy.type === "fast" ? 60 : 40;
         this.physics.moveToObject(enemy, this.player, speed);
         enemy.flipX = enemy.x > this.player.x;
+        if (enemy.hitboxVisual) {
+          const hitboxWidth = enemy.body.width; // Use physics body width
+          const hitboxHeight = enemy.body.height; // Use physics body height
+          enemy.hitboxVisual.setPosition(
+            enemy.x + enemy.body.offset.x,
+            enemy.y + enemy.body.offset.y
+          );
+        }
       }
     });
 
-    if (this.boss && this.boss.active) {
+    if (this.boss && this.boss.active && this.bossHitboxVisual) {
+      this.boss.y = Phaser.Math.Clamp(this.boss.y, scaledYMin, scaledYMax);
       if (this.boss.y < this.player.y) this.boss.y += 1.5;
       else if (this.boss.y > this.player.y) this.boss.y -= 1.5;
       this.bossText.setPosition(this.boss.x, this.boss.y - 80);
       this.boss.flipX = this.boss.x > this.player.x;
+      this.bossHitboxVisual.setPosition(
+        this.boss.x + this.boss.body.offset.x,
+        this.boss.y + this.boss.body.offset.y
+      );
     }
 
     const extensionTriggerX = this.worldWidth - 600;
@@ -663,7 +766,7 @@ export class GameScene extends Phaser.Scene {
         }`,
         {
           fontFamily: "Press Start 2P",
-          fontSize: "24px",
+          fontSize: "48px",
           fill: "#FFF",
           stroke: "#000",
           strokeThickness: 4,
@@ -689,9 +792,9 @@ export class GameScene extends Phaser.Scene {
       .setScrollFactor(0);
 
     this.healthText = this.add
-      .text(20, 100, `Health: ${gameState.playerHealth}`, {
+      .text(20, 60, `Health: ${gameState.playerHealth}`, {
         fontFamily: "Press Start 2P",
-        fontSize: "24px",
+        fontSize: "48px",
         fill: "#FFF",
         stroke: "#000",
         strokeThickness: 4,
@@ -816,6 +919,9 @@ export class GameScene extends Phaser.Scene {
 
     if (this.enemies && typeof this.enemies.destroy === "function") {
       try {
+        this.enemies.children.each((enemy) => {
+          if (enemy.hitboxVisual) enemy.hitboxVisual.destroy(); // Destroy enemy hitbox visuals
+        });
         this.enemies.destroy(true);
         this.enemies = null;
       } catch (e) {
@@ -831,6 +937,10 @@ export class GameScene extends Phaser.Scene {
     if (this.bossText) {
       this.bossText.destroy();
       this.bossText = null;
+    }
+    if (this.bossHitboxVisual) {
+      this.bossHitboxVisual.destroy(); // Destroy boss hitbox visual
+      this.bossHitboxVisual = null;
     }
 
     if (this.pauseMenu) {
