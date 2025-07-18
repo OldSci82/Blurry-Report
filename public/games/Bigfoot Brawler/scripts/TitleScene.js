@@ -1,6 +1,6 @@
 // scripts/TitleScene.js
 import { config, gameState } from "../game.js";
-
+// scripts/TitleScene.js
 export class TitleScene extends Phaser.Scene {
   constructor() {
     super("TitleScene");
@@ -24,9 +24,9 @@ export class TitleScene extends Phaser.Scene {
     const scaleY = this.sys.game.scale.displaySize.height / config.height;
     this.scaleFactor = Math.min(scaleX, scaleY);
 
-    // Define virtual canvas size
-    const canvasWidth = 800;
-    const canvasHeight = 600;
+    // Define virtual canvas size (match game.js)
+    const canvasWidth = 1280;
+    const canvasHeight = 720;
 
     // Adjust camera to center the virtual canvas
     const centerX = canvasWidth / 2;
@@ -72,11 +72,11 @@ export class TitleScene extends Phaser.Scene {
     this.tagline = this.add
       .text(
         centerX,
-        centerY + 190 * this.scaleFactor,
+        centerY + 220 * this.scaleFactor,
         "Two dudes. One legendary showdown.",
         {
           fontFamily: "'Press Start 2P'",
-          fontSize: `${14 * this.scaleFactor}px`,
+          fontSize: `${16 * this.scaleFactor}px`,
           fill: "#ffffff",
           stroke: "#000000",
           strokeThickness: 5 * this.scaleFactor,
@@ -93,22 +93,23 @@ export class TitleScene extends Phaser.Scene {
       this.touchStart = this.add
         .rectangle(
           centerX,
-          centerY + 240 * this.scaleFactor,
-          200 * this.scaleFactor,
-          50 * this.scaleFactor,
+          centerY + 280 * this.scaleFactor,
+          240 * this.scaleFactor,
+          60 * this.scaleFactor,
           0x333333,
           0.5
         )
         .setInteractive()
         .setDepth(3);
       this.touchStart.on("pointerdown", () => {
+        console.log("Touch start triggered");
         this.scene.start("CharacterSelectScene");
       });
 
       this.add
-        .text(centerX, centerY + 240 * this.scaleFactor, "START", {
+        .text(centerX, centerY + 280 * this.scaleFactor, "START", {
           fontFamily: "'Press Start 2P'",
-          fontSize: `${18 * this.scaleFactor}px`,
+          fontSize: `${20 * this.scaleFactor}px`,
           fill: "#00ff00",
           stroke: "#000000",
           strokeThickness: 6 * this.scaleFactor,
@@ -118,9 +119,9 @@ export class TitleScene extends Phaser.Scene {
     } else {
       // Desktop: Show "PRESS ENTER"
       this.pressEnter = this.add
-        .text(centerX, centerY + 240 * this.scaleFactor, "PRESS ENTER", {
+        .text(centerX, centerY + 280 * this.scaleFactor, "PRESS ENTER", {
           fontFamily: "'Press Start 2P'",
-          fontSize: `${18 * this.scaleFactor}px`,
+          fontSize: `${20 * this.scaleFactor}px`,
           fill: "#00ff00",
           stroke: "#000000",
           strokeThickness: 6 * this.scaleFactor,
@@ -139,6 +140,7 @@ export class TitleScene extends Phaser.Scene {
 
     // ENTER key for desktop
     this.input.keyboard.on("keydown-ENTER", () => {
+      console.log("Enter key pressed");
       this.scene.start("CharacterSelectScene");
     });
   }
@@ -178,5 +180,8 @@ export class TitleScene extends Phaser.Scene {
       this.pressEnter.destroy();
       this.pressEnter = null;
     }
+
+    // Remove scene event listeners
+    this.events.off("shutdown", this.shutdown, this);
   }
 }
