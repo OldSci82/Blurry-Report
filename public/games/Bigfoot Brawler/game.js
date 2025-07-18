@@ -11,6 +11,7 @@ export const config = {
   type: Phaser.AUTO,
   width: 1280, // Was 1500
   height: 720, // Was 1500
+  zoom: 1 / window.devicePixelRatio, // Adjust for high-DPI screens
   backgroundColor: "#0f1128",
   parent: "game-container",
   scale: {

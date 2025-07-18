@@ -1,8 +1,13 @@
 // scripts/TitleScene.js
+import { config, gameState } from "../game.js";
+
 export class TitleScene extends Phaser.Scene {
   constructor() {
     super("TitleScene");
     this.flickerTimer = 0;
+    this.isMobile = false;
+    this.scaleFactor = 1;
+    this.touchStart = null;
   }
 
   preload() {
@@ -10,30 +15,46 @@ export class TitleScene extends Phaser.Scene {
   }
 
   create() {
-    const screenWidth = this.cameras.main.width;
-    const screenHeight = this.cameras.main.height;
+    // Detect mobile device
+    this.isMobile =
+      this.sys.game.device.os.android || this.sys.game.device.os.iOS;
 
-    // === DEFINE VIRTUAL CANVAS SIZE ===
+    // Calculate scale factor based on display size
+    const scaleX = this.sys.game.scale.displaySize.width / config.width;
+    const scaleY = this.sys.game.scale.displaySize.height / config.height;
+    this.scaleFactor = Math.min(scaleX, scaleY);
+
+    // Define virtual canvas size
     const canvasWidth = 800;
     const canvasHeight = 600;
 
-    const centerX = screenWidth / 2;
-    const centerY = screenHeight / 2;
+    // Adjust camera to center the virtual canvas
+    const centerX = canvasWidth / 2;
+    const centerY = canvasHeight / 2;
+    this.cameras.main.setViewport(
+      (this.sys.game.scale.displaySize.width - canvasWidth * this.scaleFactor) /
+        2,
+      (this.sys.game.scale.displaySize.height -
+        canvasHeight * this.scaleFactor) /
+        2,
+      canvasWidth * this.scaleFactor,
+      canvasHeight * this.scaleFactor
+    );
 
-    // === SCALE BACKGROUND TO FIT VIRTUAL CANVAS ===
+    // Scale background to fit virtual canvas
     const background = this.add
       .image(centerX, centerY, "BBCover1")
-      .setOrigin(0.5);
+      .setOrigin(0.5)
+      .setDepth(0);
 
-    const scaleX = canvasWidth / background.width;
-    const scaleY = canvasHeight / background.height;
-    const scale = Math.min(scaleX, scaleY);
+    const bgScaleX = canvasWidth / background.width;
+    const bgScaleY = canvasHeight / background.height;
+    const bgScale = Math.min(bgScaleX, bgScaleY) * this.scaleFactor;
+    background.setScale(bgScale);
 
-    background.setScale(scale).setDepth(0);
-
-    // === BLACK BORDER AROUND VIRTUAL CANVAS ===
+    // Black border around virtual canvas
     const border = this.add.graphics().setDepth(1);
-    border.lineStyle(4, 0x00ff00, 1);
+    border.lineStyle(4 * this.scaleFactor, 0x00ff00, 1);
     border.strokeRect(
       centerX - canvasWidth / 2,
       centerY - canvasHeight / 2,
@@ -41,47 +62,82 @@ export class TitleScene extends Phaser.Scene {
       canvasHeight
     );
 
-    // === CRT FLICKER OVERLAY ===
+    // CRT flicker overlay
     this.flickerOverlay = this.add
       .rectangle(centerX, centerY, canvasWidth, canvasHeight, 0xffffff, 0)
-      .setDepth(2);
+      .setDepth(2)
+      .setScale(this.scaleFactor);
 
-    // === TAGLINE ===
+    // Tagline
     this.tagline = this.add
-      .text(centerX, centerY + 190, "Two dudes. One legendary showdown.", {
-        fontFamily: "'Press Start 2P'",
-        fontSize: "14px",
-        fill: "#ffffff",
-        stroke: "#000000",
-        strokeThickness: 5,
-        align: "center",
-        wordWrap: { width: canvasWidth - 40 },
-      })
+      .text(
+        centerX,
+        centerY + 190 * this.scaleFactor,
+        "Two dudes. One legendary showdown.",
+        {
+          fontFamily: "'Press Start 2P'",
+          fontSize: `${14 * this.scaleFactor}px`,
+          fill: "#ffffff",
+          stroke: "#000000",
+          strokeThickness: 5 * this.scaleFactor,
+          align: "center",
+          wordWrap: { width: canvasWidth - 40 * this.scaleFactor },
+        }
+      )
       .setOrigin(0.5)
       .setDepth(3);
 
-    // === PRESS ENTER TEXT ===
-    this.pressEnter = this.add
-      .text(centerX, centerY + 240, "PRESS ENTER", {
-        fontFamily: "'Press Start 2P'",
-        fontSize: "18px",
-        fill: "#00ff00",
-        stroke: "#000000",
-        strokeThickness: 6,
-      })
-      .setOrigin(0.5)
-      .setDepth(3);
+    // Press Enter / Start text or button
+    if (this.isMobile) {
+      // Add touchable "Start" button for mobile
+      this.touchStart = this.add
+        .rectangle(
+          centerX,
+          centerY + 240 * this.scaleFactor,
+          200 * this.scaleFactor,
+          50 * this.scaleFactor,
+          0x333333,
+          0.5
+        )
+        .setInteractive()
+        .setDepth(3);
+      this.touchStart.on("pointerdown", () => {
+        this.scene.start("CharacterSelectScene");
+      });
 
-    // Flicker effect on "PRESS ENTER"
-    this.tweens.add({
-      targets: this.pressEnter,
-      alpha: { from: 1, to: 0.3 },
-      duration: 500,
-      yoyo: true,
-      repeat: -1,
-    });
+      this.add
+        .text(centerX, centerY + 240 * this.scaleFactor, "START", {
+          fontFamily: "'Press Start 2P'",
+          fontSize: `${18 * this.scaleFactor}px`,
+          fill: "#00ff00",
+          stroke: "#000000",
+          strokeThickness: 6 * this.scaleFactor,
+        })
+        .setOrigin(0.5)
+        .setDepth(4);
+    } else {
+      // Desktop: Show "PRESS ENTER"
+      this.pressEnter = this.add
+        .text(centerX, centerY + 240 * this.scaleFactor, "PRESS ENTER", {
+          fontFamily: "'Press Start 2P'",
+          fontSize: `${18 * this.scaleFactor}px`,
+          fill: "#00ff00",
+          stroke: "#000000",
+          strokeThickness: 6 * this.scaleFactor,
+        })
+        .setOrigin(0.5)
+        .setDepth(3);
 
-    // ENTER key starts game
+      this.tweens.add({
+        targets: this.pressEnter,
+        alpha: { from: 1, to: 0.3 },
+        duration: 500,
+        yoyo: true,
+        repeat: -1,
+      });
+    }
+
+    // ENTER key for desktop
     this.input.keyboard.on("keydown-ENTER", () => {
       this.scene.start("CharacterSelectScene");
     });
@@ -94,6 +150,33 @@ export class TitleScene extends Phaser.Scene {
       const alpha = Phaser.Math.FloatBetween(0.01, 0.06);
       this.flickerOverlay.setFillStyle(0xffffff, alpha);
       this.flickerTimer = 0;
+    }
+  }
+
+  shutdown() {
+    // Cleanup input listeners
+    this.input.keyboard.off("keydown-ENTER");
+
+    // Cleanup touch controls
+    if (this.touchStart) {
+      this.touchStart.destroy();
+      this.touchStart = null;
+    }
+
+    // Cleanup flicker overlay
+    if (this.flickerOverlay) {
+      this.flickerOverlay.destroy();
+      this.flickerOverlay = null;
+    }
+
+    // Cleanup UI elements
+    if (this.tagline) {
+      this.tagline.destroy();
+      this.tagline = null;
+    }
+    if (this.pressEnter) {
+      this.pressEnter.destroy();
+      this.pressEnter = null;
     }
   }
 }
