@@ -33,6 +33,7 @@ export class BootScene extends Phaser.Scene {
     this.load.image("red_fighter_kick", "images/red_fighter_kick.png");
     this.load.image("red_fighter_damage", "images/red_fighter_damage.png");
     this.load.image("background_level1", "images/background_level1.png");
+    this.load.image("bone", "images/bone.png");
     this.load.image("BBCover1", "images/BBCover1.png");
     this.load.image("BBCover2", "images/BBCover2.png");
     this.load.image("TBG1", "images/Transition_Backgrounds/TBG1.png");
