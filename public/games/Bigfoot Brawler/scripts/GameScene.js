@@ -265,27 +265,27 @@ export class GameScene extends Phaser.Scene {
       config.height - 100
     );
     this.boss = this.physics.add
-      .sprite(this.worldWidth - 200, config.height - 100, "zombie_boss_walk")
+      .sprite(this.worldWidth - 400, config.height - 100, "zombie_boss_walk")
       .setScale(0.6)
       .setDepth(1);
     this.boss.body.setSize(60, 80).setOffset(70, 80);
     this.boss.body.setImmovable(true);
     this.boss.body.setCollideWorldBounds(true);
     this.boss.isHitByAttack = false;
+    this.boss.isEngaging = false;
+    this.boss.lastPatrolFlip = 0;
+    this.boss.patrolTargetX = this.worldWidth - 300; // Center of patrol range (2500 + 2900) / 2
     this.boss.play("zombie_boss_walk");
-
-    // Set up animation complete listener
     this.boss.on("animationcomplete", (anim) => {
       if (anim.key === "enemy_zombie_boss_attack1") {
         this.boss.play("zombie_boss_idle");
       }
     });
-
-    this.bossPatrolMinX = this.worldWidth - 400;
-    this.bossPatrolMaxX = this.worldWidth - 200;
-    this.bossPatrolDirection = -1; // starts moving left
+    this.bossPatrolMinX = this.worldWidth - 500; // 2500
+    this.bossPatrolMaxX = this.worldWidth - 100; // 2900
+    this.bossPatrolDirection = -1;
     this.bossDetectionRange = 500;
-    this.bossAttackCooldown = 2000; // attack every 2 seconds when in range
+    this.bossAttackCooldown = 2000;
     this.bossLastAttack = 0;
 
     // Boss hitbox visual
@@ -295,8 +295,8 @@ export class GameScene extends Phaser.Scene {
         this.boss.y,
         this.boss.body.width,
         this.boss.body.height,
-        0xff00ff, // Magenta for visibility
-        0.3 // Semi-transparent
+        0xff00ff,
+        0.3
       )
       .setOrigin(0.5)
       .setDepth(10);
@@ -320,13 +320,11 @@ export class GameScene extends Phaser.Scene {
       this
     );
 
-    // Boss health bar background
+    // Boss health bar
     this.bossHealthBarBg = this.add
       .rectangle(this.boss.x, this.boss.y - 100, 100, 10, 0x333333)
       .setOrigin(0.5)
       .setDepth(10);
-
-    // Boss health bar (foreground)
     this.bossHealthBar = this.add
       .rectangle(this.boss.x, this.boss.y - 100, 100, 10, 0xff0000)
       .setOrigin(0.5)
@@ -614,7 +612,7 @@ export class GameScene extends Phaser.Scene {
   //===================END LEVEL CHECK=================================
   //===================================================================
   checkWinCondition() {
-    const enemiesRemaining = this.enemies.countActive(true);
+    const enemiesRemaining = this.enemies ? this.enemies.countActive(true) : 0;
     console.log(
       "Win condition check: enemies=",
       enemiesRemaining,
@@ -625,7 +623,6 @@ export class GameScene extends Phaser.Scene {
       "bossActive=",
       this.boss && this.boss.active
     );
-
     if (enemiesRemaining <= 0 && !this.bossSpawned && !this.bossDefeated) {
       console.log("Enemies defeated, spawning boss...");
       this.spawnBoss();
@@ -813,7 +810,7 @@ export class GameScene extends Phaser.Scene {
       this.bossHitboxVisual.height = this.boss.body.height;
     }
 
-    // Boss behavior
+    // --- BOSS BEHAVIOR ---
     if (this.boss && this.boss.active) {
       const distanceToPlayer = Phaser.Math.Distance.Between(
         this.boss.x,
@@ -822,15 +819,68 @@ export class GameScene extends Phaser.Scene {
         this.player.y
       );
 
-      if (distanceToPlayer > this.bossDetectionRange) {
-        this.boss.x += this.bossPatrolDirection * 1.5;
+      // Buffer zone to prevent rapid mode switching
+      const detectionRangeEnter = 500;
+      const detectionRangeExit = 550;
+      const isEngaging =
+        this.boss.isEngaging || distanceToPlayer <= detectionRangeEnter;
+      this.boss.isEngaging = distanceToPlayer <= detectionRangeExit;
+
+      if (!isEngaging) {
+        // --- PATROL MODE ---
+        const now = this.time.now;
+        // Move toward patrol section if outside
         if (
-          this.boss.x < this.bossPatrolMinX ||
-          this.boss.x > this.bossPatrolMaxX
+          this.boss.x < this.bossPatrolMinX - 10 ||
+          this.boss.x > this.bossPatrolMaxX + 10
         ) {
-          this.bossPatrolDirection *= -1;
+          const targetX = this.boss.patrolTargetX; // Center of patrol range
+          const speed = 40; // Speed to return to patrol section
+          if (Math.abs(this.boss.x - targetX) > 5) {
+            this.boss.body.setVelocityX(this.boss.x > targetX ? -speed : speed);
+            this.boss.flipX = this.boss.x > targetX;
+            console.log(
+              "Boss returning to patrol - x:",
+              this.boss.x,
+              "targetX:",
+              targetX,
+              "flipX:",
+              this.boss.flipX
+            );
+          } else {
+            this.boss.body.setVelocityX(0);
+            this.boss.x = targetX;
+          }
+        } else {
+          // Normal patrol within bounds
+          if (
+            !this.boss.lastPatrolFlip ||
+            now - this.boss.lastPatrolFlip > 500
+          ) {
+            this.boss.x += this.bossPatrolDirection * 1.5;
+            this.boss.x = Phaser.Math.Clamp(
+              this.boss.x,
+              this.bossPatrolMinX,
+              this.bossPatrolMaxX
+            );
+            if (
+              this.boss.x <= this.bossPatrolMinX ||
+              this.boss.x >= this.bossPatrolMaxX
+            ) {
+              this.bossPatrolDirection *= -1;
+              this.boss.lastPatrolFlip = now;
+              console.log(
+                "Boss patrol flip - x:",
+                this.boss.x,
+                "direction:",
+                this.bossPatrolDirection,
+                "flipX:",
+                this.boss.flipX
+              );
+            }
+            this.boss.flipX = this.bossPatrolDirection < 0;
+          }
         }
-        this.boss.flipX = this.bossPatrolDirection < 0;
         if (
           !this.boss.anims.currentAnim ||
           this.boss.anims.currentAnim.key !== "zombie_boss_walk"
@@ -838,6 +888,7 @@ export class GameScene extends Phaser.Scene {
           this.boss.play("zombie_boss_walk");
         }
       } else {
+        // --- ENGAGE PLAYER ---
         this.boss.flipX = this.boss.x > this.player.x;
 
         if (distanceToPlayer > 300) {
@@ -869,6 +920,7 @@ export class GameScene extends Phaser.Scene {
         }
       }
 
+      // Update boss text and health bar positions
       if (this.bossText) {
         this.bossText.setPosition(this.boss.x, this.boss.y - 80);
       }
@@ -880,6 +932,7 @@ export class GameScene extends Phaser.Scene {
         this.bossHealthBar.width = (this.bossHealth / 100) * 100;
       }
 
+      // Clamp boss Y
       const bossYMin = config.height - 260;
       const bossYMax = config.height - 55;
       this.boss.y = Phaser.Math.Clamp(this.boss.y, bossYMin, bossYMax);
@@ -1145,11 +1198,11 @@ export class GameScene extends Phaser.Scene {
     }
 
     // Cleanup enemies
-    if (this.enemies) {
+    if (this.enemies && this.enemies.children) {
       this.enemies.children.each((enemy) => {
         if (enemy && enemy.hitboxVisual) enemy.hitboxVisual.destroy();
         if (enemy) enemy.destroy();
-      });
+      }, this);
       this.enemies.clear(true, true);
       this.enemies = null;
     }
@@ -1184,7 +1237,7 @@ export class GameScene extends Phaser.Scene {
       });
       this.projectiles = [];
     }
-    if (this.bossProjectiles) {
+    if (this.bossProjectiles && this.bossProjectiles.children) {
       this.bossProjectiles.clear(true, true);
       this.bossProjectiles = null;
     }
