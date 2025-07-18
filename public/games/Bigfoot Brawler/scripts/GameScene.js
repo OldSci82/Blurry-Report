@@ -25,6 +25,17 @@ export class GameScene extends Phaser.Scene {
     this.keyX = null;
     this.keyESC = null;
 
+    // Touch control properties
+    this.isMobile = false; // Detect mobile device
+    this.touchControls = null; // Container for touch buttons
+    this.touchLeft = null;
+    this.touchRight = null;
+    this.touchUp = null;
+    this.touchDown = null;
+    this.touchPunch = null;
+    this.touchKick = null;
+    this.touchPause = null;
+
     this.playerSpeed = 150;
     this.playerFacingRight = true;
 
@@ -67,15 +78,12 @@ export class GameScene extends Phaser.Scene {
   //===================CREATE GAME WORLD===============================
   //===================================================================
   create() {
-    // Reset state
     this.bossDefeated = false;
     this.bossSpawned = false;
-    this.projectiles = []; // Initialize projectiles array
     this.cameras.main.fadeIn(500, 0, 0, 0);
     this.input.keyboard.resetKeys();
     this.physics.world.overlaps = [];
-
-    // Validate selected fighter
+    this.projectiles = [];
     if (!["black", "red"].includes(gameState.selectedFighter)) {
       console.warn("Invalid fighter selected, defaulting to black");
       gameState.selectedFighter = "black";
@@ -86,6 +94,15 @@ export class GameScene extends Phaser.Scene {
     this.kickKey = `${gameState.selectedFighter}_fighter_kick`;
     this.walkAnimKey = `walk_${gameState.selectedFighter}`;
 
+    // Detect mobile device
+    this.isMobile =
+      this.sys.game.device.os.android || this.sys.game.device.os.iOS;
+
+    // Calculate scale factor based on display size
+    const scaleX = this.sys.game.scale.displaySize.width / config.width;
+    const scaleY = this.sys.game.scale.displaySize.height / config.height;
+    this.scaleFactor = Math.min(scaleX, scaleY); // Use minimum to maintain aspect ratio
+
     // Set world bounds
     this.worldWidth = 3000;
     this.worldHeight = config.height;
@@ -95,7 +112,7 @@ export class GameScene extends Phaser.Scene {
 
     // Background setup
     const bgImage = this.textures.get("background_level1").getSourceImage();
-    const bgScale = config.height / bgImage.height;
+    const bgScale = (config.height / bgImage.height) * this.scaleFactor;
     this.bgScale = bgScale;
     this.background = this.add
       .tileSprite(
@@ -128,7 +145,7 @@ export class GameScene extends Phaser.Scene {
 
     this.playerSprite = this.add
       .sprite(this.player.x, this.player.y, this.walkSheetKey)
-      .setScale(1)
+      .setScale(this.scaleFactor) // Scale player sprite
       .play(`idle_${gameState.selectedFighter}`);
 
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
@@ -149,6 +166,11 @@ export class GameScene extends Phaser.Scene {
     this.keyX.on("down", this.handleKick, this);
     this.keyESC.on("down", this.togglePause, this);
 
+    // Touch controls for mobile
+    if (this.isMobile) {
+      this.setupTouchControls();
+    }
+
     // HUD setup
     this.setupHUD();
 
@@ -162,7 +184,7 @@ export class GameScene extends Phaser.Scene {
           Phaser.Math.Between(config.height - 200, config.height - 50),
           "enemy_zombie1_walk"
         )
-        .setScale(1)
+        .setScale(this.scaleFactor) // Scale enemy sprites
         .play("walk_zombie1");
       this.physics.add.existing(enemy);
       enemy.body
@@ -239,7 +261,6 @@ export class GameScene extends Phaser.Scene {
       this
     );
 
-    // Move boss animation listener to spawnBoss
     this.events.on("shutdown", this.shutdown, this);
 
     // Check initial win condition
@@ -266,7 +287,7 @@ export class GameScene extends Phaser.Scene {
     );
     this.boss = this.physics.add
       .sprite(this.worldWidth - 400, config.height - 100, "zombie_boss_walk")
-      .setScale(0.6)
+      .setScale(0.6 * this.scaleFactor)
       .setDepth(1);
     this.boss.body.setSize(60, 80).setOffset(70, 80);
     this.boss.body.setImmovable(true);
@@ -274,21 +295,20 @@ export class GameScene extends Phaser.Scene {
     this.boss.isHitByAttack = false;
     this.boss.isEngaging = false;
     this.boss.lastPatrolFlip = 0;
-    this.boss.patrolTargetX = this.worldWidth - 300; // Center of patrol range (2500 + 2900) / 2
+    this.boss.patrolTargetX = this.worldWidth - 300;
     this.boss.play("zombie_boss_walk");
     this.boss.on("animationcomplete", (anim) => {
       if (anim.key === "enemy_zombie_boss_attack1") {
         this.boss.play("zombie_boss_idle");
       }
     });
-    this.bossPatrolMinX = this.worldWidth - 500; // 2500
-    this.bossPatrolMaxX = this.worldWidth - 100; // 2900
+    this.bossPatrolMinX = this.worldWidth - 500;
+    this.bossPatrolMaxX = this.worldWidth - 100;
     this.bossPatrolDirection = -1;
     this.bossDetectionRange = 500;
     this.bossAttackCooldown = 2000;
     this.bossLastAttack = 0;
 
-    // Boss hitbox visual
     this.bossHitboxVisual = this.add
       .rectangle(
         this.boss.x,
@@ -302,9 +322,9 @@ export class GameScene extends Phaser.Scene {
       .setDepth(10);
 
     this.bossText = this.add
-      .text(this.boss.x, this.boss.y - 80, "BOSS!", {
+      .text(this.boss.x, this.boss.y - 80 * this.scaleFactor, "BOSS!", {
         fontFamily: "Press Start 2P",
-        fontSize: "24px",
+        fontSize: `${24 * this.scaleFactor}px`,
         fill: "#FFF",
         stroke: "#000",
         strokeThickness: 4,
@@ -320,13 +340,25 @@ export class GameScene extends Phaser.Scene {
       this
     );
 
-    // Boss health bar
     this.bossHealthBarBg = this.add
-      .rectangle(this.boss.x, this.boss.y - 100, 100, 10, 0x333333)
+      .rectangle(
+        this.boss.x,
+        this.boss.y - 100 * this.scaleFactor,
+        100 * this.scaleFactor,
+        10 * this.scaleFactor,
+        0x333333
+      )
       .setOrigin(0.5)
       .setDepth(10);
+
     this.bossHealthBar = this.add
-      .rectangle(this.boss.x, this.boss.y - 100, 100, 10, 0xff0000)
+      .rectangle(
+        this.boss.x,
+        this.boss.y - 100 * this.scaleFactor,
+        100 * this.scaleFactor,
+        10 * this.scaleFactor,
+        0xff0000
+      )
       .setOrigin(0.5)
       .setDepth(11);
 
@@ -407,6 +439,204 @@ export class GameScene extends Phaser.Scene {
     if (gameState.playerHealth <= 0) {
       this.scene.start("GameOverScene");
     }
+  }
+
+  //===============================================================
+  //================TOUCH CONTROLS=================================
+  //===============================================================
+  setupTouchControls() {
+    // Create a container for touch controls
+    this.touchControls = this.add
+      .container(0, 0)
+      .setDepth(100)
+      .setScrollFactor(0);
+
+    // Movement buttons (left, right, up, down)
+    const buttonSize = 80 * this.scaleFactor;
+    const buttonSpacing = 20 * this.scaleFactor;
+    const buttonAlpha = 0.5;
+
+    // Left button
+    this.touchLeft = this.add
+      .rectangle(
+        buttonSize / 2 + buttonSpacing,
+        config.height - buttonSize - buttonSpacing,
+        buttonSize,
+        buttonSize,
+        0x333333,
+        buttonAlpha
+      )
+      .setInteractive()
+      .setOrigin(0.5)
+      .setScrollFactor(0);
+    this.touchLeft.on("pointerdown", () => (this.touchLeft.isDown = true));
+    this.touchLeft.on("pointerup", () => (this.touchLeft.isDown = false));
+    this.touchLeft.on("pointerout", () => (this.touchLeft.isDown = false));
+    this.touchControls.add(this.touchLeft);
+    this.add
+      .text(this.touchLeft.x, this.touchLeft.y, "<", {
+        fontFamily: "Arial",
+        fontSize: `${24 * this.scaleFactor}px`,
+        color: "#ffffff",
+      })
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setDepth(101);
+
+    // Right button
+    this.touchRight = this.add
+      .rectangle(
+        this.touchLeft.x + buttonSize + buttonSpacing,
+        config.height - buttonSize - buttonSpacing,
+        buttonSize,
+        buttonSize,
+        0x333333,
+        buttonAlpha
+      )
+      .setInteractive()
+      .setOrigin(0.5)
+      .setScrollFactor(0);
+    this.touchRight.on("pointerdown", () => (this.touchRight.isDown = true));
+    this.touchRight.on("pointerup", () => (this.touchRight.isDown = false));
+    this.touchRight.on("pointerout", () => (this.touchRight.isDown = false));
+    this.touchControls.add(this.touchRight);
+    this.add
+      .text(this.touchRight.x, this.touchRight.y, ">", {
+        fontFamily: "Arial",
+        fontSize: `${24 * this.scaleFactor}px`,
+        color: "#ffffff",
+      })
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setDepth(101);
+
+    // Up button
+    this.touchUp = this.add
+      .rectangle(
+        this.touchRight.x + buttonSize + buttonSpacing,
+        config.height - buttonSize - buttonSpacing,
+        buttonSize,
+        buttonSize,
+        0x333333,
+        buttonAlpha
+      )
+      .setInteractive()
+      .setOrigin(0.5)
+      .setScrollFactor(0);
+    this.touchUp.on("pointerdown", () => (this.touchUp.isDown = true));
+    this.touchUp.on("pointerup", () => (this.touchUp.isDown = false));
+    this.touchUp.on("pointerout", () => (this.touchUp.isDown = false));
+    this.touchControls.add(this.touchUp);
+    this.add
+      .text(this.touchUp.x, this.touchUp.y, "^", {
+        fontFamily: "Arial",
+        fontSize: `${24 * this.scaleFactor}px`,
+        color: "#ffffff",
+      })
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setDepth(101);
+
+    // Down button
+    this.touchDown = this.add
+      .rectangle(
+        this.touchUp.x + buttonSize + buttonSpacing,
+        config.height - buttonSize - buttonSpacing,
+        buttonSize,
+        buttonSize,
+        0x333333,
+        buttonAlpha
+      )
+      .setInteractive()
+      .setOrigin(0.5)
+      .setScrollFactor(0);
+    this.touchDown.on("pointerdown", () => (this.touchDown.isDown = true));
+    this.touchDown.on("pointerup", () => (this.touchDown.isDown = false));
+    this.touchDown.on("pointerout", () => (this.touchDown.isDown = false));
+    this.touchControls.add(this.touchDown);
+    this.add
+      .text(this.touchDown.x, this.touchDown.y, "v", {
+        fontFamily: "Arial",
+        fontSize: `${24 * this.scaleFactor}px`,
+        color: "#ffffff",
+      })
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setDepth(101);
+
+    // Attack buttons (punch, kick)
+    this.touchPunch = this.add
+      .rectangle(
+        config.width - buttonSize - buttonSpacing,
+        config.height - buttonSize - buttonSpacing,
+        buttonSize,
+        buttonSize,
+        0x333333,
+        buttonAlpha
+      )
+      .setInteractive()
+      .setOrigin(0.5)
+      .setScrollFactor(0);
+    this.touchPunch.on("pointerdown", () => this.handlePunch());
+    this.touchControls.add(this.touchPunch);
+    this.add
+      .text(this.touchPunch.x, this.touchPunch.y, "Punch", {
+        fontFamily: "Arial",
+        fontSize: `${18 * this.scaleFactor}px`,
+        color: "#ffffff",
+      })
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setDepth(101);
+
+    this.touchKick = this.add
+      .rectangle(
+        config.width - buttonSize - buttonSpacing,
+        config.height - 2 * buttonSize - 2 * buttonSpacing,
+        buttonSize,
+        buttonSize,
+        0x333333,
+        buttonAlpha
+      )
+      .setInteractive()
+      .setOrigin(0.5)
+      .setScrollFactor(0);
+    this.touchKick.on("pointerdown", () => this.handleKick());
+    this.touchControls.add(this.touchKick);
+    this.add
+      .text(this.touchKick.x, this.touchKick.y, "Kick", {
+        fontFamily: "Arial",
+        fontSize: `${18 * this.scaleFactor}px`,
+        color: "#ffffff",
+      })
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setDepth(101);
+
+    // Pause button
+    this.touchPause = this.add
+      .rectangle(
+        config.width - buttonSize - buttonSpacing,
+        buttonSpacing + buttonSize / 2,
+        buttonSize,
+        buttonSize,
+        0x333333,
+        buttonAlpha
+      )
+      .setInteractive()
+      .setOrigin(0.5)
+      .setScrollFactor(0);
+    this.touchPause.on("pointerdown", () => this.togglePause());
+    this.touchControls.add(this.touchPause);
+    this.add
+      .text(this.touchPause.x, this.touchPause.y, "Pause", {
+        fontFamily: "Arial",
+        fontSize: `${18 * this.scaleFactor}px`,
+        color: "#ffffff",
+      })
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setDepth(101);
   }
 
   //===================================================================
@@ -736,11 +966,23 @@ export class GameScene extends Phaser.Scene {
     const body = this.player.body;
     body.setVelocity(0);
 
-    // Player movement
-    const left = this.cursors.left.isDown || this.keyA.isDown;
-    const right = this.cursors.right.isDown || this.keyD.isDown;
-    const up = this.cursors.up.isDown || this.keyW.isDown;
-    const down = this.cursors.down.isDown || this.keyS.isDown;
+    // --- PLAYER MOVEMENT ---
+    const left =
+      this.cursors.left.isDown ||
+      this.keyA.isDown ||
+      (this.touchLeft && this.touchLeft.isDown);
+    const right =
+      this.cursors.right.isDown ||
+      this.keyD.isDown ||
+      (this.touchRight && this.touchRight.isDown);
+    const up =
+      this.cursors.up.isDown ||
+      this.keyW.isDown ||
+      (this.touchUp && this.touchUp.isDown);
+    const down =
+      this.cursors.down.isDown ||
+      this.keyS.isDown ||
+      (this.touchDown && this.touchDown.isDown);
 
     let isMoving = false;
     if (left) {
@@ -753,8 +995,9 @@ export class GameScene extends Phaser.Scene {
       isMoving = true;
     }
 
-    const scaledYMin = config.height - 260;
-    const scaledYMax = config.height - 55;
+    // PLAYER Y CLAMP
+    const scaledYMin = config.height - 260 * this.scaleFactor;
+    const scaledYMax = config.height - 55 * this.scaleFactor;
     let newY = this.player.y;
     if (up) {
       newY -= (this.playerSpeed * this.game.loop.delta) / 1000;
@@ -777,8 +1020,8 @@ export class GameScene extends Phaser.Scene {
       true
     );
 
-    // Enemy updates
-    if (this.enemies) {
+    // --- ENEMY UPDATES ---
+    if (this.enemies && this.enemies.children) {
       this.enemies.children.each((enemy) => {
         if (enemy.active) {
           const speed = enemy.type === "fast" ? 60 : 40;
@@ -791,10 +1034,10 @@ export class GameScene extends Phaser.Scene {
             );
           }
         }
-      });
+      }, this);
     }
 
-    // Boss hitbox debug
+    // --- BOSS HITBOX DEBUG ---
     if (this.boss && this.boss.active && this.bossHitboxVisual) {
       this.bossHitboxVisual.setPosition(
         this.boss.x -
@@ -819,7 +1062,6 @@ export class GameScene extends Phaser.Scene {
         this.player.y
       );
 
-      // Buffer zone to prevent rapid mode switching
       const detectionRangeEnter = 500;
       const detectionRangeExit = 550;
       const isEngaging =
@@ -827,15 +1069,13 @@ export class GameScene extends Phaser.Scene {
       this.boss.isEngaging = distanceToPlayer <= detectionRangeExit;
 
       if (!isEngaging) {
-        // --- PATROL MODE ---
         const now = this.time.now;
-        // Move toward patrol section if outside
         if (
           this.boss.x < this.bossPatrolMinX - 10 ||
           this.boss.x > this.bossPatrolMaxX + 10
         ) {
-          const targetX = this.boss.patrolTargetX; // Center of patrol range
-          const speed = 40; // Speed to return to patrol section
+          const targetX = this.boss.patrolTargetX;
+          const speed = 40;
           if (Math.abs(this.boss.x - targetX) > 5) {
             this.boss.body.setVelocityX(this.boss.x > targetX ? -speed : speed);
             this.boss.flipX = this.boss.x > targetX;
@@ -852,7 +1092,6 @@ export class GameScene extends Phaser.Scene {
             this.boss.x = targetX;
           }
         } else {
-          // Normal patrol within bounds
           if (
             !this.boss.lastPatrolFlip ||
             now - this.boss.lastPatrolFlip > 500
@@ -888,7 +1127,6 @@ export class GameScene extends Phaser.Scene {
           this.boss.play("zombie_boss_walk");
         }
       } else {
-        // --- ENGAGE PLAYER ---
         this.boss.flipX = this.boss.x > this.player.x;
 
         if (distanceToPlayer > 300) {
@@ -920,7 +1158,6 @@ export class GameScene extends Phaser.Scene {
         }
       }
 
-      // Update boss text and health bar positions
       if (this.bossText) {
         this.bossText.setPosition(this.boss.x, this.boss.y - 80);
       }
@@ -932,13 +1169,12 @@ export class GameScene extends Phaser.Scene {
         this.bossHealthBar.width = (this.bossHealth / 100) * 100;
       }
 
-      // Clamp boss Y
-      const bossYMin = config.height - 260;
-      const bossYMax = config.height - 55;
+      const bossYMin = config.height - 260 * this.scaleFactor;
+      const bossYMax = config.height - 55 * this.scaleFactor;
       this.boss.y = Phaser.Math.Clamp(this.boss.y, bossYMin, bossYMax);
     }
 
-    // Projectile updates
+    // --- PROJECTILE UPDATES ---
     if (this.projectiles) {
       this.projectiles = this.projectiles.filter((bone) => bone && bone.active);
       this.projectiles.forEach((bone, index) => {
@@ -962,7 +1198,7 @@ export class GameScene extends Phaser.Scene {
       });
     }
 
-    // World extension
+    // --- WORLD EXTENSION ---
     const extensionTriggerX = this.worldWidth - 600;
     if (
       this.player.x > extensionTriggerX &&
@@ -984,7 +1220,7 @@ export class GameScene extends Phaser.Scene {
 
     const bone = this.physics.add.sprite(boneX, boneY, "bone");
     this.add.existing(bone);
-    bone.setDisplaySize(32, 16);
+    bone.setDisplaySize(32 * this.scaleFactor, 16 * this.scaleFactor);
     bone.setOrigin(0.5, 0.5);
     bone.body.setSize(32, 16);
     bone.body.allowGravity = false;
@@ -1008,7 +1244,7 @@ export class GameScene extends Phaser.Scene {
     bone.rotationSpeed = Phaser.Math.DegToRad(360);
 
     this.bossProjectiles.add(bone);
-    bone.body.setVelocityX(this.boss.flipX ? -boneSpeed : boneSpeed); // Reapply velocity
+    bone.body.setVelocityX(this.boss.flipX ? -boneSpeed : boneSpeed);
 
     this.time.delayedCall(3000, () => {
       if (bone && bone.active) bone.destroy();
@@ -1021,16 +1257,20 @@ export class GameScene extends Phaser.Scene {
   //===================HUD SETUP=======================================
   //===================================================================
   setupHUD() {
+    const fontSize = 48 * this.scaleFactor;
+    const textOffset = 20 * this.scaleFactor;
+    const barHeight = 30 * this.scaleFactor;
+
     this.levelText = this.add
       .text(
-        20,
-        20,
+        textOffset,
+        textOffset,
         `Level ${gameState.currentLevel}: ${
           gameState.levelNames[gameState.currentLevel - 1]
         }`,
         {
           fontFamily: "Press Start 2P",
-          fontSize: "48px",
+          fontSize: `${fontSize}px`,
           fill: "#FFF",
           stroke: "#000",
           strokeThickness: 4,
@@ -1040,40 +1280,56 @@ export class GameScene extends Phaser.Scene {
       .setScrollFactor(0);
 
     this.healthBarBg = this.add
-      .rectangle(20, 60, 300, 30, 0x333333)
+      .rectangle(
+        textOffset,
+        textOffset + fontSize,
+        300 * this.scaleFactor,
+        barHeight,
+        0x333333
+      )
       .setOrigin(0)
       .setScrollFactor(0);
 
     this.healthBar = this.add
       .rectangle(
-        20,
-        60,
-        (gameState.playerHealth / gameState.maxHealth) * 300,
-        30,
+        textOffset,
+        textOffset + fontSize,
+        (gameState.playerHealth / gameState.maxHealth) * 300 * this.scaleFactor,
+        barHeight,
         0xff0000
       )
       .setOrigin(0)
       .setScrollFactor(0);
 
     this.healthText = this.add
-      .text(20, 60, `Health: ${gameState.playerHealth}`, {
-        fontFamily: "Press Start 2P",
-        fontSize: "48px",
-        fill: "#FFF",
-        stroke: "#000",
-        strokeThickness: 4,
-      })
+      .text(
+        textOffset,
+        textOffset + fontSize,
+        `Health: ${gameState.playerHealth}`,
+        {
+          fontFamily: "Press Start 2P",
+          fontSize: `${fontSize}px`,
+          fill: "#FFF",
+          stroke: "#000",
+          strokeThickness: 4,
+        }
+      )
       .setOrigin(0)
       .setScrollFactor(0);
 
     this.scoreText = this.add
-      .text(config.width - 20, 20, `Score: ${gameState.score}`, {
-        fontFamily: "Press Start 2P",
-        fontSize: "24px",
-        fill: "#FFF",
-        stroke: "#000",
-        strokeThickness: 4,
-      })
+      .text(
+        config.width - textOffset,
+        textOffset,
+        `Score: ${gameState.score}`,
+        {
+          fontFamily: "Press Start 2P",
+          fontSize: `${24 * this.scaleFactor}px`,
+          fill: "#FFF",
+          stroke: "#000",
+          strokeThickness: 4,
+        }
+      )
       .setOrigin(1, 0)
       .setScrollFactor(0);
   }
@@ -1241,6 +1497,19 @@ export class GameScene extends Phaser.Scene {
       this.bossProjectiles.clear(true, true);
       this.bossProjectiles = null;
     }
+
+    // Cleanup touch controls
+    if (this.touchControls) {
+      this.touchControls.destroy();
+      this.touchControls = null;
+    }
+    if (this.touchLeft) this.touchLeft = null;
+    if (this.touchRight) this.touchRight = null;
+    if (this.touchUp) this.touchUp = null;
+    if (this.touchDown) this.touchDown = null;
+    if (this.touchPunch) this.touchPunch = null;
+    if (this.touchKick) this.touchKick = null;
+    if (this.touchPause) this.touchPause = null;
 
     // Cleanup pause menu
     if (this.pauseMenu) {
