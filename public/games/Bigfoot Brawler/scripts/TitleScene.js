@@ -11,10 +11,26 @@ export class TitleScene extends Phaser.Scene {
   }
 
   preload() {
-    // Explicitly preload BBCover1 in case BootScene preload fails
+    // Explicitly preload BBCover1 with error handling
     if (!this.textures.exists("BBCover1")) {
-      console.warn("TitleScene: BBCover1 not preloaded, loading now");
+      console.warn(
+        "TitleScene: BBCover1 not preloaded, attempting to load now"
+      );
       this.load.image("BBCover1", "assets/images/BBCover1.png"); // Adjust path if needed
+      this.load.on("loaderror", (file) => {
+        console.error(
+          "TitleScene: Failed to load BBCover1, error:",
+          file.error
+        );
+      });
+      this.load.start(); // Start the load immediately
+    } else {
+      console.log(
+        "TitleScene: BBCover1 already preloaded, size =",
+        this.textures.get("BBCover1").getSourceImage().width,
+        "x",
+        this.textures.get("BBCover1").getSourceImage().height
+      );
     }
   }
 
@@ -26,52 +42,55 @@ export class TitleScene extends Phaser.Scene {
       "TitleScene: isMobile =",
       this.isMobile,
       "Device pixel ratio =",
-      window.devicePixelRatio
+      window.devicePixelRatio,
+      "Game canvas =",
+      config.width,
+      "x",
+      config.height,
+      "Display size =",
+      this.sys.game.scale.displaySize.width,
+      "x",
+      this.sys.game.scale.displaySize.height
     );
 
-    // Calculate scale factor
-    const scaleX = this.sys.game.scale.displaySize.width / config.width;
-    const scaleY = this.sys.game.scale.displaySize.height / config.height;
-    this.scaleFactor = Math.min(scaleX, scaleY) || 1; // Fallback to 1 if scale is 0
-    console.log(
-      "TitleScene: scaleFactor =",
-      this.scaleFactor,
-      "Display size =",
-      this.sys.game.scale.displaySize
-    );
+    // Use display size directly for scaling
+    const displayWidth = this.sys.game.scale.displaySize.width;
+    const displayHeight = this.sys.game.scale.displaySize.height;
+    this.scaleFactor =
+      Math.min(displayWidth / config.width, displayHeight / config.height) ||
+      0.1;
+    console.log("TitleScene: scaleFactor =", this.scaleFactor);
 
     // Define virtual canvas size (match game.js)
     const canvasWidth = 1280;
     const canvasHeight = 720;
 
-    // Center the viewport
-    const viewportX =
-      (this.sys.game.scale.displaySize.width - canvasWidth * this.scaleFactor) /
-      2;
-    const viewportY =
-      (this.sys.game.scale.displaySize.height -
-        canvasHeight * this.scaleFactor) /
-      2;
+    // Set viewport to match display size, scaled to fit
+    const viewportWidth = displayWidth;
+    const viewportHeight = displayHeight;
+    const viewportX = 0;
+    const viewportY = 0;
     this.cameras.main.setViewport(
       viewportX,
       viewportY,
-      canvasWidth * this.scaleFactor,
-      canvasHeight * this.scaleFactor
+      viewportWidth,
+      viewportHeight
     );
     console.log("TitleScene: Viewport =", this.cameras.main.getBounds());
 
-    const centerX = canvasWidth / 2;
-    const centerY = canvasHeight / 2;
+    const centerX = (canvasWidth / 2) * this.scaleFactor;
+    const centerY = (canvasHeight / 2) * this.scaleFactor;
 
     // Background
+    let background = null;
     if (this.textures.exists("BBCover1")) {
-      const background = this.add
+      background = this.add
         .image(centerX, centerY, "BBCover1")
         .setOrigin(0.5)
         .setDepth(0);
-      const bgScaleX = canvasWidth / background.width;
-      const bgScaleY = canvasHeight / background.height;
-      const bgScale = Math.min(bgScaleX, bgScaleY) * this.scaleFactor;
+      const bgScaleX = (canvasWidth * this.scaleFactor) / background.width;
+      const bgScaleY = (canvasHeight * this.scaleFactor) / background.height;
+      const bgScale = Math.min(bgScaleX, bgScaleY);
       background.setScale(bgScale);
       console.log(
         "TitleScene: Background created at x =",
@@ -79,30 +98,99 @@ export class TitleScene extends Phaser.Scene {
         "y =",
         background.y,
         "scale =",
-        bgScale
+        bgScale,
+        "display width =",
+        background.displayWidth,
+        "display height =",
+        background.displayHeight
       );
     } else {
       console.error("TitleScene: BBCover1 texture missing, adding fallback");
-      this.add
-        .rectangle(centerX, centerY, canvasWidth, canvasHeight, 0x000000)
+      background = this.add
+        .rectangle(
+          centerX,
+          centerY,
+          canvasWidth * this.scaleFactor,
+          canvasHeight * this.scaleFactor,
+          0x000000
+        )
         .setDepth(0);
+      console.log(
+        "TitleScene: Fallback background at x =",
+        centerX,
+        "y =",
+        centerY
+      );
     }
 
     // Green border
     const border = this.add.graphics().setDepth(1);
     border.lineStyle(4 * this.scaleFactor, 0x00ff00, 1);
     border.strokeRect(
-      centerX - canvasWidth / 2,
-      centerY - canvasHeight / 2,
-      canvasWidth,
-      canvasHeight
+      0,
+      0,
+      canvasWidth * this.scaleFactor,
+      canvasHeight * this.scaleFactor
     );
+
+    // Test shapes to debug visibility
+    this.add
+      .rectangle(
+        centerX,
+        centerY,
+        20 * this.scaleFactor,
+        20 * this.scaleFactor,
+        0xff0000
+      )
+      .setDepth(5); // Red dot (center)
+    this.add
+      .rectangle(
+        100 * this.scaleFactor,
+        100 * this.scaleFactor,
+        20 * this.scaleFactor,
+        20 * this.scaleFactor,
+        0xff0000
+      )
+      .setDepth(5); // Top-left
+    this.add
+      .rectangle(
+        (canvasWidth - 100) * this.scaleFactor,
+        (canvasHeight - 100) * this.scaleFactor,
+        20 * this.scaleFactor,
+        20 * this.scaleFactor,
+        0xff0000
+      )
+      .setDepth(5); // Bottom-right
+    this.add
+      .rectangle(
+        centerX,
+        centerY + 220 * this.scaleFactor,
+        50 * this.scaleFactor,
+        50 * this.scaleFactor,
+        0x00ff00
+      )
+      .setDepth(5); // Green box at tagline
+    this.add
+      .rectangle(
+        centerX,
+        centerY + 280 * this.scaleFactor,
+        50 * this.scaleFactor,
+        50 * this.scaleFactor,
+        0x0000ff
+      )
+      .setDepth(5); // Blue box at button
 
     // CRT flicker overlay
     this.flickerOverlay = this.add
-      .rectangle(centerX, centerY, canvasWidth, canvasHeight, 0xffffff, 0)
-      .setDepth(2)
-      .setScale(this.scaleFactor);
+      .rectangle(
+        centerX,
+        centerY,
+        canvasWidth * this.scaleFactor,
+        canvasHeight * this.scaleFactor,
+        0xffffff,
+        0
+      )
+      .setDepth(2);
 
     // Tagline
     this.tagline = this.add
@@ -111,13 +199,15 @@ export class TitleScene extends Phaser.Scene {
         centerY + 220 * this.scaleFactor,
         "Two dudes. One legendary showdown.",
         {
-          fontFamily: "'Press Start 2P', Arial", // Fallback to Arial
+          fontFamily: "'Press Start 2P', Arial, sans-serif",
           fontSize: `${16 * this.scaleFactor}px`,
           fill: "#ffffff",
           stroke: "#000000",
           strokeThickness: 5 * this.scaleFactor,
           align: "center",
-          wordWrap: { width: canvasWidth - 40 * this.scaleFactor },
+          wordWrap: {
+            width: canvasWidth * this.scaleFactor - 40 * this.scaleFactor,
+          },
         }
       )
       .setOrigin(0.5)
@@ -126,8 +216,24 @@ export class TitleScene extends Phaser.Scene {
       "TitleScene: Tagline created at x =",
       this.tagline.x,
       "y =",
-      this.tagline.y
+      this.tagline.y,
+      "width =",
+      this.tagline.width,
+      "height =",
+      this.tagline.height
     );
+
+    // Test font with system font
+    this.add
+      .text(centerX, centerY + 100 * this.scaleFactor, "Font Test (Arial)", {
+        fontFamily: "Arial",
+        fontSize: `${16 * this.scaleFactor}px`,
+        fill: "#ff00ff",
+        stroke: "#000000",
+        strokeThickness: 2 * this.scaleFactor,
+      })
+      .setOrigin(0.5)
+      .setDepth(3);
 
     // Press Enter / Start button
     if (this.isMobile) {
@@ -138,7 +244,7 @@ export class TitleScene extends Phaser.Scene {
           240 * this.scaleFactor,
           60 * this.scaleFactor,
           0x333333,
-          0.7
+          0.8
         )
         .setInteractive()
         .setDepth(3);
@@ -157,7 +263,7 @@ export class TitleScene extends Phaser.Scene {
 
       this.add
         .text(centerX, centerY + 280 * this.scaleFactor, "START", {
-          fontFamily: "'Press Start 2P', Arial", // Fallback to Arial
+          fontFamily: "'Press Start 2P', Arial, sans-serif",
           fontSize: `${20 * this.scaleFactor}px`,
           fill: "#00ff00",
           stroke: "#000000",
@@ -168,7 +274,7 @@ export class TitleScene extends Phaser.Scene {
     } else {
       this.pressEnter = this.add
         .text(centerX, centerY + 280 * this.scaleFactor, "PRESS ENTER", {
-          fontFamily: "'Press Start 2P', Arial", // Fallback to Arial
+          fontFamily: "'Press Start 2P', Arial, sans-serif",
           fontSize: `${20 * this.scaleFactor}px`,
           fill: "#00ff00",
           stroke: "#000000",
