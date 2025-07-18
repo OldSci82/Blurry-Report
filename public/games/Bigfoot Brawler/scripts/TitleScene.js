@@ -1,4 +1,5 @@
 // scripts/TitleScene.js
+import { config, gameState } from "../game.js";
 // scripts/TitleScene.js
 export class TitleScene extends Phaser.Scene {
   constructor() {
