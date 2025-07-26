@@ -146,6 +146,22 @@
         font-size: 0.65rem;
         color: #ecc94b;
     }
+    .tempo-bar {
+        position: absolute;
+        top: 0;
+        left: 0; /* Start at grid-wrapper's left, adjusted in JS */
+        width: 18px; /* Match column width */
+        height: 100%; /* Full grid height */
+        background-color: rgba(255, 255, 255, 0.6); /* More visible */
+        z-index: 3; /* Above grid cells and beat markers */
+        transition: left 0.1s linear; /* Smooth per-column movement */
+        pointer-events: none; /* Allow clicks to pass through */
+    }
+    @media (max-width: 768px) {
+        .tempo-bar {
+            width: 14px; /* Match mobile column width */
+        }
+    }
     .grid-wrapper {
         flex-grow: 1;
         overflow-x: auto;
@@ -174,6 +190,16 @@
     .message-box.hidden {
         opacity: 0;
         pointer-events: none;
+    }
+    .grid.duration-highlight {
+        box-shadow: 0 0 10px rgba(100, 200, 100, 0.5);
+    }
+    .grid.randomized {
+        animation: flash 0.5s;
+    }
+    @keyframes flash {
+        0% { background-color: #4a5568; }
+        100% { background-color: #2d3748; }
     }
     @media (max-width: 768px) {
         .grid-cell {
@@ -242,6 +268,8 @@
             <button id="duration16nBtn" class="duration-button py-2 px-4 rounded-md" role="button" aria-label="Select Sixteenth Note">Sixteenth Note</button>
             <button id="duration8nBtn" class="duration-button py-2 px-4 rounded-md" role="button" aria-label="Select Eighth Note">Eighth Note</button>
             <button id="duration4nBtn" class="duration-button py-2 px-4 rounded-md selected" role="button" aria-label="Select Quarter Note">Quarter Note</button>
+            <button id="duration2nBtn" class="duration-button py-2 px-4 rounded-md" role="button" aria-label="Select Half Note">Half Note</button>
+            <button id="duration1nBtn" class="duration-button py-2 px-4 rounded-md" role="button" aria-label="Select Whole Note">Whole Note</button>
         </div>
 
         <!-- Sequencer Grid with Labels -->
@@ -251,6 +279,7 @@
             </div>
             <div class="grid-wrapper">
                 <div id="sequencerGrid" class="grid border border-gray-700"></div>
+                <div id="tempoBar" class="tempo-bar"></div>
             </div>
         </div>
 
@@ -263,11 +292,13 @@
             <button id="loadBtn" class="control-button py-2 px-6 rounded-md" role="button" aria-label="Load Sequence">Load</button>
             <button id="randomizeBtn" class="control-button py-2 px-6 rounded-md" role="button" aria-label="Randomize Grid">Randomize</button>
             <button id="exportBtn" class="control-button py-2 px-6 rounded-md" role="button" aria-label="Export as WAV">Export WAV</button>
+        </div>
+        <div class="mt-4 flex flex-wrap justify-center gap-3">
             <label for="tempo" class="text-lg">Tempo (BPM):</label>
             <input type="number" id="tempo" value="140" min="60" max="240" class="tempo-input py-2 px-3 rounded-md w-24 text-center" aria-label="Set Tempo (60-240 BPM)">
         </div>
-
         <!-- Style Buttons -->
+         <label class="text-lg">Random Tune Generators:</label>
         <div class="mt-4 flex flex-wrap justify-center gap-3">
             <button id="actionBtn" class="style-button py-2 px-4 rounded-md" role="button" aria-label="Generate Action Sequence">Action</button>
             <button id="mysticalBtn" class="style-button py-2 px-4 rounded-md" role="button" aria-label="Generate Mystical Cut Scene">Mystical</button>
@@ -343,11 +374,14 @@
         const duration16nBtn = document.getElementById('duration16nBtn');
         const duration8nBtn = document.getElementById('duration8nBtn');
         const duration4nBtn = document.getElementById('duration4nBtn');
+        const duration2nBtn = document.getElementById('duration2nBtn');
+        const duration1nBtn = document.getElementById('duration1nBtn');
         const actionBtn = document.getElementById('actionBtn');
         const mysticalBtn = document.getElementById('mysticalBtn');
         const shantyBtn = document.getElementById('shantyBtn');
         const messageBox = document.getElementById('messageBox');
         const messageText = document.getElementById('messageText');
+        const tempoBar = document.getElementById('tempoBar');
 
         // --- Functions ---
         function showMessage(message) {
@@ -355,7 +389,7 @@
             messageBox.classList.remove('hidden');
             setTimeout(() => {
                 messageBox.classList.add('hidden');
-            }, 1000);
+            }, 3000);
         }
 
         function adjustVolume(row, increment) {
@@ -381,6 +415,8 @@
             currentNoteDuration = duration;
             document.querySelectorAll('.duration-button').forEach(btn => btn.classList.remove('selected'));
             document.getElementById(buttonId).classList.add('selected');
+            sequencerGrid.classList.add('duration-highlight');
+            setTimeout(() => sequencerGrid.classList.remove('duration-highlight'), 300);
             if (isPlaying) {
                 stopSequencer();
                 startSequencer();
@@ -613,6 +649,11 @@
                 }
             }
 
+            // Move tempo bar to the current column, accounting for note labels
+            const columnWidth = window.innerWidth <= 768 ? 14 : 18;
+            const labelWidth = window.innerWidth <= 768 ? 70 : 110;
+            tempoBar.style.left = `${labelWidth + (currentColumn * columnWidth)}px`;
+
             // Play sounds for notes starting at the current column
             const notesToPlay = [];
             for (let r = 0; r < rows; r++) {
@@ -662,10 +703,60 @@
             currentColumn = (currentColumn + 1) % cols;
         }
 
+        // Play sounds for notes starting at the current column
+        const notesToPlay = [];
+        for (let r = 0; r < rows; r++) {
+            if (activeNotes[r][currentColumn].active) {
+                const duration = activeNotes[r][currentColumn].duration;
+                if (r in PERCUSSION_ROWS) {
+                    const drumType = PERCUSSION_ROWS[r];
+                    if (drumType === 'kk') {
+                        kickSynth.volume.value = rowVolumes[r];
+                        kickSynth.triggerAttackRelease(duration, time);
+                    } else if (drumType === 'sn') {
+                        snareSynth.volume.value = rowVolumes[r];
+                        snareSynth.triggerAttackRelease(duration, time);
+                    } else if (drumType === 'hh') {
+                        hihatSynth.volume.value = rowVolumes[r];
+                        hihatSynth.triggerAttackRelease(duration, time);
+                    }
+                } else {
+                    notesToPlay.push({ note: notes[r], duration });
+                }
+            }
+        }
+        if (notesToPlay.length > 0) {
+            switch (currentInstrument) {
+                case 'square':
+                    squareSynth.volume.value = rowVolumes[notes.indexOf(notesToPlay[0].note)];
+                    notesToPlay.forEach(({ note, duration }) => {
+                        squareSynth.triggerAttackRelease(note, duration, time);
+                    });
+                    break;
+                case 'triangle':
+                    triangleSynth.volume.value = rowVolumes[notes.indexOf(notesToPlay[0].note)];
+                    notesToPlay.forEach(({ note, duration }) => {
+                        triangleSynth.triggerAttackRelease(note, duration, time);
+                    });
+                    break;
+                case 'sawtooth':
+                    sawtoothSynth.volume.value = rowVolumes[notes.indexOf(notesToPlay[0].note)];
+                    notesToPlay.forEach(({ note, duration }) => {
+                        sawtoothSynth.triggerAttackRelease(note, duration, time);
+                    });
+                    break;
+            }
+        // Advance to the next column
+        currentColumn = (currentColumn + 1) % cols;
+        }
+
         async function startSequencer() {
             if (isPlaying) return;
             await Tone.start();
             Tone.Transport.bpm.value = parseInt(tempoInput.value) || DEFAULT_TEMPO;
+            const tempo = parseInt(tempoInput.value) || DEFAULT_TEMPO;
+            const sixteenthNoteDuration = 60 / tempo / 4; // Seconds per 16n
+            tempoBar.style.transition = `left ${sixteenthNoteDuration}s linear`;
             if (loop) loop.dispose();
             loop = new Tone.Loop(playColumn, "16n"); // Use 16n for precise column advancement
             loop.start(0);
@@ -675,6 +766,7 @@
             playBtn.textContent = 'Playing...';
             playBtn.disabled = true;
             stopBtn.disabled = false;
+            tempoBar.style.display = 'block'; // Show tempo bar
         }
 
         function stopSequencer() {
@@ -686,6 +778,7 @@
             playBtn.disabled = false;
             stopBtn.disabled = true;
             document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('playing'));
+            tempoBar.style.display = 'none'; // Hide tempo bar
             currentColumn = 0; // Reset column for next playback
         }
 
@@ -712,34 +805,81 @@
         }
 
         function randomizeGrid() {
-            activeNotes = Array(rows).fill(0).map(() => Array(cols).fill().map(() => ({
-                active: Math.random() > 0.8,
-                duration: currentNoteDuration
-            })));
-            // Clear overlaps
-            for (let r = 0; r < rows; r++) {
-                let c = 0;
-                while (c < cols) {
-                    if (activeNotes[r][c].active) {
-                        const duration = activeNotes[r][c].duration;
-                        const span = {
-                            '16n': 1,
-                            '8n': 2,
-                            '4n': 4,
-                            '2n': 8,
-                            '1n': 16
-                        }[duration] || 1;
-                        for (let i = c + 1; i < c + span && i < cols; i++) {
-                            activeNotes[r][i] = { active: false, duration: "4n" };
+            sequencerGrid.classList.add('randomized');
+            setTimeout(() => sequencerGrid.classList.remove('randomized'), 500);
+            activeNotes = Array(rows).fill(0).map(() => Array(cols).fill().map(() => ({ active: false, duration: "4n" })));
+            const durationOptions = [
+                { duration: "16n", weight: 0.25 },
+                { duration: "8n", weight: 0.25 },
+                { duration: "4n", weight: 0.20 },
+                { duration: "2n", weight: 0.20 },
+                { duration: "1n", weight: 0.10 }
+            ];
+            const totalWeight = durationOptions.reduce((sum, opt) => sum + opt.weight, 0);
+            const durationColumns = {
+                '16n': 1,
+                '8n': 2,
+                '4n': 4,
+                '2n': 8,
+                '1n': 16
+            };
+
+            // Melody (rows 0–9, C6–A4)
+            for (let c = 0; c < cols; c += 4) { // Align to quarter-note beats
+                const melodyRow = Math.floor(Math.random() * 10); // Rows 0–9
+                if (Math.random() < 0.6) { // 60% chance to place a melody note
+                    let rand = Math.random() * totalWeight;
+                    let selectedDuration = "4n";
+                    for (const option of durationOptions) {
+                        rand -= option.weight;
+                        if (rand <= 0) {
+                            selectedDuration = option.duration;
+                            break;
                         }
-                        c += span;
-                    } else {
-                        c++;
+                    }
+                    const span = durationColumns[selectedDuration];
+                    if (c + span <= cols && !isColumnOccupied(melodyRow, c, selectedDuration)) {
+                        activeNotes[melodyRow][c] = { active: true, duration: selectedDuration };
+                        for (let i = c + 1; i < c + span && i < cols; i++) {
+                            activeNotes[melodyRow][i] = { active: false, duration: "4n" };
+                        }
                     }
                 }
             }
+
+            // Percussion (rows 13–15: hh, sn, kk)
+            for (let c = 0; c < cols; c += 4) {
+                // Hi-hat (row 13)
+                const hiHatDuration = Math.random() < 0.5 ? "8n" : "16n";
+                if (!isColumnOccupied(13, c, hiHatDuration)) {
+                    activeNotes[13][c] = { active: Math.random() < 0.8, duration: hiHatDuration };
+                }
+                if (c + 1 < cols && !isColumnOccupied(13, c + 1, "16n")) {
+                    activeNotes[13][c + 1] = { active: Math.random() < 0.4, duration: "16n" };
+                }
+                // Snare (row 14)
+                const snareDuration = Math.random() < 0.5 ? "4n" : "8n";
+                if (c + 2 < cols && !isColumnOccupied(14, c + 2, snareDuration)) {
+                    activeNotes[14][c + 2] = { active: Math.random() < 0.7, duration: snareDuration };
+                }
+                // Kick (row 15)
+                const kickDuration = Math.random() < 0.5 ? "4n" : "8n";
+                if (!isColumnOccupied(15, c, kickDuration)) {
+                    activeNotes[15][c] = { active: Math.random() < 0.6, duration: kickDuration };
+                }
+                // Additional percussion for variety
+                if (c % 16 === 0 && c + 3 < cols) {
+                    if (!isColumnOccupied(14, c + 3, "8n")) {
+                        activeNotes[14][c + 3] = { active: Math.random() < 0.5, duration: "8n" };
+                    }
+                    if (!isColumnOccupied(13, c + 2, "16n")) {
+                        activeNotes[13][c + 2] = { active: Math.random() < 0.5, duration: "16n" };
+                    }
+                }
+            }
+
             createGrid();
-            showMessage('Grid randomized!');
+            showMessage('Grid randomized with varied note lengths and rhythmic structure!');
         }
 
         async function exportAudio() {
@@ -899,8 +1039,8 @@
                 }
             }
             changeNoteDuration('8n', 'duration8nBtn');
-            Tone.Transport.bpm.value = 160;
-            tempoInput.value = 160;
+            Tone.Transport.bpm.value = 140;
+            tempoInput.value = 140;
             createGrid();
             showMessage('Action sequence generated!');
         }
@@ -1029,63 +1169,14 @@
                 }
             }
             changeNoteDuration('8n', 'duration8nBtn');
-            Tone.Transport.bpm.value = 140;
-            tempoInput.value = 140;
+            Tone.Transport.bpm.value = 120;
+            tempoInput.value = 120;
             createGrid();
             showMessage('Fun shanty generated!');
         }
 
-        function prefillMysticalTune() {
-            activeNotes = Array(rows).fill(0).map(() => Array(cols).fill().map(() => ({ active: false, duration: "4n" })));
-            const verseMelodyPart1 = [
-                [0, 7, "4n"], [4, 3, "4n"], [8, 0, "2n"], [12, 4, "4n"]
-            ];
-            const verseMelodyPart2 = [
-                [0, 5, "4n"], [4, 2, "4n"], [8, 3, "2n"], [12, 7, "4n"]
-            ];
-            const chorusMelodyPattern = [
-                [0, 14, "1n"], [4, 10, "4n"], [8, 7, "4n"], [12, 10, "4n"]
-            ];
-            const percussionPattern = [
-                [0, 15, "4n"], [4, 15, "4n"], [8, 14, "8n"], [12, 13, "8n"]
-            ];
-            let currentGlobalColumn = 0;
-            for (let i = 0; i < Math.floor(cols / 48); i++) {
-                verseMelodyPart1.forEach(([offsetCol, noteIndex, duration]) => {
-                    const col = currentGlobalColumn + offsetCol;
-                    if (col < cols && !isColumnOccupied(noteIndex, col, duration)) {
-                        activeNotes[noteIndex][col] = { active: true, duration };
-                    }
-                });
-                verseMelodyPart2.forEach(([offsetCol, noteIndex, duration]) => {
-                    const col = currentGlobalColumn + 16 + offsetCol;
-                    if (col < cols && !isColumnOccupied(noteIndex, col)) {
-                        activeNotes[noteIndex][col] = { active: true, duration };
-                    }
-                });
-                chorusMelodyPattern.forEach(([offsetCol, noteIndex, duration]) => {
-                    const col = currentGlobalColumn + 32 + offsetCol;
-                    if (col < cols && !isColumnOccupied(noteIndex, col, duration)) {
-                        activeNotes[noteIndex][col] = { active: true, duration };
-                    }
-                });
-                currentGlobalColumn += 48;
-            }
-            for (let c = 0; c < cols; c += 16) {
-                percussionPattern.forEach(([offsetCol, noteIndex, duration]) => {
-                    if (c + offsetCol < cols && !isColumnOccupied(noteIndex, c + offsetCol, duration)) {
-                        activeNotes[noteIndex][c + offsetCol] = { active: true, duration };
-                    }
-                });
-            }
-            changeNoteDuration('4n', 'duration4nBtn');
-            createGrid();
-            showMessage('Mystical tune prefilled!');
-        }
-
         // --- Event Listeners ---
         window.onload = function() {
-            prefillMysticalTune();
             createGrid();
             playBtn.addEventListener('click', startSequencer);
             stopBtn.addEventListener('click', stopSequencer);
@@ -1113,6 +1204,8 @@
             duration16nBtn.addEventListener('click', () => changeNoteDuration('16n', 'duration16nBtn'));
             duration8nBtn.addEventListener('click', () => changeNoteDuration('8n', 'duration8nBtn'));
             duration4nBtn.addEventListener('click', () => changeNoteDuration('4n', 'duration4nBtn'));
+            duration2nBtn.addEventListener('click', () => changeNoteDuration('2n', 'duration2nBtn'));
+            duration1nBtn.addEventListener('click', () => changeNoteDuration('1n', 'duration1nBtn'));
             sequencerGrid.addEventListener('keydown', (e) => {
                 if (e.target.classList.contains('grid-cell')) {
                     const row = parseInt(e.target.dataset.row);
@@ -1142,7 +1235,7 @@
                     showMessage('Audio context started! Ready to play.');
                 }
             }, { once: true });
-            showMessage('Create your own 8-bit tune or try the pre-filled mystical melody!');
+            showMessage('Create your own 8-bit tune or try the Auto Generated Tunes!');
         };
     </script>
 </body>
