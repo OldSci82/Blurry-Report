@@ -1,0 +1,69 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Critical: Prevents scrolling, which can interfere with scaling */
+    height: 100%; /* Ensure html and body take full height */
+    width: 100%;  /* Ensure html and body take full width */
+    background: #000; /* Sets black background for letterboxing */
+    /* Remove display: flex; justify-content; align-items; min-height here */
+    /* Let the #game-container handle the centering and dimensions */
+}
+
+#game-container {
+    display: block; /* Important: Make sure it's a block element */
+    width: 100vw;   /* Take full viewport width */
+    height: 100vh;  /* Take full viewport height */
+    /* Position the game container to fill the screen */
+    position: absolute; /* Changed from static/relative */
+    top: 0;
+    left: 0;
+    /* Remove border for cleaner look, if you want it back, fine. */
+    border: none; /* Removing border as it's not strictly necessary for scaling */
+}
+
+/* Ensure the canvas element created by Phaser also behaves correctly */
+canvas {
+    display: block; /* Prevents extra space below the canvas */
+    margin: 0 auto; /* Centers the canvas horizontally within its parent */
+}
+
+
+.mobile-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 0; /* Ensure it's positioned from the left edge */
+    right: 0; /* Ensure it extends to the right edge */
+    width: auto; /* Let padding and flexbox define width */
+    display: none;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
+}
+.control-group {
+    display: flex;
+    gap: 10px;
+}
+.control-btn {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation; /* Prevents double-tap zoom */
+    user-select: none;
+}
+.control-btn:active {
+    background: rgba(255, 255, 255, 0.5);
+}
+@media (max-width: 768px) {
+    .mobile-controls {
+        /* Only display flex if it's mobile and input manager says so */
+        /* display: flex;  -- Keep this controlled by InputManager.js */
+    }
+}

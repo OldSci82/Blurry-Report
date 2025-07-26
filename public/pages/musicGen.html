@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8-bit Music Sequencer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+    body {
+        font-family: 'Press Start 2P', cursive;
+        background-color: #1a202c;
+        color: #e2e8f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 1rem;
+        box-sizing: border-box;
+    }
+    .container {
+        background-color: #2d3748;
+        border: 4px solid #4a5568;
+        box-shadow: 8px 8px 0px 0px #000000;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+    }
+    .grid-cell {
+        width: 18px; /* Single column width */
+        height: 18px;
+        background-color: #1a202c; /* Darker background for empty cells */
+        border: 1px solid #4a5568; /* Subtle border for all cells */
+        cursor: pointer;
+        transition: background-color 0.1s ease-in-out;
+        position: relative;
+        box-sizing: border-box;
+    }
+    .grid-cell.active {
+        border: 1px solid #2d3748;
+    }
+    .grid-cell.active.duration-16n {
+        background-color: #9ae6b4; /* Lightest green for 16th note */
+        min-width: 18px; /* 1x column */
+    }
+    .grid-cell.active.duration-8n {
+        background-color: #68d391; /* Lighter green for 8th note */
+        min-width: 36px; /* 2x columns */
+    }
+    .grid-cell.active.duration-4n {
+        background-color: #48bb78; /* Standard green for quarter note */
+        min-width: 72px; /* 4x columns */
+    }
+    .grid-cell.active.duration-2n {
+        background-color: #38a169; /* Slightly darker green for half note */
+        min-width: 144px; /* 8x columns */
+    }
+    .grid-cell.active.duration-1n {
+        background-color: #2f855a; /* Darkest green for whole note */
+        min-width: 288px; /* 16x columns */
+    }
+    .grid-cell.playing {
+        background-color: #ecc94b; /* Yellow for playback */
+        border: 2px solid #1a202c; /* Thicker border for visibility */
+        box-shadow: 0 0 5px rgba(236, 201, 75, 0.8); /* Glow for status bar */
+        z-index: 1; /* Ensure playing highlight is on top */
+    }
+    .instrument-button, .duration-button, .control-button, .style-button {
+        background-color: #63b3ed;
+        color: white;
+        border: 2px solid #2b6cb0;
+        box-shadow: 4px 4px 0px 0px #000000;
+        transition: all 0.1s ease-in-out;
+    }
+    .instrument-button:hover, .duration-button:hover, .control-button:hover, .style-button:hover {
+        background-color: #4299e1;
+        box-shadow: 2px 2px 0px 0px #000000;
+        transform: translate(2px, 2px);
+    }
+    .instrument-button.selected, .duration-button.selected {
+        background-color: #9f7aea;
+        border-color: #6b46c1;
+        box-shadow: 2px 2px 0px 0px #000000;
+        transform: translate(2px, 2px);
+    }
+    .control-button, .style-button {
+        background-color: #ed8936;
+        border: 2px solid #c05621;
+    }
+    .control-button:hover, .style-button:hover {
+        background-color: #dd6b20;
+        box-shadow: 2px 2px 0px 0px #000000;
+        transform: translate(2px, 2px);
+    }
+    .tempo-input {
+        background-color: #4a5568;
+        border: 2px solid #2d3748;
+        color: #e2e8f0;
+        box-shadow: 2px 2px 0px 0px #000000;
+    }
+    .grid-container {
+        display: flex;
+        width: 100%;
+        max-width: 100%;
+        position: relative;
+    }
+    .note-labels {
+        width: 110px;
+        flex-shrink: 0;
+        background-color: #2d3748;
+        border-right: 1px solid #4a5568;
+    }
+    .note-label {
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-right: 8px;
+        padding-left: 4px;
+        background-color: #2d3748;
+        border-bottom: 1px solid #4a5568;
+        position: sticky;
+        left: 0;
+        z-index: 10;
+        color: #e2e8f0;
+        font-size: 0.75rem;
+    }
+    .volume-button {
+        width: 18px;
+        height: 18px;
+        background-color: #63b3ed;
+        color: white;
+        border: 1px solid #2b6cb0;
+        font-size: 0.6rem;
+        line-height: 18px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.1s ease-in-out;
+    }
+    .volume-button:hover {
+        background-color: #4299e1;
+    }
+    .volume-display {
+        width: 30px;
+        text-align: center;
+        font-size: 0.65rem;
+        color: #ecc94b;
+    }
+    .grid-wrapper {
+        flex-grow: 1;
+        overflow-x: auto;
+        max-width: calc(100% - 110px); /* Account for note-labels width */
+    }
+    .grid {
+        display: grid;
+        border: 1px solid #4a5568;
+        background-color: #2d3748;
+        position: relative;
+    }
+    .message-box {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 100;
+        background-color: #2d3748;
+        border: 2px solid #e2e8f0;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 4px 4px 0px #000000;
+        opacity: 1;
+        transition: opacity 0.3s ease-in-out;
+    }
+    .message-box.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+    @media (max-width: 768px) {
+        .grid-cell {
+            width: 14px;
+            height: 14px;
+        }
+        .grid-cell.active.duration-16n {
+            min-width: 14px;
+        }
+        .grid-cell.active.duration-8n {
+            min-width: 28px;
+        }
+        .grid-cell.active.duration-4n {
+            min-width: 56px;
+        }
+        .grid-cell.active.duration-2n {
+            min-width: 112px;
+        }
+        .grid-cell.active.duration-1n {
+            min-width: 224px;
+        }
+        .note-labels {
+            width: 70px;
+        }
+        .note-label {
+            height: 14px;
+            font-size: 0.65rem;
+        }
+        .volume-button {
+            width: 14px;
+            height: 14px;
+            font-size: 0.5rem;
+        }
+        .volume-display {
+            width: 20px;
+            font-size: 0.55rem;
+        }
+        .grid-wrapper {
+            max-width: calc(100% - 70px);
+        }
+        .instrument-button, .duration-button, .control-button, .style-button {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        .message-box {
+            width: 80%;
+            text-align: center;
+        }
+    }
+</style>
+</head>
+<body class="antialiased">
+    <div class="container p-6 rounded-lg flex flex-col items-center">
+        <h1 class="text-3xl mb-6 text-center text-yellow-300">8-bit Tune Maker</h1>
+
+        <!-- Instrument Selection -->
+        <div class="mb-4 flex flex-wrap justify-center gap-3">
+            <button id="squareBtn" class="instrument-button py-2 px-4 rounded-md" role="button" aria-label="Select Square Wave">Square</button>
+            <button id="triangleBtn" class="instrument-button py-2 px-4 rounded-md selected" role="button" aria-label="Select Triangle Wave">Triangle</button>
+            <button id="sawtoothBtn" class="instrument-button py-2 px-4 rounded-md" role="button" aria-label="Select Sawtooth Wave">Sawtooth</button>
+            <button id="noiseBtn" class="instrument-button py-2 px-4 rounded-md" role="button" aria-label="Select Noise (Drums)">Noise (Drums)</button>
+        </div>
+
+        <!-- Note Duration Selection -->
+        <div class="mb-6 flex flex-wrap justify-center gap-3">
+            <button id="duration16nBtn" class="duration-button py-2 px-4 rounded-md" role="button" aria-label="Select Sixteenth Note">Sixteenth Note</button>
+            <button id="duration8nBtn" class="duration-button py-2 px-4 rounded-md" role="button" aria-label="Select Eighth Note">Eighth Note</button>
+            <button id="duration4nBtn" class="duration-button py-2 px-4 rounded-md selected" role="button" aria-label="Select Quarter Note">Quarter Note</button>
+        </div>
+
+        <!-- Sequencer Grid with Labels -->
+        <div class="grid-container flex">
+            <div class="note-labels">
+                <!-- Labels will be dynamically generated here -->
+            </div>
+            <div class="grid-wrapper">
+                <div id="sequencerGrid" class="grid border border-gray-700"></div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="mt-6 flex flex-wrap justify-center items-center gap-4">
+            <button id="playBtn" class="control-button py-2 px-6 rounded-md" role="button" aria-label="Play Sequence">Play</button>
+            <button id="stopBtn" class="control-button py-2 px-6 rounded-md" role="button" aria-label="Stop Sequence">Stop</button>
+            <button id="clearBtn" class="control-button py-2 px-6 rounded-md" role="button" aria-label="Clear Grid">Clear</button>
+            <button id="saveBtn" class="control-button py-2 px-6 rounded-md" role="button" aria-label="Save Sequence">Save</button>
+            <button id="loadBtn" class="control-button py-2 px-6 rounded-md" role="button" aria-label="Load Sequence">Load</button>
+            <button id="randomizeBtn" class="control-button py-2 px-6 rounded-md" role="button" aria-label="Randomize Grid">Randomize</button>
+            <button id="exportBtn" class="control-button py-2 px-6 rounded-md" role="button" aria-label="Export as WAV">Export WAV</button>
+            <label for="tempo" class="text-lg">Tempo (BPM):</label>
+            <input type="number" id="tempo" value="140" min="60" max="240" class="tempo-input py-2 px-3 rounded-md w-24 text-center" aria-label="Set Tempo (60-240 BPM)">
+        </div>
+
+        <!-- Style Buttons -->
+        <div class="mt-4 flex flex-wrap justify-center gap-3">
+            <button id="actionBtn" class="style-button py-2 px-4 rounded-md" role="button" aria-label="Generate Action Sequence">Action</button>
+            <button id="mysticalBtn" class="style-button py-2 px-4 rounded-md" role="button" aria-label="Generate Mystical Cut Scene">Mystical</button>
+            <button id="shantyBtn" class="style-button py-2 px-4 rounded-md" role="button" aria-label="Generate Fun Shanty">Shanty</button>
+        </div>
+
+        <!-- Message Box -->
+        <div id="messageBox" class="message-box hidden">
+            <p id="messageText" class="text-center"></p>
+        </div>
+    </div>
+
+    <script>
+        // --- Global Variables ---
+        const rows = 16;
+        const cols = 64;
+        const PERCUSSION_ROWS = { 15: 'kk', 14: 'sn', 13: 'hh' };
+        const notes = ["C6", "B5", "A5", "G5", "F5", "E5", "D5", "C5", "B4", "A4", "G4", "F4", "E4", "D4", "C4", "B3"];
+        let activeNotes = Array(rows).fill(0).map(() => Array(cols).fill().map(() => ({ active: false, duration: "4n" })));
+        let rowVolumes = Array(rows).fill(-12); // Default volume: -12 dB
+        let currentColumn = 0;
+        let isPlaying = false;
+        let loop;
+        let currentInstrument = 'triangle';
+        let currentNoteDuration = "4n";
+        const DEFAULT_TEMPO = 140;
+
+        // --- Tone.js Synths ---
+        const squareSynth = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: "square" },
+            envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.1 }
+        }).toDestination();
+
+        const triangleSynth = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: "triangle" },
+            envelope: { attack: 0.005, decay: 0.1, sustain: 0.05 }
+        }).toDestination();
+
+        const sawtoothSynth = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: "sawtooth" },
+            envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.1 }
+        }).toDestination();
+
+        const kickSynth = new Tone.NoiseSynth({
+            noise: { type: "brown" },
+            envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.2 }
+        }).toDestination();
+
+        const snareSynth = new Tone.NoiseSynth({
+            noise: { type: "white" },
+            envelope: { attack: 0.001, decay: 0.15, sustain: 0, release: 0.15 }
+        }).connect(new Tone.Filter(1000, "highpass")).toDestination();
+
+        const hihatSynth = new Tone.NoiseSynth({
+            noise: { type: "pink" },
+            envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 }
+        }).connect(new Tone.Filter({ frequency: 6000, type: "bandpass", Q: 8})).toDestination();
+
+        // --- DOM Elements ---
+        const sequencerGrid = document.getElementById('sequencerGrid');
+        const playBtn = document.getElementById('playBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const loadBtn = document.getElementById('loadBtn');
+        const randomizeBtn = document.getElementById('randomizeBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const tempoInput = document.getElementById('tempo');
+        const squareBtn = document.getElementById('squareBtn');
+        const triangleBtn = document.getElementById('triangleBtn');
+        const sawtoothBtn = document.getElementById('sawtoothBtn');
+        const noiseBtn = document.getElementById('noiseBtn');
+        const duration16nBtn = document.getElementById('duration16nBtn');
+        const duration8nBtn = document.getElementById('duration8nBtn');
+        const duration4nBtn = document.getElementById('duration4nBtn');
+        const actionBtn = document.getElementById('actionBtn');
+        const mysticalBtn = document.getElementById('mysticalBtn');
+        const shantyBtn = document.getElementById('shantyBtn');
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+
+        // --- Functions ---
+        function showMessage(message) {
+            messageText.textContent = message;
+            messageBox.classList.remove('hidden');
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+            }, 1000);
+        }
+
+        function adjustVolume(row, increment) {
+            rowVolumes[row] = Math.min(0, Math.max(-30, rowVolumes[row] + increment));
+            const volumeDisplay = document.querySelector(`.note-label[data-row="${row}"] .volume-display`);
+            if (volumeDisplay) {
+                volumeDisplay.textContent = `${rowVolumes[row]}`;
+            }
+            if (row in PERCUSSION_ROWS) {
+                const drumType = PERCUSSION_ROWS[row];
+                if (drumType === 'kk') kickSynth.volume.value = rowVolumes[row];
+                else if (drumType === 'sn') snareSynth.volume.value = rowVolumes[row];
+                else if (drumType === 'hh') hihatSynth.volume.value = rowVolumes[row];
+            } else {
+                squareSynth.volume.value = rowVolumes[row];
+                triangleSynth.volume.value = rowVolumes[row];
+                sawtoothSynth.volume.value = rowVolumes[row];
+            }
+            showMessage(`Row ${row in PERCUSSION_ROWS ? PERCUSSION_ROWS[r].toUpperCase() : notes[row]} volume set to ${rowVolumes[row]} dB`);
+        }
+
+        function changeNoteDuration(duration, buttonId) {
+            currentNoteDuration = duration;
+            document.querySelectorAll('.duration-button').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById(buttonId).classList.add('selected');
+            if (isPlaying) {
+                stopSequencer();
+                startSequencer();
+            }
+        }
+
+        function isColumnOccupied(row, col, duration) {
+            const durationColumns = {
+                '16n': 1,
+                '8n': 2,
+                '4n': 4,
+                '2n': 8,
+                '1n': 16
+            }[duration] || 1;
+            for (let c = Math.max(0, col - 15); c <= col && c < cols; c++) {
+                if (activeNotes[row][c].active) {
+                    const existingDuration = activeNotes[row][c].duration;
+                    const existingSpan = {
+                        '16n': 1,
+                        '8n': 2,
+                        '4n': 4,
+                        '2n': 8,
+                        '1n': 16
+                    }[existingDuration] || 1;
+                    if (c + existingSpan > col && c <= col + durationColumns - 1) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function createGrid() {
+            sequencerGrid.innerHTML = '';
+            const noteLabelsContainer = document.querySelector('.note-labels');
+            noteLabelsContainer.innerHTML = '';
+
+            // Calculate maximum columns needed
+            let maxCols = 64; // Minimum 64 columns for playback loop
+            const durationColumns = {
+                '16n': 1,
+                '8n': 2,
+                '4n': 4,
+                '2n': 8,
+                '1n': 16
+            };
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (activeNotes[r][c].active) {
+                        const duration = activeNotes[r][c].duration;
+                        const span = durationColumns[duration] || 1;
+                        maxCols = Math.max(maxCols, c + span + 1); // Ensure full note length is included
+                    }
+                }
+            }
+
+            // Set grid columns and width
+            const columnWidth = window.innerWidth <= 768 ? 14 : 18; // Match media query
+            sequencerGrid.style.gridTemplateColumns = `repeat(${maxCols}, ${columnWidth}px)`;
+            sequencerGrid.style.width = `${maxCols * columnWidth}px`;
+
+            // Generate dynamic beat markers
+            let beatMarkerStyles = '';
+            for (let i = 0; i < maxCols; i += 4) {
+                beatMarkerStyles += `calc(${columnWidth}px * ${i}) 0 0 0 rgba(255, 255, 255, 0.2), `;
+            }
+            beatMarkerStyles = beatMarkerStyles.slice(0, -2); // Remove trailing comma
+            const styleSheet = document.createElement('style');
+            styleSheet.textContent = `
+                .grid::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    width: 1px;
+                    background: rgba(255, 255, 255, 0.2);
+                    z-index: 2;
+                    left: 0;
+                    box-shadow: ${beatMarkerStyles};
+                }
+            `;
+            document.head.appendChild(styleSheet);
+
+            for (let r = 0; r < rows; r++) {
+                const labelContainer = document.createElement('div');
+                labelContainer.classList.add('note-label');
+                labelContainer.setAttribute('aria-hidden', 'true');
+                labelContainer.dataset.row = r;
+                
+                const labelText = document.createElement('span');
+                labelText.textContent = r in PERCUSSION_ROWS ? PERCUSSION_ROWS[r].toUpperCase() : notes[r];
+                labelContainer.appendChild(labelText);
+
+                const volumeUp = document.createElement('button');
+                volumeUp.textContent = '+';
+                volumeUp.classList.add('volume-button');
+                volumeUp.setAttribute('aria-label', `Increase volume for ${notes[r]}`);
+                volumeUp.addEventListener('click', () => adjustVolume(r, 3));
+                labelContainer.appendChild(volumeUp);
+
+                const volumeDisplay = document.createElement('span');
+                volumeDisplay.classList.add('volume-display');
+                volumeDisplay.textContent = `${rowVolumes[r]}`;
+                volumeDisplay.setAttribute('aria-hidden', 'true');
+                labelContainer.appendChild(volumeDisplay);
+
+                const volumeDown = document.createElement('button');
+                volumeDown.textContent = '−';
+                volumeDown.classList.add('volume-button');
+                volumeDown.setAttribute('aria-label', `Decrease volume for ${notes[r]}`);
+                volumeDown.addEventListener('click', () => adjustVolume(r, -3));
+                labelContainer.appendChild(volumeDown);
+
+                noteLabelsContainer.appendChild(labelContainer);
+                
+                let c = 0;
+                while (c < maxCols) {
+                    if (c < cols && activeNotes[r][c] && activeNotes[r][c].active) {
+                        const duration = activeNotes[r][c].duration;
+                        const span = Math.min(durationColumns[duration] || 1, maxCols - c); // Truncate at grid end
+                        // Clear any overlapping notes in the span
+                        for (let i = c + 1; i < c + span && i < cols; i++) {
+                            activeNotes[r][i] = { active: false, duration: "4n" };
+                        }
+                        const cell = document.createElement('div');
+                        cell.classList.add('grid-cell', 'rounded-sm');
+                        cell.dataset.row = r;
+                        cell.dataset.col = c;
+                        cell.style.gridColumn = `${c + 1} / span ${span}`; // Left-align to column c+1
+                        const durationLabel = {
+                            '1n': 'Whole note',
+                            '2n': 'Half note',
+                            '4n': 'Quarter note',
+                            '8n': 'Eighth note',
+                            '16n': 'Sixteenth note'
+                        }[duration] || 'Note';
+                        cell.setAttribute('role', 'button');
+                        cell.setAttribute('aria-label', `${durationLabel} ${r in PERCUSSION_ROWS ? PERCUSSION_ROWS[r].toUpperCase() : notes[r]} spanning ${span} steps at step ${c + 1}`);
+                        cell.setAttribute('tabindex', '0');
+                        cell.addEventListener('click', toggleNote);
+                        cell.classList.add('active', `duration-${duration}`);
+                        cell.title = durationLabel; // Add tooltip
+                        sequencerGrid.appendChild(cell);
+                        c += span; // Skip spanned columns
+                    } else {
+                        const cell = document.createElement('div');
+                        cell.classList.add('grid-cell', 'rounded-sm');
+                        cell.dataset.row = r;
+                        cell.dataset.col = c;
+                        cell.style.gridColumn = `${c + 1} / span 1`; // Single column for empty cells
+                        cell.setAttribute('role', 'button');
+                        cell.setAttribute('aria-label', `Empty ${r in PERCUSSION_ROWS ? PERCUSSION_ROWS[r].toUpperCase() : notes[r]} at step ${c + 1}`);
+                        cell.setAttribute('tabindex', '0');
+                        cell.addEventListener('click', toggleNote);
+                        cell.title = 'Empty'; // Tooltip for empty cells
+                        sequencerGrid.appendChild(cell);
+                        c++;
+                    }
+                }
+            }
+        }
+
+        function toggleNote(event) {
+            const cell = event.target;
+            const row = parseInt(cell.dataset.row);
+            const col = parseInt(cell.dataset.col);
+            // Clear any overlapping notes
+            const newDuration = activeNotes[row][col].active ? "4n" : currentNoteDuration;
+            const durationColumns = {
+                '16n': 1,
+                '8n': 2,
+                '4n': 4,
+                '2n': 8,
+                '1n': 16
+            }[newDuration] || 1;
+            // Prevent adding notes that extend beyond playback grid
+            if (col + durationColumns > cols) {
+                showMessage(`Cannot place ${newDuration} note at column ${col + 1}; it would exceed the 64-column playback grid.`);
+                return;
+            }
+            for (let c = 0; c < cols; c++) {
+                if (activeNotes[row][c].active) {
+                    const existingDuration = activeNotes[row][c].duration;
+                    const existingSpan = {
+                        '16n': 1,
+                        '8n': 2,
+                        '4n': 4,
+                        '2n': 8,
+                        '1n': 16
+                    }[existingDuration] || 1;
+                    if (c < col + durationColumns && c + existingSpan > col) {
+                        for (let i = c; i < c + existingSpan && i < cols; i++) {
+                            activeNotes[row][i] = { active: false, duration: "4n" };
+                        }
+                    }
+                }
+            }
+            // Toggle the note
+            activeNotes[row][col] = {
+                active: !activeNotes[row][col].active,
+                duration: newDuration
+            };
+            createGrid(); // Rebuild grid to update spans
+        }
+
+        function playColumn(time) {
+            // Clear previous highlights
+            document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('playing'));
+
+            // Highlight cells for active notes that span the current column
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (activeNotes[r][c].active) {
+                        const duration = activeNotes[r][c].duration;
+                        const durationColumns = {
+                            '16n': 1,
+                            '8n': 2,
+                            '4n': 4,
+                            '2n': 8,
+                            '1n': 16
+                        }[duration] || 1;
+                        // Highlight if currentColumn is within the note's span
+                        if (currentColumn >= c && currentColumn < c + durationColumns) {
+                            const cell = document.querySelector(`.grid-cell[data-row="${r}"][data-col="${c}"]`);
+                            if (cell) {
+                                cell.classList.add('playing');
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Play sounds for notes starting at the current column
+            const notesToPlay = [];
+            for (let r = 0; r < rows; r++) {
+                if (activeNotes[r][currentColumn].active) {
+                    const duration = activeNotes[r][currentColumn].duration;
+                    if (r in PERCUSSION_ROWS) {
+                        const drumType = PERCUSSION_ROWS[r];
+                        if (drumType === 'kk') {
+                            kickSynth.volume.value = rowVolumes[r];
+                            kickSynth.triggerAttackRelease(duration, time);
+                        } else if (drumType === 'sn') {
+                            snareSynth.volume.value = rowVolumes[r];
+                            snareSynth.triggerAttackRelease(duration, time);
+                        } else if (drumType === 'hh') {
+                            hihatSynth.volume.value = rowVolumes[r];
+                            hihatSynth.triggerAttackRelease(duration, time);
+                        }
+                    } else {
+                        notesToPlay.push({ note: notes[r], duration });
+                    }
+                }
+            }
+            if (notesToPlay.length > 0) {
+                switch (currentInstrument) {
+                    case 'square':
+                        squareSynth.volume.value = rowVolumes[notes.indexOf(notesToPlay[0].note)];
+                        notesToPlay.forEach(({ note, duration }) => {
+                            squareSynth.triggerAttackRelease(note, duration, time);
+                        });
+                        break;
+                    case 'triangle':
+                        triangleSynth.volume.value = rowVolumes[notes.indexOf(notesToPlay[0].note)];
+                        notesToPlay.forEach(({ note, duration }) => {
+                            triangleSynth.triggerAttackRelease(note, duration, time);
+                        });
+                        break;
+                    case 'sawtooth':
+                        sawtoothSynth.volume.value = rowVolumes[notes.indexOf(notesToPlay[0].note)];
+                        notesToPlay.forEach(({ note, duration }) => {
+                            sawtoothSynth.triggerAttackRelease(note, duration, time);
+                        });
+                        break;
+                }
+            }
+
+            // Advance to the next column
+            currentColumn = (currentColumn + 1) % cols;
+        }
+
+        async function startSequencer() {
+            if (isPlaying) return;
+            await Tone.start();
+            Tone.Transport.bpm.value = parseInt(tempoInput.value) || DEFAULT_TEMPO;
+            if (loop) loop.dispose();
+            loop = new Tone.Loop(playColumn, "16n"); // Use 16n for precise column advancement
+            loop.start(0);
+            Tone.Transport.start();
+            isPlaying = true;
+            currentColumn = 0; // Reset to ensure status bar starts at beginning
+            playBtn.textContent = 'Playing...';
+            playBtn.disabled = true;
+            stopBtn.disabled = false;
+        }
+
+        function stopSequencer() {
+            if (!isPlaying) return;
+            Tone.Transport.stop();
+            if (loop) loop.stop();
+            isPlaying = false;
+            playBtn.textContent = 'Play';
+            playBtn.disabled = false;
+            stopBtn.disabled = true;
+            document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('playing'));
+            currentColumn = 0; // Reset column for next playback
+        }
+
+        function clearGrid() {
+            activeNotes = Array(rows).fill(0).map(() => Array(cols).fill().map(() => ({ active: false, duration: "4n" })));
+            createGrid();
+            showMessage('Grid cleared!');
+        }
+
+        function saveSequence() {
+            localStorage.setItem('sequencerNotes', JSON.stringify(activeNotes));
+            showMessage('Sequence saved!');
+        }
+
+        function loadSequence() {
+            const saved = localStorage.getItem('sequencerNotes');
+            if (saved) {
+                activeNotes = JSON.parse(saved);
+                createGrid();
+                showMessage('Sequence loaded!');
+            } else {
+                showMessage('No saved sequence found.');
+            }
+        }
+
+        function randomizeGrid() {
+            activeNotes = Array(rows).fill(0).map(() => Array(cols).fill().map(() => ({
+                active: Math.random() > 0.8,
+                duration: currentNoteDuration
+            })));
+            // Clear overlaps
+            for (let r = 0; r < rows; r++) {
+                let c = 0;
+                while (c < cols) {
+                    if (activeNotes[r][c].active) {
+                        const duration = activeNotes[r][c].duration;
+                        const span = {
+                            '16n': 1,
+                            '8n': 2,
+                            '4n': 4,
+                            '2n': 8,
+                            '1n': 16
+                        }[duration] || 1;
+                        for (let i = c + 1; i < c + span && i < cols; i++) {
+                            activeNotes[r][i] = { active: false, duration: "4n" };
+                        }
+                        c += span;
+                    } else {
+                        c++;
+                    }
+                }
+            }
+            createGrid();
+            showMessage('Grid randomized!');
+        }
+
+        async function exportAudio() {
+            const offlineContext = new Tone.OfflineContext((cols * Tone.Time("16n").toSeconds()));
+            const offlineTransport = offlineContext.transport;
+            const offlineSquareSynth = new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "square" },
+                envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.1 }
+            }).toDestination();
+            const offlineTriangleSynth = new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "triangle" },
+                envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.1 }
+            }).toDestination();
+            const offlineSawtoothSynth = new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "sawtooth" },
+                envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.1 }
+            }).toDestination();
+            const offlineKickSynth = new Tone.NoiseSynth({
+                noise: { type: "brown" },
+                envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.2 }
+            }).toDestination();
+            const offlineSnareSynth = new Tone.NoiseSynth({
+                noise: { type: "white" },
+                envelope: { attack: 0.001, decay: 0.15, sustain: 0, release: 0.15 }
+            }).connect(new Tone.Filter(1000, "highpass")).toDestination();
+            const offlineHihatSynth = new Tone.NoiseSynth({
+                noise: { type: "pink" },
+                envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 }
+            }).connect(new Tone.Filter({ frequency: 6000, type: "bandpass", Q: 5 })).toDestination();
+
+            let offlineColumn = 0;
+            const offlineLoop = new Tone.Loop((time) => {
+                const notesToPlay = [];
+                for (let r = 0; r < rows; r++) {
+                    if (activeNotes[r][offlineColumn].active) {
+                        const duration = activeNotes[r][offlineColumn].duration;
+                        if (r in PERCUSSION_ROWS) {
+                            const drumType = PERCUSSION_ROWS[r];
+                            if (drumType === 'kk') {
+                                offlineKickSynth.volume.value = rowVolumes[r];
+                                offlineKickSynth.triggerAttackRelease(duration, time);
+                            } else if (drumType === 'sn') {
+                                offlineSnareSynth.volume.value = rowVolumes[r];
+                                offlineSnareSynth.triggerAttackRelease(duration, time);
+                            } else if (drumType === 'hh') {
+                                offlineHihatSynth.volume.value = rowVolumes[r];
+                                offlineHihatSynth.triggerAttackRelease(duration, time);
+                            }
+                        } else {
+                            notesToPlay.push({ note: notes[r], duration });
+                        }
+                    }
+                }
+                if (notesToPlay.length > 0) {
+                    switch (currentInstrument) {
+                        case 'square':
+                            offlineSquareSynth.volume.value = rowVolumes[notes.indexOf(notesToPlay[0].note)];
+                            notesToPlay.forEach(({ note, duration }) => {
+                                offlineSquareSynth.triggerAttackRelease(note, duration, time);
+                            });
+                            break;
+                        case 'triangle':
+                            offlineTriangleSynth.volume.value = rowVolumes[notes.indexOf(notesToPlay[0].note)];
+                            notesToPlay.forEach(({ note, duration }) => {
+                                offlineTriangleSynth.triggerAttackRelease(note, duration, time);
+                            });
+                            break;
+                        case 'sawtooth':
+                            offlineSawtoothSynth.volume.value = rowVolumes[notes.indexOf(notesToPlay[0].note)];
+                            notesToPlay.forEach(({ note, duration }) => {
+                                offlineSawtoothSynth.triggerAttackRelease(note, duration, time);
+                            });
+                            break;
+                    }
+                }
+                offlineColumn = (offlineColumn + 1) % cols;
+            }, "16n");
+            offlineLoop.start(0);
+            offlineTransport.start();
+            const buffer = await offlineContext.render();
+            const blob = buffer.toBlob('audio/wav');
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sequence.wav';
+            a.click();
+            URL.revokeObjectURL(url);
+            showMessage('Sequence exported as WAV!');
+        }
+
+        function changeInstrument(instrumentName) {
+            currentInstrument = instrumentName;
+            document.querySelectorAll('.instrument-button').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById(`${instrumentName}Btn`).classList.add('selected');
+        }
+
+        function generateActionSequence() {
+            activeNotes = Array(rows).fill(0).map(() => Array(cols).fill().map(() => ({ active: false, duration: "8n" })));
+            // Two melody lines with varied durations
+            for (let c = 0; c < cols; c += 8) {
+                // Primary melody (C6 to G5, rows 0-4)
+                const melodyRow1 = Math.floor(Math.random() * 5);
+                const motif = [0, 2, 4, 6];
+                motif.forEach(offset => {
+                    if (c + offset < cols && Math.random() < 0.8 && !isColumnOccupied(melodyRow1, c + offset, "4n")) {
+                        const duration = Math.random() < 0.3 ? "2n" : Math.random() < 0.5 ? "4n" : "8n";
+                        activeNotes[melodyRow1][c + offset] = { active: true, duration };
+                    }
+                });
+                // Secondary melody (C5 to A4, rows 7-9)
+                const melodyRow2 = Math.floor(Math.random() * 3) + 7;
+                const motif2 = [1, 3, 5, 7];
+                motif2.forEach(offset => {
+                    if (c + offset < cols && Math.random() < 0.6 && !isColumnOccupied(melodyRow2, c + offset, "8n")) {
+                        const duration = Math.random() < 0.4 ? "4n" : "8n";
+                        activeNotes[melodyRow2][c + offset] = { active: true, duration };
+                    }
+                });
+                // Sustained chords (G4 to C4, rows 11-13)
+                if (Math.random() < 0.7) {
+                    const rootRow = Math.floor(Math.random() * 3) + 11;
+                    const duration = Math.random() < 0.5 ? "1n" : "2n";
+                    if (!isColumnOccupied(rootRow, c, duration)) {
+                        activeNotes[rootRow][c] = { active: true, duration };
+                        if (rootRow + 2 < rows - 3 && !isColumnOccupied(rootRow + 2, c, duration)) {
+                            activeNotes[rootRow + 2][c] = { active: true, duration };
+                        }
+                        if (rootRow + 4 < rows - 3 && !isColumnOccupied(rootRow + 4, c, duration)) {
+                            activeNotes[rootRow + 4][c] = { active: true, duration };
+                        }
+                    }
+                }
+            }
+            // Varied percussion
+            for (let c = 0; c < cols; c += 4) {
+                const kickDuration = Math.random() < 0.5 ? "4n" : "8n";
+                const snareDuration = Math.random() < 0.5 ? "4n" : "8n";
+                if (!isColumnOccupied(15, c, kickDuration)) {
+                    activeNotes[15][c] = { active: Math.random() < 0.9, duration: kickDuration };
+                }
+                if (c + 2 < cols && !isColumnOccupied(14, c + 2, snareDuration)) {
+                    activeNotes[14][c + 2] = { active: Math.random() < 0.8, duration: snareDuration };
+                }
+                if (!isColumnOccupied(13, c, "8n")) {
+                    activeNotes[13][c] = { active: Math.random() < 0.7, duration: "8n" };
+                }
+                if (c + 1 < cols && !isColumnOccupied(13, c + 1, "16n")) {
+                    activeNotes[13][c + 1] = { active: Math.random() < 0.5, duration: "16n" };
+                }
+                if (c % 16 === 0 && c + 3 < cols) {
+                    if (!isColumnOccupied(14, c + 3, "8n")) {
+                        activeNotes[14][c + 3] = { active: Math.random() < 0.6, duration: "8n" };
+                    }
+                    if (!isColumnOccupied(13, c + 2, "16n")) {
+                        activeNotes[13][c + 2] = { active: Math.random() < 0.4, duration: "16n" };
+                    }
+                }
+            }
+            changeNoteDuration('8n', 'duration8nBtn');
+            Tone.Transport.bpm.value = 160;
+            tempoInput.value = 160;
+            createGrid();
+            showMessage('Action sequence generated!');
+        }
+
+        function generateMysticalCutScene() {
+            activeNotes = Array(rows).fill(0).map(() => Array(cols).fill().map(() => ({ active: false, duration: "4n" })));
+            // Arpeggios and sustained pads
+            for (let c = 0; c < cols; c += 16) {
+                const baseRow = Math.floor(Math.random() * 4); // C6 to F5
+                const arpeggio = [0, 2, 4, 6, 8, 10, 12, 14]; // 8-step arpeggio
+                arpeggio.forEach(offset => {
+                    if (c + offset < cols && Math.random() < 0.75) {
+                        const rowOffset = Math.floor(Math.random() * 3);
+                        if (baseRow + rowOffset < rows - 3) {
+                            const duration = Math.random() < 0.2 ? "2n" : Math.random() < 0.4 ? "4n" : Math.random() < 0.6 ? "8n" : "16n";
+                            if (!isColumnOccupied(baseRow + rowOffset, c + offset, duration)) {
+                                activeNotes[baseRow + rowOffset][c + offset] = { active: true, duration };
+                            }
+                        }
+                    }
+                });
+                // Sustained harmony pads
+                if (Math.random() < 0.8) {
+                    const harmonyRow = Math.floor(Math.random() * 3) + 8; // B4 to E4
+                    const duration = Math.random() < 0.6 ? "1n" : "2n";
+                    if (!isColumnOccupied(harmonyRow, c, duration)) {
+                        activeNotes[harmonyRow][c] = { active: true, duration };
+                        if (harmonyRow + 3 < rows - 3 && !isColumnOccupied(harmonyRow + 3, c, duration)) {
+                            activeNotes[harmonyRow + 3][c] = { active: true, duration };
+                        }
+                        if (harmonyRow + 5 < rows - 3 && Math.random() < 0.5 && !isColumnOccupied(harmonyRow + 5, c, duration)) {
+                            activeNotes[harmonyRow + 5][c] = { active: true, duration };
+                        }
+                    }
+                }
+            }
+            // Enhanced percussion
+            for (let c = 0; c < cols; c += 8) {
+                const hiHatDuration = Math.random() < 0.5 ? "8n" : "4n";
+                const kickDuration = "4n";
+                if (!isColumnOccupied(13, c, hiHatDuration)) {
+                    activeNotes[13][c] = { active: Math.random() < 0.7, duration: hiHatDuration };
+                }
+                if (!isColumnOccupied(15, c, kickDuration)) {
+                    activeNotes[15][c] = { active: Math.random() < 0.5, duration: kickDuration };
+                }
+                if (c + 4 < cols && !isColumnOccupied(13, c + 4, hiHatDuration)) {
+                    activeNotes[13][c + 4] = { active: Math.random() < 0.6, duration: hiHatDuration };
+                }
+                if (c % 16 === 0 && c + 6 < cols) {
+                    if (!isColumnOccupied(15, c + 6, kickDuration)) {
+                        activeNotes[15][c + 6] = { active: Math.random() < 0.4, duration: kickDuration };
+                    }
+                    if (!isColumnOccupied(14, c + 6, "8n")) {
+                        activeNotes[14][c + 6] = { active: Math.random() < 0.3, duration: "8n" };
+                    }
+                }
+            }
+            changeNoteDuration('4n', 'duration4nBtn'); // Default for manual toggles
+            Tone.Transport.bpm.value = 100;
+            tempoInput.value = 100;
+            createGrid();
+            showMessage('Mystical cut scene generated!');
+        }
+
+        function generateFunShanty() {
+            activeNotes = Array(rows).fill(0).map(() => Array(cols).fill().map(() => ({ active: false, duration: "8n" })));
+            // Call-and-response melody with varied durations
+            for (let c = 0; c < cols; c += 8) {
+                const melodyRow = Math.floor(Math.random() * 5) + 2; // A5 to E5
+                const callMotif = [0, 2, 4];
+                callMotif.forEach(offset => {
+                    if (c + offset < cols && Math.random() < 0.8 && !isColumnOccupied(melodyRow, c + offset, "8n")) {
+                        activeNotes[melodyRow][c + offset] = { active: true, duration: "8n" };
+                    }
+                });
+                // Response with longer notes
+                const responseRow = melodyRow + Math.floor(Math.random() * 2) + 2; // Jump 2-3 rows
+                const responseMotif = [5, 6, 7];
+                responseMotif.forEach(offset => {
+                    if (c + offset < cols && Math.random() < 0.7 && responseRow < rows - 3) {
+                        const duration = Math.random() < 0.3 ? "2n" : Math.random() < 0.5 ? "4n" : "8n";
+                        if (!isColumnOccupied(responseRow, c + offset, duration)) {
+                            activeNotes[responseRow][c + offset] = { active: true, duration };
+                        }
+                    }
+                });
+                // Sustained harmony
+                if (Math.random() < 0.7) {
+                    const harmonyRow = Math.floor(Math.random() * 3) + 10; // G4 to E4
+                    const duration = Math.random() < 0.6 ? "1n" : "2n";
+                    if (!isColumnOccupied(harmonyRow, c, duration)) {
+                        activeNotes[harmonyRow][c] = { active: true, duration };
+                        if (harmonyRow + 2 < rows - 3 && !isColumnOccupied(harmonyRow + 2, c, duration)) {
+                            activeNotes[harmonyRow + 2][c] = { active: true, duration };
+                        }
+                        if (harmonyRow + 4 < rows - 3 && Math.random() < 0.5 && !isColumnOccupied(harmonyRow + 4, c, duration)) {
+                            activeNotes[harmonyRow + 4][c] = { active: true, duration };
+                        }
+                    }
+                }
+            }
+            // Lively percussion with varied durations
+            for (let c = 0; c < cols; c += 4) {
+                const kickDuration = Math.random() < 0.5 ? "4n" : "8n";
+                const snareDuration = Math.random() < 0.5 ? "4n" : "8n";
+                if (!isColumnOccupied(15, c, kickDuration)) {
+                    activeNotes[15][c] = { active: Math.random() < 0.8, duration: kickDuration };
+                }
+                if (c + 2 < cols && !isColumnOccupied(14, c + 2, snareDuration)) {
+                    activeNotes[14][c + 2] = { active: Math.random() < 0.7, duration: snareDuration };
+                }
+                if (!isColumnOccupied(13, c, "8n")) {
+                    activeNotes[13][c] = { active: Math.random() < 0.9, duration: "8n" };
+                }
+                if (c + 1 < cols && !isColumnOccupied(13, c + 1, "16n")) {
+                    activeNotes[13][c + 1] = { active: Math.random() < 0.6, duration: "16n" };
+                }
+                if (c % 16 === 0 && c + 3 < cols) {
+                    if (!isColumnOccupied(14, c + 3, "8n")) {
+                        activeNotes[14][c + 3] = { active: Math.random() < 0.6, duration: "8n" };
+                    }
+                    if (!isColumnOccupied(13, c + 2, "16n")) {
+                        activeNotes[13][c + 2] = { active: Math.random() < 0.7, duration: "16n" };
+                    }
+                }
+            }
+            changeNoteDuration('8n', 'duration8nBtn');
+            Tone.Transport.bpm.value = 140;
+            tempoInput.value = 140;
+            createGrid();
+            showMessage('Fun shanty generated!');
+        }
+
+        function prefillMysticalTune() {
+            activeNotes = Array(rows).fill(0).map(() => Array(cols).fill().map(() => ({ active: false, duration: "4n" })));
+            const verseMelodyPart1 = [
+                [0, 7, "4n"], [4, 3, "4n"], [8, 0, "2n"], [12, 4, "4n"]
+            ];
+            const verseMelodyPart2 = [
+                [0, 5, "4n"], [4, 2, "4n"], [8, 3, "2n"], [12, 7, "4n"]
+            ];
+            const chorusMelodyPattern = [
+                [0, 14, "1n"], [4, 10, "4n"], [8, 7, "4n"], [12, 10, "4n"]
+            ];
+            const percussionPattern = [
+                [0, 15, "4n"], [4, 15, "4n"], [8, 14, "8n"], [12, 13, "8n"]
+            ];
+            let currentGlobalColumn = 0;
+            for (let i = 0; i < Math.floor(cols / 48); i++) {
+                verseMelodyPart1.forEach(([offsetCol, noteIndex, duration]) => {
+                    const col = currentGlobalColumn + offsetCol;
+                    if (col < cols && !isColumnOccupied(noteIndex, col, duration)) {
+                        activeNotes[noteIndex][col] = { active: true, duration };
+                    }
+                });
+                verseMelodyPart2.forEach(([offsetCol, noteIndex, duration]) => {
+                    const col = currentGlobalColumn + 16 + offsetCol;
+                    if (col < cols && !isColumnOccupied(noteIndex, col)) {
+                        activeNotes[noteIndex][col] = { active: true, duration };
+                    }
+                });
+                chorusMelodyPattern.forEach(([offsetCol, noteIndex, duration]) => {
+                    const col = currentGlobalColumn + 32 + offsetCol;
+                    if (col < cols && !isColumnOccupied(noteIndex, col, duration)) {
+                        activeNotes[noteIndex][col] = { active: true, duration };
+                    }
+                });
+                currentGlobalColumn += 48;
+            }
+            for (let c = 0; c < cols; c += 16) {
+                percussionPattern.forEach(([offsetCol, noteIndex, duration]) => {
+                    if (c + offsetCol < cols && !isColumnOccupied(noteIndex, c + offsetCol, duration)) {
+                        activeNotes[noteIndex][c + offsetCol] = { active: true, duration };
+                    }
+                });
+            }
+            changeNoteDuration('4n', 'duration4nBtn');
+            createGrid();
+            showMessage('Mystical tune prefilled!');
+        }
+
+        // --- Event Listeners ---
+        window.onload = function() {
+            prefillMysticalTune();
+            createGrid();
+            playBtn.addEventListener('click', startSequencer);
+            stopBtn.addEventListener('click', stopSequencer);
+            clearBtn.addEventListener('click', clearGrid);
+            saveBtn.addEventListener('click', saveSequence);
+            loadBtn.addEventListener('click', loadSequence);
+            randomizeBtn.addEventListener('click', randomizeGrid);
+            exportBtn.addEventListener('click', exportAudio);
+            actionBtn.addEventListener('click', generateActionSequence);
+            mysticalBtn.addEventListener('click', generateMysticalCutScene);
+            shantyBtn.addEventListener('click', generateFunShanty);
+            tempoInput.addEventListener('input', (e) => {
+                let value = parseInt(e.target.value);
+                if (isNaN(value) || value < 60 || value > 240) {
+                    showMessage('Please enter a tempo between 60 and 240 BPM.');
+                    e.target.value = DEFAULT_TEMPO;
+                    value = DEFAULT_TEMPO;
+                }
+                Tone.Transport.bpm.value = value;
+            });
+            squareBtn.addEventListener('click', () => changeInstrument('square'));
+            triangleBtn.addEventListener('click', () => changeInstrument('triangle'));
+            sawtoothBtn.addEventListener('click', () => changeInstrument('sawtooth'));
+            noiseBtn.addEventListener('click', () => changeInstrument('noise'));
+            duration16nBtn.addEventListener('click', () => changeNoteDuration('16n', 'duration16nBtn'));
+            duration8nBtn.addEventListener('click', () => changeNoteDuration('8n', 'duration8nBtn'));
+            duration4nBtn.addEventListener('click', () => changeNoteDuration('4n', 'duration4nBtn'));
+            sequencerGrid.addEventListener('keydown', (e) => {
+                if (e.target.classList.contains('grid-cell')) {
+                    const row = parseInt(e.target.dataset.row);
+                    const col = parseInt(e.target.dataset.col);
+                    if (e.key === 'ArrowRight' && col < cols - 1) {
+                        document.querySelector(`.grid-cell[data-row="${row}"][data-col="${col + 1}"]`).focus();
+                        e.preventDefault();
+                    } else if (e.key === 'ArrowLeft' && col > 0) {
+                        document.querySelector(`.grid-cell[data-row="${row}"][data-col="${col - 1}"]`).focus();
+                        e.preventDefault();
+                    } else if (e.key === 'ArrowUp' && row > 0) {
+                        document.querySelector(`.grid-cell[data-row="${row - 1}"][data-col="${col}"]`).focus();
+                        e.preventDefault();
+                    } else if (e.key === 'ArrowDown' && row < rows - 1) {
+                        document.querySelector(`.grid-cell[data-row="${row + 1}"][data-col="${col}"]`).focus();
+                        e.preventDefault();
+                    } else if (e.key === ' ' || e.key === 'Enter') {
+                        toggleNote(e);
+                        e.preventDefault();
+                    }
+                }
+            });
+            stopBtn.disabled = true;
+            window.addEventListener('click', async () => {
+                if (Tone.context.state !== 'running') {
+                    await Tone.start();
+                    showMessage('Audio context started! Ready to play.');
+                }
+            }, { once: true });
+            showMessage('Create your own 8-bit tune or try the pre-filled mystical melody!');
+        };
+    </script>
+</body>
+</html>
