@@ -324,13 +324,21 @@
                 text-align: center;
             }
         }
+        /* Touch handling */
+        .grid-cell, .instrument-button, .duration-button, .control-button, .style-button, .volume-button {
+            touch-action: none; /* Prevent default touch behaviors like zooming */
+        }
+        .grid-wrapper {
+            touch-action: pan-x; /* Allow horizontal scrolling only */
+        }
 </style>
 </head>
 <body class="antialiased">
     <div class="container p-6 rounded-lg flex flex-col items-center">
-        <h1 class="text-3xl mb-6 text-center text-yellow-300">8-bit Tune Maker</h1>
+        <h1 class="text-3xl mb-6 text-center text-yellow-300">Blurry Tune Maker</h1>
 
         <!-- Instrument Selection -->
+         <label class="text-lg">Choose A Sound:</label>
         <div class="mb-4 flex flex-wrap justify-center gap-3">
             <button id="squareBtn" class="instrument-button py-2 px-4 rounded-md" role="button" aria-label="Select Square Wave">Square</button>
             <button id="triangleBtn" class="instrument-button py-2 px-4 rounded-md selected" role="button" aria-label="Select Triangle Wave">Triangle</button>
@@ -339,6 +347,7 @@
         </div>
 
         <!-- Note Duration Selection -->
+         <label class="text-lg">Choose Note Length:</label>
         <div class="mb-6 flex flex-wrap justify-center gap-3">
             <button id="duration16nBtn" class="duration-button py-2 px-4 rounded-md" role="button" aria-label="Select Sixteenth Note">Sixteenth Note</button>
             <button id="duration8nBtn" class="duration-button py-2 px-4 rounded-md" role="button" aria-label="Select Eighth Note">Eighth Note</button>
@@ -549,16 +558,16 @@
             }
 
             // Set grid columns and width
-            const columnWidth = window.innerWidth <= 768 ? 14 : 18; // Match media query
+            const columnWidth = window.innerWidth <= 768 ? 14 : 18;
             sequencerGrid.style.gridTemplateColumns = `repeat(${maxCols}, ${columnWidth}px)`;
             sequencerGrid.style.width = `${maxCols * columnWidth}px`;
 
             // Generate dynamic beat markers
             let beatMarkerStyles = '';
             for (let i = 0; i < maxCols; i += 4) {
-                beatMarkerStyles += `calc(${columnWidth}px * ${i}) 0 0 0 rgba(255, 255, 255, 0.2), `;
+                beatMarkerStyles += `calc(${columnWidth}px * ${i}) 0 0 0 rgba(177, 59, 255, 0.3), `;
             }
-            beatMarkerStyles = beatMarkerStyles.slice(0, -2); // Remove trailing comma
+            beatMarkerStyles = beatMarkerStyles.slice(0, -2);
             const styleSheet = document.createElement('style');
             styleSheet.textContent = `
                 .grid::before {
@@ -567,7 +576,7 @@
                     top: 0;
                     bottom: 0;
                     width: 1px;
-                    background: rgba(255, 255, 255, 0.2);
+                    background: rgba(177, 59, 255, 0.3);
                     z-index: 2;
                     left: 0;
                     box-shadow: ${beatMarkerStyles};
@@ -580,7 +589,7 @@
                 labelContainer.classList.add('note-label');
                 labelContainer.setAttribute('aria-hidden', 'true');
                 labelContainer.dataset.row = r;
-                
+
                 const labelText = document.createElement('span');
                 labelText.textContent = r in PERCUSSION_ROWS ? PERCUSSION_ROWS[r].toUpperCase() : notes[r];
                 labelContainer.appendChild(labelText);
@@ -590,6 +599,10 @@
                 volumeUp.classList.add('volume-button');
                 volumeUp.setAttribute('aria-label', `Increase volume for ${notes[r]}`);
                 volumeUp.addEventListener('click', () => adjustVolume(r, 3));
+                volumeUp.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    adjustVolume(r, 3);
+                });
                 labelContainer.appendChild(volumeUp);
 
                 const volumeDisplay = document.createElement('span');
@@ -603,16 +616,19 @@
                 volumeDown.classList.add('volume-button');
                 volumeDown.setAttribute('aria-label', `Decrease volume for ${notes[r]}`);
                 volumeDown.addEventListener('click', () => adjustVolume(r, -3));
+                volumeDown.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    adjustVolume(r, -3);
+                });
                 labelContainer.appendChild(volumeDown);
 
                 noteLabelsContainer.appendChild(labelContainer);
-                
+
                 let c = 0;
                 while (c < maxCols) {
                     if (c < cols && activeNotes[r][c] && activeNotes[r][c].active) {
                         const duration = activeNotes[r][c].duration;
-                        const span = Math.min(durationColumns[duration] || 1, maxCols - c); // Truncate at grid end
-                        // Clear any overlapping notes in the span
+                        const span = Math.min(durationColumns[duration] || 1, maxCols - c);
                         for (let i = c + 1; i < c + span && i < cols; i++) {
                             activeNotes[r][i] = { active: false, duration: "4n" };
                         }
@@ -620,7 +636,7 @@
                         cell.classList.add('grid-cell', 'rounded-sm');
                         cell.dataset.row = r;
                         cell.dataset.col = c;
-                        cell.style.gridColumn = `${c + 1} / span ${span}`; // Left-align to column c+1
+                        cell.style.gridColumn = `${c + 1} / span ${span}`;
                         const durationLabel = {
                             '1n': 'Whole note',
                             '2n': 'Half note',
@@ -632,21 +648,29 @@
                         cell.setAttribute('aria-label', `${durationLabel} ${r in PERCUSSION_ROWS ? PERCUSSION_ROWS[r].toUpperCase() : notes[r]} spanning ${span} steps at step ${c + 1}`);
                         cell.setAttribute('tabindex', '0');
                         cell.addEventListener('click', toggleNote);
+                        cell.addEventListener('touchstart', (e) => {
+                            e.preventDefault();
+                            toggleNote(e);
+                        });
                         cell.classList.add('active', `duration-${duration}`);
-                        cell.title = durationLabel; // Add tooltip
+                        cell.title = durationLabel;
                         sequencerGrid.appendChild(cell);
-                        c += span; // Skip spanned columns
+                        c += span;
                     } else {
                         const cell = document.createElement('div');
                         cell.classList.add('grid-cell', 'rounded-sm');
                         cell.dataset.row = r;
                         cell.dataset.col = c;
-                        cell.style.gridColumn = `${c + 1} / span 1`; // Single column for empty cells
+                        cell.style.gridColumn = `${c + 1} / span 1`;
                         cell.setAttribute('role', 'button');
                         cell.setAttribute('aria-label', `Empty ${r in PERCUSSION_ROWS ? PERCUSSION_ROWS[r].toUpperCase() : notes[r]} at step ${c + 1}`);
                         cell.setAttribute('tabindex', '0');
                         cell.addEventListener('click', toggleNote);
-                        cell.title = 'Empty'; // Tooltip for empty cells
+                        cell.addEventListener('touchstart', (e) => {
+                            e.preventDefault();
+                            toggleNote(e);
+                        });
+                        cell.title = 'Empty';
                         sequencerGrid.appendChild(cell);
                         c++;
                     }
@@ -1253,16 +1277,41 @@
         // --- Event Listeners ---
         window.onload = function() {
             createGrid();
-            playBtn.addEventListener('click', startSequencer);
-            stopBtn.addEventListener('click', stopSequencer);
-            clearBtn.addEventListener('click', clearGrid);
-            saveBtn.addEventListener('click', saveSequence);
-            loadBtn.addEventListener('click', loadSequence);
-            randomizeBtn.addEventListener('click', randomizeGrid);
-            exportBtn.addEventListener('click', exportAudio);
-            actionBtn.addEventListener('click', generateActionSequence);
-            mysticalBtn.addEventListener('click', generateMysticalCutScene);
-            shantyBtn.addEventListener('click', generateFunShanty);
+            // Helper to add both click and touchstart listeners
+            function addClickAndTouch(element, handler) {
+                element.addEventListener('click', handler);
+                element.addEventListener('touchstart', (e) => {
+                    e.preventDefault(); // Prevent emulated click and default behaviors
+                    handler(e);
+                });
+            }
+
+            // Control buttons
+            addClickAndTouch(playBtn, startSequencer);
+            addClickAndTouch(stopBtn, stopSequencer);
+            addClickAndTouch(clearBtn, clearGrid);
+            addClickAndTouch(saveBtn, saveSequence);
+            addClickAndTouch(loadBtn, loadSequence);
+            addClickAndTouch(randomizeBtn, randomizeGrid);
+            addClickAndTouch(exportBtn, exportAudio);
+            addClickAndTouch(actionBtn, generateActionSequence);
+            addClickAndTouch(mysticalBtn, generateMysticalCutScene);
+            addClickAndTouch(shantyBtn, generateFunShanty);
+
+            // Instrument buttons
+            addClickAndTouch(squareBtn, () => changeInstrument('square'));
+            addClickAndTouch(triangleBtn, () => changeInstrument('triangle'));
+            addClickAndTouch(sawtoothBtn, () => changeInstrument('sawtooth'));
+            addClickAndTouch(noiseBtn, () => changeInstrument('noise'));
+
+            // Duration buttons
+            addClickAndTouch(duration16nBtn, () => changeNoteDuration('16n', 'duration16nBtn'));
+            addClickAndTouch(duration8nBtn, () => changeNoteDuration('8n', 'duration8nBtn'));
+            addClickAndTouch(duration4nBtn, () => changeNoteDuration('4n', 'duration4nBtn'));
+            addClickAndTouch(duration2nBtn, () => changeNoteDuration('2n', 'duration2nBtn'));
+            addClickAndTouch(duration1nBtn, () => changeNoteDuration('1n', 'duration1nBtn'));
+
+            // Tempo input
             tempoInput.addEventListener('input', (e) => {
                 let value = parseInt(e.target.value);
                 if (isNaN(value) || value < 60 || value > 240) {
@@ -1272,15 +1321,8 @@
                 }
                 Tone.Transport.bpm.value = value;
             });
-            squareBtn.addEventListener('click', () => changeInstrument('square'));
-            triangleBtn.addEventListener('click', () => changeInstrument('triangle'));
-            sawtoothBtn.addEventListener('click', () => changeInstrument('sawtooth'));
-            noiseBtn.addEventListener('click', () => changeInstrument('noise'));
-            duration16nBtn.addEventListener('click', () => changeNoteDuration('16n', 'duration16nBtn'));
-            duration8nBtn.addEventListener('click', () => changeNoteDuration('8n', 'duration8nBtn'));
-            duration4nBtn.addEventListener('click', () => changeNoteDuration('4n', 'duration4nBtn'));
-            duration2nBtn.addEventListener('click', () => changeNoteDuration('2n', 'duration2nBtn'));
-            duration1nBtn.addEventListener('click', () => changeNoteDuration('1n', 'duration1nBtn'));
+
+            // Grid keyboard navigation
             sequencerGrid.addEventListener('keydown', (e) => {
                 if (e.target.classList.contains('grid-cell')) {
                     const row = parseInt(e.target.dataset.row);
@@ -1303,13 +1345,21 @@
                     }
                 }
             });
-            stopBtn.disabled = true;
-            window.addEventListener('click', async () => {
+
+            // Audio context initialization on first interaction
+            function initializeAudioContext(e) {
                 if (Tone.context.state !== 'running') {
-                    await Tone.start();
-                    showMessage('Audio context started! Ready to play.');
+                    Tone.start().then(() => {
+                        showMessage('Audio context started! Ready to play.');
+                    });
                 }
-            }, { once: true });
+                window.removeEventListener('click', initializeAudioContext);
+                window.removeEventListener('touchstart', initializeAudioContext);
+            }
+            window.addEventListener('click', initializeAudioContext, { once: true });
+            window.addEventListener('touchstart', initializeAudioContext, { once: true });
+
+            stopBtn.disabled = true;
             showMessage('Create your own 8-bit tune or try the Auto Generated Tunes!');
         };
     </script>
