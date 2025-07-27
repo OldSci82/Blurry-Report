@@ -138,18 +138,24 @@
             text-align: center;
         }
 
-        /* Note labels */
+        /* Grid container */
         .grid-container {
             display: flex;
             width: 100%;
             max-width: 100%;
             position: relative;
+            background: rgba(9, 0, 64, 0.8); /* Match container bg for padding area */
+            border-radius: 10px; /* Rounded edges */
+            overflow: hidden; /* Clip shadows */
         }
+
+        /* Note labels */
         .note-labels {
             width: 110px;
             flex-shrink: 0;
             background: rgba(9, 0, 64, 0.8);
             border-right: 1px solid #471396;
+            z-index: 10; /* Above grid shadows */
         }
         .note-label {
             height: 18px;
@@ -198,26 +204,82 @@
             top: 0;
             left: 0;
             width: 18px;
-            height: 100%;
+            height: calc(100% - 40px); /* Adjust for padding-bottom */
             background: #B13BFF;
-            box-shadow: 0 0 10px rgba(177, 59, 255, 0.8);
+            box-shadow: 0 0 20px rgba(177, 59, 255, 0.8);
             z-index: 3;
-            transition: left 0.1s linear;
+            transition: left 0.3s linear;
             pointer-events: none;
-            animation: neon-flicker 2s infinite;
+            animation: neon-flicker 1s infinite;
         }
-
-        /* Grid wrapper and grid */
+        .grid-cell, .instrument-button, .duration-button, .control-button, .style-button, .volume-button {
+            touch-action: none;
+        }
+        /* Grid wrapper */
         .grid-wrapper {
             flex-grow: 1;
             overflow-x: auto;
             max-width: calc(100% - 110px);
+            touch-action: pan-x;
+            position: relative;
+            padding-bottom: 40px; /* Extra touch area for scrolling */
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: #B13BFF rgba(9, 0, 64, 0.8); /* Firefox */
         }
+        /* WebKit scrollbar */
+        .grid-wrapper::-webkit-scrollbar {
+            height: 12px; /* Prominent scrollbar */
+        }
+        .grid-wrapper::-webkit-scrollbar-track {
+            background: rgba(9, 0, 64, 0.8);
+            border-radius: 6px;
+        }
+        .grid-wrapper::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, #471396, #B13BFF);
+            border-radius: 6px;
+            border: 2px solid #FFCC00;
+            box-shadow: 0 0 10px rgba(177, 59, 255, 0.5);
+        }
+        .grid-wrapper::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(90deg, #B13BFF, #471396);
+        }
+
+        /* Scroll shadows */
+        .grid-wrapper::before,
+        .grid-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 30px;
+            z-index: 2; /* Above grid, below tempo-bar */
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .grid-wrapper::before {
+            left: 0;
+            background: linear-gradient(to right, rgba(177, 59, 255, 0.5), transparent);
+            opacity: 0; /* Hidden by default */
+        }
+        .grid-wrapper::after {
+            right: 0;
+            background: linear-gradient(to left, rgba(177, 59, 255, 0.5), transparent);
+            opacity: 0; /* Hidden by default */
+        }
+        .grid-wrapper.scroll-left::before {
+            opacity: 1; /* Show when scrolled right */
+        }
+        .grid-wrapper.scroll-right::after {
+            opacity: 1; /* Show when not fully scrolled */
+        }
+
+        /* Grid */
         .grid {
             display: grid;
-            border: 1px solid #471396;
+            border: 1px solid #B13BFF;
             background: #090040;
             position: relative;
+            z-index: 1; /* Below shadows */
         }
         .grid::before {
             content: '';
@@ -225,8 +287,9 @@
             top: 0;
             bottom: 0;
             width: 1px;
-            background: rgba(177, 59, 255, 0.3);
+            background: rgba(177, 255, 255, 0.3);
             z-index: 2;
+            left: 0;
         }
 
         /* Message box */
@@ -308,6 +371,7 @@
             }
             .grid-wrapper {
                 max-width: calc(100% - 70px);
+                padding-bottom: 30px; /* Smaller padding on mobile */
             }
             .instrument-button, .duration-button, .control-button, .style-button {
                 padding: 0.5rem 0.75rem;
@@ -316,6 +380,9 @@
             .tempo-bar {
                 width: 14px;
             }
+            .grid-wrapper::-webkit-scrollbar {
+                height: 10px; /* Slightly smaller on mobile */
+            }
             .container {
                 padding: 1rem;
             }
@@ -323,13 +390,6 @@
                 width: 80%;
                 text-align: center;
             }
-        }
-        /* Touch handling */
-        .grid-cell, .instrument-button, .duration-button, .control-button, .style-button, .volume-button {
-            touch-action: none; /* Prevent default touch behaviors like zooming */
-        }
-        .grid-wrapper {
-            touch-action: pan-x; /* Allow horizontal scrolling only */
         }
 </style>
 </head>
@@ -722,85 +782,77 @@
         }
 
         function playColumn(time) {
-            // Clear previous highlights
-            document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('playing'));
-
-            // Highlight cells for active notes that span the current column
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    if (activeNotes[r][c].active) {
-                        const duration = activeNotes[r][c].duration;
-                        const durationColumns = {
-                            '16n': 1,
-                            '8n': 2,
-                            '4n': 4,
-                            '2n': 8,
-                            '1n': 16
-                        }[duration] || 1;
-                        // Highlight if currentColumn is within the note's span
-                        if (currentColumn >= c && currentColumn < c + durationColumns) {
-                            const cell = document.querySelector(`.grid-cell[data-row="${r}"][data-col="${c}"]`);
-                            if (cell) {
-                                cell.classList.add('playing');
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Move tempo bar to the current column, accounting for note labels
-            const columnWidth = window.innerWidth <= 768 ? 14 : 18;
-            const labelWidth = window.innerWidth <= 768 ? 70 : 110;
-            tempoBar.style.left = `${labelWidth + (currentColumn * columnWidth)}px`;
-
-            // Play sounds for notes starting at the current column
             const notesToPlay = [];
+
             for (let r = 0; r < rows; r++) {
                 if (activeNotes[r][currentColumn].active) {
                     const duration = activeNotes[r][currentColumn].duration;
+
+                    // Percussion handling
                     if (r in PERCUSSION_ROWS) {
                         const drumType = PERCUSSION_ROWS[r];
-                        if (drumType === 'kk') {
-                            kickSynth.volume.value = rowVolumes[r];
-                            kickSynth.triggerAttackRelease(duration, time);
-                        } else if (drumType === 'sn') {
-                            snareSynth.volume.value = rowVolumes[r];
-                            snareSynth.triggerAttackRelease(duration, time);
-                        } else if (drumType === 'hh') {
-                            hihatSynth.volume.value = rowVolumes[r];
-                            hihatSynth.triggerAttackRelease(duration, time);
+                        switch (drumType) {
+                            case 'kk':
+                                kickSynth.volume.value = rowVolumes[r];
+                                kickSynth.triggerAttackRelease(duration, time);
+                                break;
+                            case 'sn':
+                                snareSynth.volume.value = rowVolumes[r];
+                                snareSynth.triggerAttackRelease(duration, time);
+                                break;
+                            case 'hh':
+                                hihatSynth.volume.value = rowVolumes[r];
+                                hihatSynth.triggerAttackRelease(duration, time);
+                                break;
                         }
                     } else {
-                        notesToPlay.push({ note: notes[r], duration });
+                        notesToPlay.push({ note: notes[r], duration, volume: rowVolumes[r] });
                     }
                 }
             }
+
+            // Play melodic notes according to current instrument
             if (notesToPlay.length > 0) {
                 switch (currentInstrument) {
                     case 'square':
-                        squareSynth.volume.value = rowVolumes[notes.indexOf(notesToPlay[0].note)];
-                        notesToPlay.forEach(({ note, duration }) => {
+                        notesToPlay.forEach(({ note, duration, volume }) => {
+                            squareSynth.volume.value = volume;
                             squareSynth.triggerAttackRelease(note, duration, time);
                         });
                         break;
                     case 'triangle':
-                        triangleSynth.volume.value = rowVolumes[notes.indexOf(notesToPlay[0].note)];
-                        notesToPlay.forEach(({ note, duration }) => {
+                        notesToPlay.forEach(({ note, duration, volume }) => {
+                            triangleSynth.volume.value = volume;
                             triangleSynth.triggerAttackRelease(note, duration, time);
                         });
                         break;
                     case 'sawtooth':
-                        sawtoothSynth.volume.value = rowVolumes[notes.indexOf(notesToPlay[0].note)];
-                        notesToPlay.forEach(({ note, duration }) => {
+                        notesToPlay.forEach(({ note, duration, volume }) => {
+                            sawtoothSynth.volume.value = volume;
                             sawtoothSynth.triggerAttackRelease(note, duration, time);
+                        });
+                        break;
+                    case 'noise':
+                        notesToPlay.forEach(({ duration, volume }) => {
+                            const noise = new Tone.NoiseSynth({
+                                noise: { type: "white" },
+                                envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 }
+                            }).toDestination();
+                            noise.volume.value = volume;
+                            noise.triggerAttackRelease(duration, time);
                         });
                         break;
                 }
             }
 
-            // Advance to the next column
+            // Advance to the next column regardless of notes played
             currentColumn = (currentColumn + 1) % cols;
+
+            // Update UI to highlight the playing column
+            document.querySelectorAll('.grid-cell').forEach(cell => cell.classList.remove('playing'));
+            document.querySelectorAll(`.grid-cell[data-col="${currentColumn}"]`).forEach(cell => cell.classList.add('playing'));
         }
+
 
         // Play sounds for notes starting at the current column
         const notesToPlay = [];
@@ -982,92 +1034,118 @@
         }
 
         async function exportAudio() {
-            const offlineContext = new Tone.OfflineContext((cols * Tone.Time("16n").toSeconds()));
-            const offlineTransport = offlineContext.transport;
-            const offlineSquareSynth = new Tone.PolySynth(Tone.Synth, {
-                oscillator: { type: "square" },
-                envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.1 }
-            }).toDestination();
-            const offlineTriangleSynth = new Tone.PolySynth(Tone.Synth, {
-                oscillator: { type: "triangle" },
-                envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.1 }
-            }).toDestination();
-            const offlineSawtoothSynth = new Tone.PolySynth(Tone.Synth, {
-                oscillator: { type: "sawtooth" },
-                envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.1 }
-            }).toDestination();
-            const offlineKickSynth = new Tone.NoiseSynth({
-                noise: { type: "brown" },
-                envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.2 }
-            }).toDestination();
-            const offlineSnareSynth = new Tone.NoiseSynth({
-                noise: { type: "white" },
-                envelope: { attack: 0.001, decay: 0.15, sustain: 0, release: 0.15 }
-            }).connect(new Tone.Filter(1000, "highpass")).toDestination();
-            const offlineHihatSynth = new Tone.NoiseSynth({
-                noise: { type: "pink" },
-                envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 }
-            }).connect(new Tone.Filter({ frequency: 6000, type: "bandpass", Q: 5 })).toDestination();
+            showMessage('Exporting... Please wait.');
 
-            let offlineColumn = 0;
-            const offlineLoop = new Tone.Loop((time) => {
-                const notesToPlay = [];
-                for (let r = 0; r < rows; r++) {
-                    if (activeNotes[r][offlineColumn].active) {
-                        const duration = activeNotes[r][offlineColumn].duration;
-                        if (r in PERCUSSION_ROWS) {
-                            const drumType = PERCUSSION_ROWS[r];
-                            if (drumType === 'kk') {
-                                offlineKickSynth.volume.value = rowVolumes[r];
-                                offlineKickSynth.triggerAttackRelease(duration, time);
-                            } else if (drumType === 'sn') {
-                                offlineSnareSynth.volume.value = rowVolumes[r];
-                                offlineSnareSynth.triggerAttackRelease(duration, time);
-                            } else if (drumType === 'hh') {
-                                offlineHihatSynth.volume.value = rowVolumes[r];
-                                offlineHihatSynth.triggerAttackRelease(duration, time);
+            // Create an offline context that matches the full sequence duration
+            const duration = cols * Tone.Time("16n").toSeconds();
+            const buffer = await Tone.Offline(({ transport }) => {
+                // Synths for offline rendering
+                const offlineSquareSynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "square" },
+                    envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.1 }
+                }).toDestination();
+
+                const offlineTriangleSynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "triangle" },
+                    envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.1 }
+                }).toDestination();
+
+                const offlineSawtoothSynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "sawtooth" },
+                    envelope: { attack: 0.005, decay: 0.1, sustain: 0.05, release: 0.1 }
+                }).toDestination();
+
+                const offlineKickSynth = new Tone.NoiseSynth({
+                    noise: { type: "brown" },
+                    envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.2 }
+                }).toDestination();
+
+                const offlineSnareSynth = new Tone.NoiseSynth({
+                    noise: { type: "white" },
+                    envelope: { attack: 0.001, decay: 0.15, sustain: 0, release: 0.15 }
+                }).connect(new Tone.Filter(1000, "highpass")).toDestination();
+
+                const offlineHihatSynth = new Tone.NoiseSynth({
+                    noise: { type: "pink" },
+                    envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 }
+                }).connect(new Tone.Filter({ frequency: 6000, type: "bandpass", Q: 5 })).toDestination();
+
+                // Schedule playback for each column
+                let col = 0;
+                const loop = new Tone.Loop((time) => {
+                    const notesToPlay = [];
+
+                    for (let r = 0; r < rows; r++) {
+                        if (activeNotes[r][col].active) {
+                            const duration = activeNotes[r][col].duration;
+                            if (r in PERCUSSION_ROWS) {
+                                const drumType = PERCUSSION_ROWS[r];
+                                switch (drumType) {
+                                    case 'kk':
+                                        offlineKickSynth.volume.value = rowVolumes[r];
+                                        offlineKickSynth.triggerAttackRelease(duration, time);
+                                        break;
+                                    case 'sn':
+                                        offlineSnareSynth.volume.value = rowVolumes[r];
+                                        offlineSnareSynth.triggerAttackRelease(duration, time);
+                                        break;
+                                    case 'hh':
+                                        offlineHihatSynth.volume.value = rowVolumes[r];
+                                        offlineHihatSynth.triggerAttackRelease(duration, time);
+                                        break;
+                                }
+                            } else {
+                                notesToPlay.push({ note: notes[r], duration, volume: rowVolumes[r] });
                             }
-                        } else {
-                            notesToPlay.push({ note: notes[r], duration });
                         }
                     }
-                }
-                if (notesToPlay.length > 0) {
-                    switch (currentInstrument) {
-                        case 'square':
-                            offlineSquareSynth.volume.value = rowVolumes[notes.indexOf(notesToPlay[0].note)];
-                            notesToPlay.forEach(({ note, duration }) => {
-                                offlineSquareSynth.triggerAttackRelease(note, duration, time);
-                            });
-                            break;
-                        case 'triangle':
-                            offlineTriangleSynth.volume.value = rowVolumes[notes.indexOf(notesToPlay[0].note)];
-                            notesToPlay.forEach(({ note, duration }) => {
-                                offlineTriangleSynth.triggerAttackRelease(note, duration, time);
-                            });
-                            break;
-                        case 'sawtooth':
-                            offlineSawtoothSynth.volume.value = rowVolumes[notes.indexOf(notesToPlay[0].note)];
-                            notesToPlay.forEach(({ note, duration }) => {
-                                offlineSawtoothSynth.triggerAttackRelease(note, duration, time);
-                            });
-                            break;
+
+                    // Play melodic notes according to instrument
+                    if (notesToPlay.length > 0) {
+                        switch (currentInstrument) {
+                            case 'square':
+                                notesToPlay.forEach(({ note, duration, volume }) => {
+                                    offlineSquareSynth.volume.value = volume;
+                                    offlineSquareSynth.triggerAttackRelease(note, duration, time);
+                                });
+                                break;
+                            case 'triangle':
+                                notesToPlay.forEach(({ note, duration, volume }) => {
+                                    offlineTriangleSynth.volume.value = volume;
+                                    offlineTriangleSynth.triggerAttackRelease(note, duration, time);
+                                });
+                                break;
+                            case 'sawtooth':
+                                notesToPlay.forEach(({ note, duration, volume }) => {
+                                    offlineSawtoothSynth.volume.value = volume;
+                                    offlineSawtoothSynth.triggerAttackRelease(note, duration, time);
+                                });
+                                break;
+                        }
                     }
-                }
-                offlineColumn = (offlineColumn + 1) % cols;
-            }, "16n");
-            offlineLoop.start(0);
-            offlineTransport.start();
-            const buffer = await offlineContext.render();
-            const blob = buffer.toBlob('audio/wav');
+
+                    col = (col + 1) % cols;
+                }, "16n");
+
+                loop.start(0);
+                transport.start();
+            }, duration);
+
+            // Convert to WAV
+            const wav = Tone.Buffer.toWav(buffer);
+            const blob = new Blob([wav], { type: 'audio/wav' });
             const url = URL.createObjectURL(blob);
+
+            // Trigger download
             const a = document.createElement('a');
             a.href = url;
             a.download = 'sequence.wav';
             a.click();
+
             URL.revokeObjectURL(url);
             showMessage('Sequence exported as WAV!');
         }
+
 
         function changeInstrument(instrumentName) {
             currentInstrument = instrumentName;
@@ -1281,7 +1359,7 @@
             function addClickAndTouch(element, handler) {
                 element.addEventListener('click', handler);
                 element.addEventListener('touchstart', (e) => {
-                    e.preventDefault(); // Prevent emulated click and default behaviors
+                    e.preventDefault();
                     handler(e);
                 });
             }
@@ -1346,7 +1424,19 @@
                 }
             });
 
-            // Audio context initialization on first interaction
+            // Scroll shadow handling
+            const gridWrapper = document.querySelector('.grid-wrapper');
+            function updateScrollShadows() {
+                const scrollLeft = gridWrapper.scrollLeft;
+                const scrollWidth = gridWrapper.scrollWidth;
+                const clientWidth = gridWrapper.clientWidth;
+                gridWrapper.classList.toggle('scroll-left', scrollLeft > 0);
+                gridWrapper.classList.toggle('scroll-right', scrollLeft < scrollWidth - clientWidth - 1);
+            }
+            gridWrapper.addEventListener('scroll', updateScrollShadows);
+            updateScrollShadows(); // Initial check
+
+            // Audio context initialization
             function initializeAudioContext(e) {
                 if (Tone.context.state !== 'running') {
                     Tone.start().then(() => {
