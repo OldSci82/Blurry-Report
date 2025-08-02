@@ -1,0 +1,207 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #090040 0%, #471396 100%);
+  color: #FFCC00;
+  font-family: 'VCR OSD Mono', 'Courier New', Courier, monospace;
+  overflow-x: hidden;
+  user-select: none; /* Prevent text selection globally */
+  cursor: default; /* Default cursor for non-interactive elements */
+}
+
+/* Map container */
+#map {
+  height: 600px;
+  width: 100%;
+  /*border: 3px solid #FFCC00;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(177, 59, 255, 0.7);*/
+}
+
+/* Sidebar (Unmapped Sightings) */
+#unmapped {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 300px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: rgba(9, 0, 64, 0.8);
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(177, 59, 255, 0.5);
+  z-index: 1000;
+  border: 2px solid #FFCC00;
+  border-radius: 10px;
+}
+
+#unmapped h3 {
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  color: #FFCC00;
+  text-shadow: 0 0 5px #B13BFF;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+  animation: neon-flicker 2s infinite;
+}
+
+#unmapped ul {
+  list-style: none;
+}
+
+#unmapped li {
+  margin-bottom: 1rem;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  color: #FFCC00;
+  text-shadow: 0 0 3px #B13BFF;
+}
+
+#unmapped li b {
+  font-weight: bold;
+}
+
+#unmapped li i {
+  font-style: italic;
+  color: #B13BFF;
+}
+
+#unmapped li small {
+  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+  color: #FFCC00;
+}
+
+/* Toggle Button */
+.toggle-btn {
+  position: absolute;
+  top: 10px;
+  right: 320px;
+  z-index: 1001;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  padding: 0.5rem 1rem;
+  background: linear-gradient(45deg, #471396, #B13BFF);
+  color: #FFCC00;
+  border: 2px solid #FFCC00;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'VCR OSD Mono', 'Courier New', Courier, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 0 10px rgba(177, 59, 255, 0.5);
+  animation: neon-flicker 2s infinite;
+}
+
+.toggle-btn:hover {
+  background: linear-gradient(45deg, #B13BFF, #471396);
+  transform: translateY(-3px);
+  box-shadow: 0 0 15px rgba(177, 59, 255, 0.8);
+  color: #090040;
+}
+
+.toggle-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 0 5px rgba(177, 59, 255, 0.3);
+}
+
+/* Animations for 80s vibe */
+@keyframes neon-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  #map {
+    height: 400px; /* Reduce map height on smaller screens */
+  }
+
+  #unmapped {
+    width: 90%;
+    right: 5%;
+    top: 420px; /* Position below map */
+    max-height: 40vh;
+  }
+
+  .toggle-btn {
+    right: 5%;
+    top: 380px; /* Position above sidebar */
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+:root {
+  --map-tiles-filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+@media (prefers-color-scheme: dark) {
+  .leaflet-tile {
+    filter: var(--map-tiles-filter, none);
+  }
+}
+#dark-mode-toggle {
+  position: absolute;
+  top: 50px; /* Below existing toggle button */
+  right: 320px;
+  z-index: 1001;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  padding: 0.5rem 1rem;
+  background: linear-gradient(45deg, #471396, #B13BFF);
+  color: #FFCC00;
+  border: 2px solid #FFCC00;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'VCR OSD Mono', 'Courier New', Courier, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 0 10px rgba(177, 59, 255, 0.5);
+  animation: neon-flicker 2s infinite;
+}
+
+#dark-mode-toggle:hover {
+  background: linear-gradient(45deg, #B13BFF, #471396);
+  transform: translateY(-3px);
+  box-shadow: 0 0 15px rgba(177, 59, 255, 0.8);
+  color: #090040;
+}
+
+#dark-mode-toggle:active {
+  transform: translateY(0);
+  box-shadow: 0 0 5px rgba(177, 59, 255, 0.3);
+}
+
+.dark-mode .leaflet-tile {
+  filter: var(--map-tiles-filter, none);
+}
+
+@media (prefers-color-scheme: dark) {
+  .leaflet-popup-content-wrapper,
+  .leaflet-popup-tip {
+    background: rgba(9, 0, 64, 0.8);
+    color: #FFCC00;
+    text-shadow: 0 0 3px #B13BFF;
+    box-shadow: 0 0 10px rgba(177, 59, 255, 0.5);
+    border: 2px solid #FFCC00;
+    border-radius: 10px;
+  }
+}
+
+.dark-mode .leaflet-popup-content-wrapper,
+.dark-mode .leaflet-popup-tip {
+  background: rgba(9, 0, 64, 0.8);
+  color: #FFCC00;
+  text-shadow: 0 0 3px #B13BFF;
+  box-shadow: 0 0 10px rgba(177, 59, 255, 0.5);
+  border: 2px solid #FFCC00;
+  border-radius: 10px;
+}
+
+.leaflet-container {
+  background: transparent;
+}

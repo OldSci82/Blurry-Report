@@ -22,29 +22,13 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     [-85, -180],
     [85, 180],
   ],
+  className: "map-tiles", // Add class for CSS targeting
 }).addTo(map);
 
 //=============================================
 // Sidebar for Unmapped Sightings
 //=============================================
-const unmappedList = document.createElement("div");
-unmappedList.id = "unmapped";
-unmappedList.style.cssText = `
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 300px;
-  max-height: 90vh;
-  overflow-y: auto;
-  background: white;
-  padding: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-  z-index: 1000;
-  font-family: sans-serif;
-  font-size: 14px;
-`;
-unmappedList.innerHTML = `<h3>Unmapped Sightings</h3><ul id="unmapped-list"></ul>`;
-document.body.appendChild(unmappedList);
+const unmappedList = document.getElementById("unmapped");
 const unmappedUL = document.getElementById("unmapped-list");
 
 //=============================================
@@ -52,20 +36,7 @@ const unmappedUL = document.getElementById("unmapped-list");
 //=============================================
 const toggleBtn = document.createElement("button");
 toggleBtn.textContent = "Hide Unmapped";
-toggleBtn.style.cssText = `
-  position: absolute;
-  top: 10px;
-  right: 320px;
-  z-index: 1001;
-  padding: 5px 10px;
-  background: #444;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-  font-family: sans-serif;
-`;
+toggleBtn.className = "toggle-btn"; // Add class for styling
 document.body.appendChild(toggleBtn);
 
 // Toggle logic
@@ -76,10 +47,18 @@ toggleBtn.addEventListener("click", () => {
   toggleBtn.textContent = isSidebarVisible ? "Hide Unmapped" : "Show Unmapped";
 });
 
+// Add after toggleBtn logic
+const darkModeToggle = document.getElementById("dark-mode-toggle");
+let isDarkMode = false;
+darkModeToggle.addEventListener("click", () => {
+  isDarkMode = !isDarkMode;
+  document.getElementById("map").classList.toggle("dark-mode", isDarkMode);
+  darkModeToggle.textContent = isDarkMode ? "Light Mode" : "Dark Mode";
+});
+
 //=============================================
 // Utilities
 //=============================================
-
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function geocodeLocation(query) {
@@ -128,10 +107,9 @@ function addToUnmappedList(sighting) {
 //=============================================
 // Load and Display Sightings
 //=============================================
-
 async function loadSightings() {
   try {
-    const response = await fetch("./ufo-update-m.json"); // Update to match your file name
+    const response = await fetch("./ufo-update-m.json");
     if (!response.ok) {
       throw new Error(`Failed to fetch JSON: ${response.statusText}`);
     }
