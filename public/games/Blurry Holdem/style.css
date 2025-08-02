@@ -1,0 +1,224 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #333;
+    color: #eee;
+    margin: 0;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    /* Remove responsive width/height from here to let table dictate overall size */
+    /* width: auto; */
+    /* height: auto; */
+}
+
+#table {
+    width: 1vm;  /* Hard-coded width */
+    height: 1vm; /* Hard-coded height */
+    background-image: url('images/tables/table1.png');
+    background-size: cover; /* Ensures the image covers the entire div */
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 0px; /* As per your update */
+    border: 0px solid #555; /* As per your update */
+    position: relative; /* Crucial for absolute positioning of players */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 0px rgba(0,0,0,0.7); /* As per your update */
+    padding: 0; /* Removed padding, positions are exact now */
+}
+
+.player-area {
+    position: absolute; /* Allows precise positioning relative to #table */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px; /* Fixed gap */
+    text-align: center;
+    font-size: 0.9em; /* Fixed font size relative to parent */
+    line-height: 1.2;
+}
+
+/* Styles for all player images (NPCs, Player, Dealer) */
+.player-image {
+    width: 100px;  /* Hard-coded width */
+    height: 100px; /* Hard-coded height */
+    border-radius: 0%; /* As per your update */
+    border: 0px solid #ccc; /* As per your update */
+    object-fit: cover; /* Use cover to fill the 100x100 space */
+    box-shadow: 0 0 0px rgba(0,0,0,0.6); /* As per your update */
+}
+
+/* Specific style for mothman.png (assuming it's NPC 2) */
+.npc-mothman {
+    width: 200px; /* Hard-coded width */
+    height: 100px; /* Hard-coded height */
+    border-radius: 0px; /* As per your update */
+    object-fit: cover;
+}
+
+/* --- HARD-CODED PLAYER PLACEMENT & ROTATION --- */
+
+/* NPC 1: X= -20, Y= 250 (Center left, rotated 90 deg counter-clockwise) */
+.player-top-left {
+    left: -20px; /* X coordinate */
+    top: 250px;  /* Y coordinate */
+    transform: translateY(-50%) rotate(-90deg); /* Adjust for vertical centering of the player-area itself, then rotate */
+}
+
+/* NPC 2: X= 720, Y= 250 (Center right, rotated 90 deg clockwise) */
+.player-top-right {
+    left: 720px; /* X coordinate */
+    top: 250px;  /* Y coordinate */
+    transform: translateY(-50%) rotate(90deg); /* Adjust for vertical centering, then rotate */
+}
+
+/* Player: X= 350, Y= 520 (Bottom center) */
+.player-human-area {
+    left: 350px; /* X coordinate */
+    top: 520px; /* Y coordinate */
+    transform: translateX(-50%); /* Adjust for horizontal centering */
+}
+
+/* Dealer: X= 350, Y= -20 (Top center) */
+.dealer-area {
+    left: 350px; /* X coordinate */
+    top: -70px;  /* Y coordinate */
+    transform: translateX(-50%); /* Adjust for horizontal centering */
+}
+
+
+/* Active player highlight */
+.player-area.active-player .player-image {
+    border-color: yellow;
+    box-shadow: 0 0 15px rgba(255,255,0,0.8);
+}
+
+/* Folded player visual */
+.player-area.folded .player-image {
+    opacity: 0.5;
+    filter: grayscale(100%);
+}
+
+
+#community-cards {
+    display: flex;
+    gap: 10px; /* Fixed gap */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centering utility */
+    min-height: 80px; /* Fixed height */
+}
+
+.card {
+    width: 50px; /* Fixed width */
+    height: 70px; /* Fixed height */
+    background-color: white;
+    border: 1px solid #333;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: black;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    background-size: cover;
+}
+
+.card.hidden {
+    background-color: #777;
+    color: transparent;
+}
+
+#pot-display {
+    position: absolute;
+    top: 20px; /* Fixed position relative to table */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.2em; /* Fixed font size */
+    font-weight: bold;
+    background-color: rgba(0,0,0,0.5);
+    padding: 5px 10px; /* Fixed padding */
+    border-radius: 5px;
+}
+
+#action-area {
+    width: 600px; /* Fixed width */
+    background-color: #222;
+    border: 1px solid #444;
+    padding: 20px; /* Fixed padding */
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    font-size: 1em; /* Fixed font size */
+}
+
+#game-messages {
+    min-height: 40px; /* Fixed height */
+    margin-bottom: 15px; /* Fixed margin */
+    font-style: italic;
+    color: #bbb;
+    line-height: 1.4;
+}
+
+#player-options {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Fixed gap */
+    flex-wrap: wrap;
+}
+
+#bet-slider {
+    width: 200px; /* Fixed width */
+}
+
+button {
+    padding: 10px 15px; /* Fixed padding */
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em; /* Fixed font size */
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+
+button:hover:not([disabled]) {
+    background-color: #45a049;
+}
+
+button:active:not([disabled]) {
+    background-color: #367c39;
+}
+
+button:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Specific styling for player hand display */
+.player-hand-display {
+    display: flex;
+    gap: 5px; /* Fixed gap */
+    justify-content: center;
+    margin-top: 5px;
+    min-height: 70px; /* Fixed height */
+}

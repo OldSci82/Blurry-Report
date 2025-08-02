@@ -1,0 +1,16 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    "rootDir": "src",       // ✅ All .ts/.tsx files should be in /src
+    "outDir": "dist",       // ✅ Compiled JS goes here
+    "module": "ESNext",
+    "target": "ESNext",
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+  },
+  "include": ["src"],       // ✅ Include all .ts/.tsx inside src/
+}

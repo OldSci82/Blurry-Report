@@ -1,0 +1,187 @@
+/* src/styles.css */
+
+/* RESET & BASE */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: linear-gradient(145deg, #1a0033, #000);
+  color: #33ffcc;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 20px;
+}
+
+/* CONTAINER */
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+  background: #111;
+  border: 3px solid #ff33cc;
+  border-radius: 10px;
+  box-shadow: 0 0 15px #ff33cc, 0 0 40px #33ffcc inset;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  color: #ffcc00;
+  text-shadow: 0 0 5px #ff33cc;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+/* FORM STYLING */
+.todo-form {
+  background: #220044;
+  padding: 20px;
+  border: 2px solid #33ccff;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  box-shadow: 0 0 10px #33ccff inset;
+}
+
+.todo-form h2 {
+  color: #ff33cc;
+  font-size: 1rem;
+  margin-bottom: 15px;
+}
+
+.todo-form input,
+.todo-form select {
+  font-family: 'Press Start 2P', monospace;
+  background-color: #000;
+  color: #33ffcc;
+  border: 2px solid #ff33cc;
+  padding: 10px;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.todo-form input:focus,
+.todo-form select:focus {
+  outline: none;
+  border-color: #00ffff;
+  box-shadow: 0 0 5px #00ffff;
+}
+
+.todo-form label {
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+  margin-bottom: 15px;
+}
+
+.todo-form button {
+  font-family: 'Press Start 2P', monospace;
+  background-color: #ff33cc;
+  border: 2px solid #33ffcc;
+  color: black;
+  padding: 12px;
+  width: 100%;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.todo-form button:hover {
+  background-color: #33ffcc;
+  color: #000;
+  box-shadow: 0 0 10px #33ffcc;
+}
+
+/* LIST STYLES */
+.listDisplay {
+  margin-top: 20px;
+}
+
+#todo-list {
+  list-style: none;
+}
+
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #000033;
+  border: 2px solid #ffcc00;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px #ffcc00;
+  transition: transform 0.2s;
+}
+
+.todo-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 12px #ff33cc;
+}
+
+.todo-info h3 {
+  color: #ffffff;
+  margin-bottom: 5px;
+}
+
+.todo-info p {
+  color: #ffcc99;
+  font-size: 0.7rem;
+}
+
+/* COMPLETED TASKS */
+.completed-task h3,
+.completed-task p {
+  text-decoration: line-through;
+  color: #888;
+}
+
+/* ACTIONS */
+.todo-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.todo-actions input[type="checkbox"] {
+  transform: scale(1.5);
+  cursor: pointer;
+  accent-color: #00ffff;
+}
+
+.clear-btn {
+  font-family: 'Press Start 2P', monospace;
+  background-color: #ff0000;
+  border: 2px solid #ffff00;
+  color: #fff;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.clear-btn:hover {
+  background-color: #ffff00;
+  color: #000;
+  box-shadow: 0 0 8px #ff0000;
+}
+
+/* EMPTY MESSAGE */
+.empty-message {
+  color: #ffcc99;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* RESPONSIVE */
+@media (min-width: 768px) {
+  .container {
+    grid-template-columns: 2fr 1fr;
+  }
+}
