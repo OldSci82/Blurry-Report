@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blurry Map</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet Rotate Plugin for map rotation -->
+    <script src="https://unpkg.com/@mapbox/leaflet-rotate@0.1.0/dist/leaflet-rotate.js"></script>
+    <style>
+        /* Set map to fill the screen */
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Container for the map -->
+    <div id="map"></div>
+    <div id="unmapped" style="position:absolute; top:10px; right:10px; width:300px; max-height:90vh; overflow:auto; background:white; padding:10px;">
+        <h3>Unmapped Sightings</h3>
+        <ul id="unmapped-list"></ul>
+    </div>
+
+    <script type="module" src="./main.js"></script>
+</body>
+</html>
