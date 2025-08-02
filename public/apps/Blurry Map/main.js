@@ -117,13 +117,11 @@ async function geocodeLocation(query) {
 
 function addToUnmappedList(sighting) {
   const li = document.createElement("li");
-  li.innerHTML = `<b>${
-    sighting["Short Description"] || "No description"
-  }</b><br>
+  li.innerHTML = `<b>${sighting.Summary || "No description"}</b><br>
     <i>${sighting.City || "Unknown"}, ${
-    sighting["State/Country"] || "Unknown"
+    sighting.State || sighting.Country || "Unknown"
   }</i><br>
-    <small>Event Date: ${sighting["Date of Event"] || "Unknown"}</small>`;
+    <small>Event Date: ${sighting.Occurred || "Unknown"}</small>`;
   unmappedUL.appendChild(li);
 }
 
@@ -133,26 +131,24 @@ function addToUnmappedList(sighting) {
 
 async function loadSightings() {
   try {
-    const response = await fetch("./ufo-update.json");
+    const response = await fetch("./ufo-update-m.json"); // Update to match your file name
+    if (!response.ok) {
+      throw new Error(`Failed to fetch JSON: ${response.statusText}`);
+    }
     const sightings = await response.json();
 
     for (let i = 0; i < sightings.length; i++) {
       const sighting = sightings[i];
 
       const city = sighting.City?.trim();
-      const stateCountry = sighting["State/Country"]?.trim();
+      const state = sighting.State?.trim();
+      const country = sighting.Country?.trim();
 
-      let normalizedLocation = stateCountry;
-      const parts = stateCountry?.split(",").map((p) => p.trim()) || [];
-
-      if (parts.length === 2) {
-        // e.g. "WA, US"
-        const state = parts[0];
-        const code = parts[1];
-        const countryName = countryCodeMap[code] || code;
-        normalizedLocation = `${state}, ${countryName}`;
-      } else if (countryCodeMap[stateCountry]) {
-        normalizedLocation = countryCodeMap[stateCountry];
+      let normalizedLocation = country;
+      if (state && country) {
+        normalizedLocation = `${state}, ${country}`;
+      } else if (country) {
+        normalizedLocation = countryCodeMap[country] || country;
       }
 
       let locationQuery = "";
@@ -165,27 +161,26 @@ async function loadSightings() {
       let coords = null;
       if (locationQuery) {
         coords = await geocodeLocation(locationQuery);
-        await sleep(1500); // Respect Nominatim rate limits (1.5s per request)
+        await sleep(1500); // Respect Nominatim rate limits
       }
 
       if (!coords) {
         addToUnmappedList(sighting);
-        continue; // Skip placing this one on the map
+        continue;
       }
 
       const popupContent = `
-        <b>${sighting["Short Description"] || "No description"}</b><br>
+        <b>${sighting.Summary || "No description"}</b><br>
         <i>${sighting.City || "Unknown"}, ${
-        sighting["State/Country"] || "Unknown"
+        state || country || "Unknown"
       }</i><br>
-        <small>Event Date: ${sighting["Date of Event"] || "Unknown"}</small>
+        <small>Event Date: ${sighting.Occurred || "Unknown"}</small>
       `;
 
       const ufoIcon = L.icon({
         iconUrl: "./ufo-icon.png",
         iconSize: [38, 38],
       });
-      //L.marker([coords.lat, coords.lng], { icon: ufoIcon }).addTo(map);
 
       L.marker([coords.lat, coords.lng], { icon: ufoIcon })
         .bindPopup(popupContent)
