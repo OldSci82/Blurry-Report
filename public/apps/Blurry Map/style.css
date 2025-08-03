@@ -19,6 +19,22 @@ body {
   padding-right: env(safe-area-inset-right);
 }
 
+/* Header */
+header {
+  padding: 1.5rem;
+  text-align: center;
+  background: rgba(9, 0, 64, 0.8);
+  box-shadow: 0 0 20px rgba(177, 59, 255, 0.5);
+}
+
+header h1 {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  color: #FFCC00;
+  text-shadow: 0 0 10px #B13BFF, 0 0 20px #B13BFF;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
 /* Map container */
 #map {
   height: 600px;
