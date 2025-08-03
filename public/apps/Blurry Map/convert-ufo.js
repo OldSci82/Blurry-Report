@@ -79,6 +79,9 @@ function convertTextToJson(
           : value;
       });
 
+      // Add source field
+      rowObject.source = "https://nuforc.org/";
+
       result.push(rowObject);
     }
 
@@ -162,7 +165,10 @@ function convertTextToJson(
 
 // Example usage
 const rawText = `
-
+Link	Occurred	City	State	Country	Shape	Summary	Reported	Media	Explanation
+Open .	08/03/2025 04:17	Davao City	Davao Region	Philippines	Star	Stationary (wasn't moving) and suddenly started moving erratically	08/02/2025		
+Open .	08/02/2025 23:29	Estepona	Andalucía	Spain	Orb	We saw something strange in the sky.	08/01/2025		
+Open	08/02/2025 10:50	Lexington	KY	USA	Cigar	Rapid movement, side to side, up and down. Then stopped for 1 minute and seem to land behind apartments.	08/01/2025
 `;
 
 // Call the function with custom options

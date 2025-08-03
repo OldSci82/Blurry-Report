@@ -4142,5 +4142,44 @@
     "Reported": "07/01/2025",
     "Media": [],
     "Explanation": null
+  },
+  {
+    "Link": "Open .",
+    "Occurred": "08/03/2025 04:17",
+    "City": "Davao City",
+    "State": "Davao Region",
+    "Country": "Philippines",
+    "Shape": "Star",
+    "Summary": "Stationary (wasn't moving) and suddenly started moving erratically",
+    "Reported": "08/02/2025",
+    "Media": [],
+    "Explanation": null,
+    "source": "https://nuforc.org/"
+  },
+  {
+    "Link": "Open .",
+    "Occurred": "08/02/2025 23:29",
+    "City": "Estepona",
+    "State": "Andalucía",
+    "Country": "Spain",
+    "Shape": "Orb",
+    "Summary": "We saw something strange in the sky.",
+    "Reported": "08/01/2025",
+    "Media": [],
+    "Explanation": null,
+    "source": "https://nuforc.org/"
+  },
+  {
+    "Link": "Open",
+    "Occurred": "08/02/2025 10:50",
+    "City": "Lexington",
+    "State": "KY",
+    "Country": "USA",
+    "Shape": "Cigar",
+    "Summary": "Rapid movement, side to side, up and down. Then stopped for 1 minute and seem to land behind apartments.",
+    "Reported": "08/01/2025",
+    "Media": [],
+    "Explanation": null,
+    "source": "https://nuforc.org/"
   }
 ]
