@@ -352,3 +352,12 @@ footer {
     font-size: 0.7rem;
   }
 }
+
+.article-counter {
+  font-family: 'VCR OSD Mono', monospace;
+  font-size: 1.2rem;
+  color: #FFCC00;
+  text-shadow: 0 0 5px #B13BFF;
+  margin-bottom: 1rem;
+  text-align: center;
+}

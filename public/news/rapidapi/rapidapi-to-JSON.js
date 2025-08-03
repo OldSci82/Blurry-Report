@@ -12,7 +12,7 @@ const monthNumber = currentDate.getMonth() + 1;
 const fullYear = currentDate.getFullYear();
 
 const url =
-  "https://real-time-news-data.p.rapidapi.com/search?query=-sex%20AND%20-monsterhunternow.com%20AND%20-pelosi%20AND%20(sighting%20OR%20sighted%20OR%20spotting%20OR%20spotted)%20AND%20(mystery%20OR%20creature%20OR%20cryptid%20OR%20bigfoot%20OR%20sasquatch%20OR%20yeti%20OR%20mothman%20OR%20chupacabra%20OR%20thunderbird)&limit=50&time_published=7d&lang=en";
+  "https://real-time-news-data.p.rapidapi.com/search?query=-sex%20AND%20-monsterhunternow.com%20AND%20-pelosi%20AND%20(sighting%20OR%20sighted%20OR%20spotting%20OR%20spotted)%20AND%20(mystery%20OR%20creature%20OR%20cryptid%20OR%20bigfoot%20OR%20sasquatch%20OR%20yeti%20OR%20mothman%20OR%20chupacabra%20OR%20thunderbird)&limit=100&time_published=7d&lang=en";
 const options = {
   method: "GET",
   headers: {
@@ -25,8 +25,12 @@ const options = {
 const forbiddenPhrases = [
   "mystery man",
   "mystery men",
+  "mystery boy",
+  "mystery boyfriend",
   "mystery woman",
   "mystery women",
+  "mystery girl",
+  "mystery girlfriend",
   "Murder Mysteries",
   "Donald Trump",
 ];
@@ -105,11 +109,21 @@ async function fetchAndSaveNews() {
     );
     const combinedData = [...existingData, ...newUniqueData];
 
+    // Sort combinedData by date in descending order (newest first)
+    combinedData.sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      // Handle invalid dates
+      if (isNaN(dateA)) return 1; // Push invalid dates to the end
+      if (isNaN(dateB)) return -1;
+      return dateB - dateA;
+    });
+
     // Save to news-master.json
     await fs.writeFile(masterOutputFile, JSON.stringify(combinedData, null, 2));
     console.log(`Master news data updated at ${masterOutputFile}`);
-    //console.log("New entries added:", newUniqueData.length);
-    //console.log("Sample master data:", combinedData.slice(0, 2));
+    console.log("New entries added:", newUniqueData.length);
+    console.log("Sample master data:", combinedData.slice(0, 2));
   } catch (error) {
     console.error("Error fetching or saving news:", error.message);
   }

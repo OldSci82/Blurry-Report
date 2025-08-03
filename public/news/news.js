@@ -21,6 +21,12 @@ function displayNews(articles) {
   // Sort articles by date in descending order (newest first)
   articles.sort((a, b) => new Date(b.date) - new Date(a.date));
 
+  // Create and append counter element
+  const counterDiv = document.createElement("div");
+  counterDiv.classList.add("article-counter");
+  counterDiv.innerHTML = `<p>Total Articles: ${articles.length}</p>`;
+  newsContainer.appendChild(counterDiv);
+
   articles.forEach((article) => {
     // Create article element
     const articleDiv = document.createElement("div");
