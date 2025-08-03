@@ -113,6 +113,14 @@ function convertTextToJson(
             `Existing file ${masterOutputFilePath} is not a valid JSON array. Overwriting with new data.`
           );
           masterData = [];
+        } else {
+          // Add source to existing masterData objects if missing
+          masterData = masterData.map((item) => {
+            if (!item.hasOwnProperty("source")) {
+              return { ...item, source: "https://nuforc.org/" };
+            }
+            return item;
+          });
         }
       } catch (error) {
         console.warn(
