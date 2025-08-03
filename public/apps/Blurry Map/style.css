@@ -13,15 +13,31 @@ body {
   overflow-x: hidden;
   user-select: none; /* Prevent text selection globally */
   cursor: default; /* Default cursor for non-interactive elements */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 /* Map container */
 #map {
   height: 600px;
   width: 100%;
-  /*border: 3px solid #FFCC00;
-  border-radius: 10px;
+  /*border-radius: 10px;
   box-shadow: 0 0 15px rgba(177, 59, 255, 0.7);*/
+}
+
+.leaflet-container {
+  background: transparent;
+}
+
+/* Dark mode filter for map tiles */
+:root {
+  --map-tiles-filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+.dark-mode .map-tiles {
+  filter: var(--map-tiles-filter);
 }
 
 /* Sidebar (Unmapped Sightings) */
@@ -75,7 +91,7 @@ body {
   color: #FFCC00;
 }
 
-/* Toggle Button */
+/* Toggle Buttons */
 .toggle-btn {
   position: absolute;
   top: 10px;
@@ -94,6 +110,7 @@ body {
   letter-spacing: 0.05em;
   box-shadow: 0 0 10px rgba(177, 59, 255, 0.5);
   animation: neon-flicker 2s infinite;
+  min-width: 120px; /* Ensure touch target size */
 }
 
 .toggle-btn:hover {
@@ -104,96 +121,17 @@ body {
 }
 
 .toggle-btn:active {
-  transform: translateY(0);
+  transform: scale(0.95); /* Slight scale-down on tap */
   box-shadow: 0 0 5px rgba(177, 59, 255, 0.3);
 }
 
-/* Animations for 80s vibe */
-@keyframes neon-flicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.8; }
-}
-
-/* Responsive design */
-@media (max-width: 600px) {
-  #map {
-    height: 400px; /* Reduce map height on smaller screens */
-  }
-
-  #unmapped {
-    width: 90%;
-    right: 5%;
-    top: 420px; /* Position below map */
-    max-height: 40vh;
-  }
-
-  .toggle-btn {
-    right: 5%;
-    top: 380px; /* Position above sidebar */
-    font-size: clamp(0.8rem, 2vw, 0.9rem);
-    padding: 0.4rem 0.8rem;
-  }
-}
-
-:root {
-  --map-tiles-filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
-}
-
-@media (prefers-color-scheme: dark) {
-  .leaflet-tile {
-    filter: var(--map-tiles-filter, none);
-  }
-}
 #dark-mode-toggle {
-  position: absolute;
-  top: 50px; /* Below existing toggle button */
-  right: 320px;
-  z-index: 1001;
-  font-size: clamp(0.9rem, 2vw, 1rem);
-  padding: 0.5rem 1rem;
-  background: linear-gradient(45deg, #471396, #B13BFF);
-  color: #FFCC00;
-  border: 2px solid #FFCC00;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: 'VCR OSD Mono', 'Courier New', Courier, monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  box-shadow: 0 0 10px rgba(177, 59, 255, 0.5);
-  animation: neon-flicker 2s infinite;
+  top: 50px; /* Below sidebar toggle */
 }
 
-#dark-mode-toggle:hover {
-  background: linear-gradient(45deg, #B13BFF, #471396);
-  transform: translateY(-3px);
-  box-shadow: 0 0 15px rgba(177, 59, 255, 0.8);
-  color: #090040;
-}
-
-#dark-mode-toggle:active {
-  transform: translateY(0);
-  box-shadow: 0 0 5px rgba(177, 59, 255, 0.3);
-}
-
-.dark-mode .leaflet-tile {
-  filter: var(--map-tiles-filter, none);
-}
-
-@media (prefers-color-scheme: dark) {
-  .leaflet-popup-content-wrapper,
-  .leaflet-popup-tip {
-    background: rgba(9, 0, 64, 0.8);
-    color: #FFCC00;
-    text-shadow: 0 0 3px #B13BFF;
-    box-shadow: 0 0 10px rgba(177, 59, 255, 0.5);
-    border: 2px solid #FFCC00;
-    border-radius: 10px;
-  }
-}
-
-.dark-mode .leaflet-popup-content-wrapper,
-.dark-mode .leaflet-popup-tip {
+/* Popup Styling for Dark Mode */
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
   background: rgba(9, 0, 64, 0.8);
   color: #FFCC00;
   text-shadow: 0 0 3px #B13BFF;
@@ -202,6 +140,74 @@ body {
   border-radius: 10px;
 }
 
-.leaflet-container {
-  background: transparent;
+.leaflet-popup-content {
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
+  line-height: 1.4;
+}
+
+.leaflet-popup-close-button {
+  font-size: 1.2rem;
+  padding: 8px;
+}
+
+/* Animations for 80s vibe */
+@keyframes neon-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* Responsive design - Portrait */
+@media (max-width: 600px) {
+  #map {
+    height: 50vh; /* Proportional to screen height */
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(177, 59, 255, 0.7);
+  }
+
+  #unmapped {
+    width: 90%;
+    right: 5%;
+    top: calc(50vh + 20px); /* Below map with gap */
+    max-height: 40vh;
+  }
+
+  .toggle-btn {
+    right: 5%;
+    top: calc(50vh - 80px); /* Above sidebar */
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    padding: 0.5rem 1rem;
+    min-width: 120px;
+  }
+
+  #dark-mode-toggle {
+    top: calc(50vh - 40px); /* Above sidebar toggle */
+  }
+}
+
+/* Responsive design - Landscape */
+@media (max-height: 500px) and (orientation: landscape) {
+  #map {
+    height: 80vh; /* Use most of the viewport height */
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(177, 59, 255, 0.7);
+  }
+
+  #unmapped {
+    width: 30%; /* Narrower for wider screen */
+    right: 10px;
+    top: 10px; /* Top-right corner */
+    max-height: 80vh;
+  }
+
+  .toggle-btn {
+    right: 10px;
+    top: calc(80vh + 10px); /* Below map */
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    padding: 0.5rem 1rem;
+    min-width: 120px;
+  }
+
+  #dark-mode-toggle {
+    top: calc(80vh + 50px); /* Below sidebar toggle */
+  }
 }

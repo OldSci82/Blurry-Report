@@ -22,7 +22,7 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     [-85, -180],
     [85, 180],
   ],
-  className: "map-tiles", // Add class for CSS targeting
+  className: "map-tiles", // Add class for CSS filter targeting
 }).addTo(map);
 
 //=============================================
@@ -36,10 +36,10 @@ const unmappedUL = document.getElementById("unmapped-list");
 //=============================================
 const toggleBtn = document.createElement("button");
 toggleBtn.textContent = "Hide Unmapped";
-toggleBtn.className = "toggle-btn"; // Add class for styling
+toggleBtn.className = "toggle-btn";
 document.body.appendChild(toggleBtn);
 
-// Toggle logic
+// Toggle logic for sidebar
 let isSidebarVisible = true;
 toggleBtn.addEventListener("click", () => {
   isSidebarVisible = !isSidebarVisible;
@@ -47,9 +47,11 @@ toggleBtn.addEventListener("click", () => {
   toggleBtn.textContent = isSidebarVisible ? "Hide Unmapped" : "Show Unmapped";
 });
 
-// Add after toggleBtn logic
+//=============================================
+// Dark Mode Toggle
+//=============================================
 const darkModeToggle = document.getElementById("dark-mode-toggle");
-let isDarkMode = false;
+let isDarkMode = false; // Default to light mode
 darkModeToggle.addEventListener("click", () => {
   isDarkMode = !isDarkMode;
   document.getElementById("map").classList.toggle("dark-mode", isDarkMode);
