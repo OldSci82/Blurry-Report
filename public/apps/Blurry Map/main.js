@@ -155,7 +155,7 @@ async function loadSightings() {
         state || country || "Unknown"
       }</i><br>
         <small>Event Date: ${sighting.Occurred || "Unknown"}</small>
-        <small>Event Source: <a href="https://nuforc.org/">${
+        <small>Event Source: <a href="https://nuforc.org/" target="">${
           sighting.source
         }</a></small>
       `;
