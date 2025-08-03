@@ -1,0 +1,2116 @@
+[
+  {
+    "lat": 52.2333742,
+    "lon": 21.0711489,
+    "city": "Warszawa",
+    "state": "Województwo mazowieckie",
+    "country": "Poland"
+  },
+  {
+    "lat": 43.685832,
+    "lon": -79.7599366,
+    "city": "Brampton",
+    "state": "ON",
+    "country": "Canada"
+  },
+  {
+    "lat": 50.3714122,
+    "lon": -4.1424451,
+    "city": "Plymouth",
+    "state": "England",
+    "country": "United Kingdom"
+  },
+  {
+    "lat": 42.8620287,
+    "lon": -112.450627,
+    "city": "Pocatello",
+    "state": "ID",
+    "country": "USA"
+  },
+  {
+    "lat": 41.7635729,
+    "lon": 22.8873017,
+    "city": "Pehchevo",
+    "state": "Municipality of Pehčevo",
+    "country": "North Macedonia"
+  },
+  {
+    "lat": 45.7813532,
+    "lon": -122.5337433,
+    "city": "Battle Ground",
+    "state": "WA",
+    "country": "USA"
+  },
+  {
+    "lat": 43.9465433,
+    "lon": 12.630749,
+    "city": "Rimini",
+    "state": "Emilia-Romagna",
+    "country": "Italy"
+  },
+  {
+    "lat": 28.6430858,
+    "lon": 77.2192671,
+    "city": "New Delhi",
+    "state": "Delhi",
+    "country": "India"
+  },
+  {
+    "lat": 42.3731948,
+    "lon": -72.5198761,
+    "city": "Amherst",
+    "state": "MA",
+    "country": "USA"
+  },
+  {
+    "lat": 33.8398289,
+    "lon": -118.3845942,
+    "city": "Redondo Beach",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": 46.2504355,
+    "lon": -119.1878944,
+    "city": "West Pasco",
+    "state": "WA",
+    "country": "USA"
+  },
+  {
+    "lat": 41.48754,
+    "lon": -82.101537,
+    "city": "Sheffield Lake",
+    "state": "OH",
+    "country": "USA"
+  },
+  {
+    "lat": 44.9772995,
+    "lon": -93.2654692,
+    "city": "Minneapolis",
+    "state": "MN",
+    "country": "USA"
+  },
+  {
+    "lat": 37.6455993,
+    "lon": -91.5359808,
+    "city": "Salem",
+    "state": "MO",
+    "country": "USA"
+  },
+  {
+    "lat": 33.5426975,
+    "lon": -117.785366,
+    "city": "Laguna Beach",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": 42.7006324,
+    "lon": -74.0337382,
+    "city": "Altamont",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": 53.4071991,
+    "lon": -2.99168,
+    "city": "Liverpool",
+    "state": "England",
+    "country": "United Kingdom"
+  },
+  {
+    "lat": 39.1031979,
+    "lon": -76.7465173,
+    "city": "Fort Meade",
+    "state": "MD",
+    "country": "USA"
+  },
+  {
+    "lat": 34.729847,
+    "lon": -86.5859011,
+    "city": "Huntsville",
+    "state": "AL",
+    "country": "USA"
+  },
+  {
+    "lat": 45.201599,
+    "lon": -123.885091,
+    "city": "Cloverdale",
+    "state": "OR",
+    "country": "USA"
+  },
+  {
+    "lat": 41.3825802,
+    "lon": 2.177073,
+    "city": "Barcelona",
+    "state": "Catalunya",
+    "country": "Spain"
+  },
+  {
+    "lat": 37.5737487,
+    "lon": -85.740353,
+    "city": "Hodgenville",
+    "state": "KY",
+    "country": "USA"
+  },
+  {
+    "lat": 38.263995,
+    "lon": -104.6141867,
+    "city": "Pueblo",
+    "state": "CO",
+    "country": "USA"
+  },
+  {
+    "lat": 49.2433804,
+    "lon": -122.972545,
+    "city": "Burnaby",
+    "state": "BC",
+    "country": "Canada"
+  },
+  {
+    "lat": 42.961748,
+    "lon": -78.870914,
+    "city": "Kenmore",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": 43.5896231,
+    "lon": -79.6443879,
+    "city": "Mississauga",
+    "state": "ON",
+    "country": "Canada"
+  },
+  {
+    "lat": 38.6852729,
+    "lon": 30.6427411,
+    "city": "",
+    "state": "Afyonkarahisar",
+    "country": "Türkiye"
+  },
+  {
+    "lat": 42.6491029,
+    "lon": 18.0939501,
+    "city": "Dubrovnik",
+    "state": "Dubrovnik-Neretva County",
+    "country": "Croatia"
+  },
+  {
+    "lat": 33.8595746,
+    "lon": 35.5588057,
+    "city": "Byblos",
+    "state": "Mount Lebanon Governorate",
+    "country": "Lebanon"
+  },
+  {
+    "lat": 44.5127578,
+    "lon": 11.8291743,
+    "city": "Conselice",
+    "state": "Emilia-Romagna",
+    "country": "Italy"
+  },
+  {
+    "lat": 46.0066117,
+    "lon": -92.3713048,
+    "city": "Danbury",
+    "state": "WI",
+    "country": "USA"
+  },
+  {
+    "lat": -27.4377187,
+    "lon": 153.1659743,
+    "city": "Wynnum",
+    "state": "Queensland",
+    "country": "Australia"
+  },
+  {
+    "lat": 42.2625621,
+    "lon": -71.8018877,
+    "city": "Worcester",
+    "state": "MA",
+    "country": "USA"
+  },
+  {
+    "lat": 36.8673852,
+    "lon": -121.8183169,
+    "city": "Pajaro Dunes",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": 51.483784,
+    "lon": -1.0861578,
+    "city": "Pangbourne",
+    "state": "England",
+    "country": "United Kingdom"
+  },
+  {
+    "lat": 35.0841034,
+    "lon": -106.650985,
+    "city": "Albuquerque",
+    "state": "NM",
+    "country": "USA"
+  },
+  {
+    "lat": 47.6038321,
+    "lon": -122.330062,
+    "city": "Seattle",
+    "state": "WA",
+    "country": "USA"
+  },
+  {
+    "lat": 32.6689413,
+    "lon": -114.3982363,
+    "city": "Fortuna Foothills",
+    "state": "AZ",
+    "country": "USA"
+  },
+  {
+    "lat": 21.4001231,
+    "lon": -157.969428,
+    "city": "Pearl City",
+    "state": "HI",
+    "country": "USA"
+  },
+  {
+    "lat": 36.2944928,
+    "lon": -82.4734089,
+    "city": "Jonesborough",
+    "state": "TN",
+    "country": "USA"
+  },
+  {
+    "lat": 45.8769031,
+    "lon": -93.2938352,
+    "city": "Mora",
+    "state": "MN",
+    "country": "USA"
+  },
+  {
+    "lat": 41.7244885,
+    "lon": -81.245657,
+    "city": "Painesville",
+    "state": "OH",
+    "country": "USA"
+  },
+  {
+    "lat": 46.1882007,
+    "lon": -123.8319802,
+    "city": "Astoria",
+    "state": "OR",
+    "country": "USA"
+  },
+  {
+    "lat": 33.8708215,
+    "lon": -117.929416,
+    "city": "Fullerton",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": 47.7564667,
+    "lon": -122.3437497,
+    "city": "Shoreline",
+    "state": "WA",
+    "country": "USA"
+  },
+  {
+    "lat": 42.8867166,
+    "lon": -78.8783922,
+    "city": "Buffalo",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": 36.3231067,
+    "lon": -86.7133302,
+    "city": "Goodlettsville",
+    "state": "TN",
+    "country": "USA"
+  },
+  {
+    "lat": 41.4819932,
+    "lon": -81.7981908,
+    "city": "Lakewood",
+    "state": "OH",
+    "country": "USA"
+  },
+  {
+    "lat": 42.105237,
+    "lon": -72.6213712,
+    "city": "West Springfield",
+    "state": "MA",
+    "country": "USA"
+  },
+  {
+    "lat": 42.6829842,
+    "lon": -110.9321445,
+    "city": "Osmond",
+    "state": "WY",
+    "country": "USA"
+  },
+  {
+    "lat": 40.4821114,
+    "lon": -74.2828828,
+    "city": "South Amboy",
+    "state": "NJ",
+    "country": "USA"
+  },
+  {
+    "lat": 29.4246002,
+    "lon": -98.4951405,
+    "city": "San Antonio",
+    "state": "TX",
+    "country": "USA"
+  },
+  {
+    "lat": 34.0536909,
+    "lon": -118.242766,
+    "city": "Los Angeles",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": 38.8339578,
+    "lon": -104.825348,
+    "city": "Colorado Springs",
+    "state": "CO",
+    "country": "USA"
+  },
+  {
+    "lat": 41.050775,
+    "lon": -81.393946,
+    "city": "Mogadore",
+    "state": "OH",
+    "country": "USA"
+  },
+  {
+    "lat": 33.3106696,
+    "lon": -85.7544051,
+    "city": "Lineville",
+    "state": "AL",
+    "country": "USA"
+  },
+  {
+    "lat": 47.3300505,
+    "lon": -122.1014808,
+    "city": "Lake Morton-Berrydale",
+    "state": "WA",
+    "country": "USA"
+  },
+  {
+    "lat": 37.9317766,
+    "lon": -121.696026,
+    "city": "Brentwood",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": 33.4151005,
+    "lon": -111.831455,
+    "city": "Mesa",
+    "state": "AZ",
+    "country": "USA"
+  },
+  {
+    "lat": 30.9432983,
+    "lon": 29.765645,
+    "city": "",
+    "state": "Alexandria Governorate",
+    "country": "Egypt"
+  },
+  {
+    "lat": 47.0451022,
+    "lon": -122.8950075,
+    "city": "Olympia",
+    "state": "WA",
+    "country": "USA"
+  },
+  {
+    "lat": 28.2336196,
+    "lon": -82.1811947,
+    "city": "Zephyrhills",
+    "state": "FL",
+    "country": "USA"
+  },
+  {
+    "lat": 42.9819773,
+    "lon": -84.9469455,
+    "city": "Lyons",
+    "state": "MI",
+    "country": "USA"
+  },
+  {
+    "lat": 26.3586885,
+    "lon": -80.0830984,
+    "city": "Boca Raton",
+    "state": "FL",
+    "country": "USA"
+  },
+  {
+    "lat": 38.7459275,
+    "lon": -106.078549,
+    "city": "Nathrop",
+    "state": "CO",
+    "country": "USA"
+  },
+  {
+    "lat": 38.1495947,
+    "lon": -79.072557,
+    "city": "Staunton",
+    "state": "VA",
+    "country": "USA"
+  },
+  {
+    "lat": 37.0592253,
+    "lon": -120.8505342,
+    "city": "Los Banos",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": 36.9929203,
+    "lon": -86.4428677,
+    "city": "Bowling Green",
+    "state": "KY",
+    "country": "USA"
+  },
+  {
+    "lat": 44.1681052,
+    "lon": -73.2518037,
+    "city": "Vergennes",
+    "state": "VT",
+    "country": "USA"
+  },
+  {
+    "lat": 41.3750937,
+    "lon": -74.692663,
+    "city": "Port Jervis",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": 39.4149034,
+    "lon": -85.0563234,
+    "city": "Franklin",
+    "state": "IN",
+    "country": "USA"
+  },
+  {
+    "lat": 47.6571934,
+    "lon": -117.42351,
+    "city": "Spokane",
+    "state": "WA",
+    "country": "USA"
+  },
+  {
+    "lat": 39.7405111,
+    "lon": -104.830994,
+    "city": "Aurora",
+    "state": "CO",
+    "country": "USA"
+  },
+  {
+    "lat": 40.8695775,
+    "lon": -72.524362,
+    "city": "Hampton Bays",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": 37.0833893,
+    "lon": -88.6000478,
+    "city": "Paducah",
+    "state": "KY",
+    "country": "USA"
+  },
+  {
+    "lat": 42.2595071,
+    "lon": -83.2107671,
+    "city": "Allen Park",
+    "state": "MI",
+    "country": "USA"
+  },
+  {
+    "lat": 30.2655322,
+    "lon": -94.1991444,
+    "city": "Lumberton",
+    "state": "TX",
+    "country": "USA"
+  },
+  {
+    "lat": 48.0074736,
+    "lon": -121.7304882,
+    "city": "Snohomish",
+    "state": "WA",
+    "country": "USA"
+  },
+  {
+    "lat": 27.6125348,
+    "lon": -81.9434182,
+    "city": "Fort Green",
+    "state": "FL",
+    "country": "USA"
+  },
+  {
+    "lat": 52.4766308,
+    "lon": 1.7537638,
+    "city": "Lowestoft",
+    "state": "England",
+    "country": "United Kingdom"
+  },
+  {
+    "lat": 36.2087301,
+    "lon": -115.984614,
+    "city": "Pahrump",
+    "state": "NV",
+    "country": "USA"
+  },
+  {
+    "lat": 29.6519684,
+    "lon": -82.3249846,
+    "city": "Gainesville",
+    "state": "FL",
+    "country": "USA"
+  },
+  {
+    "lat": 44.9988053,
+    "lon": -88.2480072,
+    "city": "Oconto",
+    "state": "WI",
+    "country": "USA"
+  },
+  {
+    "lat": 45.6363366,
+    "lon": -65.6952297,
+    "city": "Norton",
+    "state": "NB",
+    "country": "Canada"
+  },
+  {
+    "lat": 40.9908706,
+    "lon": -78.4457422,
+    "city": "Clearfield",
+    "state": "PA",
+    "country": "USA"
+  },
+  {
+    "lat": 33.2442813,
+    "lon": -86.8163773,
+    "city": "Alabaster",
+    "state": "AL",
+    "country": "USA"
+  },
+  {
+    "lat": 38.8462236,
+    "lon": -77.3063733,
+    "city": "Fairfax",
+    "state": "VA",
+    "country": "USA"
+  },
+  {
+    "lat": -37.7821693,
+    "lon": 145.6150255,
+    "city": "Yarra Junction",
+    "state": "Victoria",
+    "country": "Australia"
+  },
+  {
+    "lat": 36.583176,
+    "lon": -118.0783381,
+    "city": "Lone Pine",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": 51.5615327,
+    "lon": -1.7854322,
+    "city": "Swindon",
+    "state": "England",
+    "country": "United Kingdom"
+  },
+  {
+    "lat": 27.9658533,
+    "lon": -82.8001026,
+    "city": "Clearwater",
+    "state": "FL",
+    "country": "USA"
+  },
+  {
+    "lat": 41.8755616,
+    "lon": -87.6244212,
+    "city": "Chicago",
+    "state": "IL",
+    "country": "USA"
+  },
+  {
+    "lat": 46.7073149,
+    "lon": -123.9800916,
+    "city": "Tokeland",
+    "state": "WA",
+    "country": "USA"
+  },
+  {
+    "lat": 40.2588431,
+    "lon": -80.186732,
+    "city": "Canonsburg",
+    "state": "PA",
+    "country": "USA"
+  },
+  {
+    "lat": 29.396013,
+    "lon": -94.9175485,
+    "city": "Texas City",
+    "state": "TX",
+    "country": "USA"
+  },
+  {
+    "lat": 40.4416941,
+    "lon": -79.9900861,
+    "city": "Pittsburgh",
+    "state": "PA",
+    "country": "USA"
+  },
+  {
+    "lat": 33.3508565,
+    "lon": -7.99686,
+    "city": "Bir Jdid",
+    "state": "Casablanca-Settat",
+    "country": "Morocco"
+  },
+  {
+    "lat": 47.6694141,
+    "lon": -122.1238767,
+    "city": "Redmond",
+    "state": "WA",
+    "country": "USA"
+  },
+  {
+    "lat": 30.2711286,
+    "lon": -97.7436995,
+    "city": "Austin",
+    "state": "TX",
+    "country": "USA"
+  },
+  {
+    "lat": 42.5803122,
+    "lon": -83.0302033,
+    "city": "Sterling Heights",
+    "state": "MI",
+    "country": "USA"
+  },
+  {
+    "lat": 34.6295373,
+    "lon": -92.4412674,
+    "city": "Alexander",
+    "state": "AR",
+    "country": "USA"
+  },
+  {
+    "lat": 43.073402,
+    "lon": -71.845093,
+    "city": "Deering",
+    "state": "NH",
+    "country": "USA"
+  },
+  {
+    "lat": 52.4796992,
+    "lon": -1.9026911,
+    "city": "Birmingham",
+    "state": "England",
+    "country": "United Kingdom"
+  },
+  {
+    "lat": 32.4483736,
+    "lon": -111.211475,
+    "city": "Marana",
+    "state": "AZ",
+    "country": "USA"
+  },
+  {
+    "lat": 37.9461438,
+    "lon": -93.401034,
+    "city": "Wheatland",
+    "state": "MO",
+    "country": "USA"
+  },
+  {
+    "lat": 38.9830568,
+    "lon": 1.3009485,
+    "city": "Sant Antoni de Portmany",
+    "state": "Illes Balears",
+    "country": "Spain"
+  },
+  {
+    "lat": 35.2334772,
+    "lon": -80.4270094,
+    "city": "Stanfield",
+    "state": "NC",
+    "country": "USA"
+  },
+  {
+    "lat": 33.870413,
+    "lon": -117.9962165,
+    "city": "Buena Park",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": 39.766098,
+    "lon": -105.0772063,
+    "city": "Wheat Ridge",
+    "state": "CO",
+    "country": "USA"
+  },
+  {
+    "lat": 34.2079917,
+    "lon": -77.7955907,
+    "city": "Wrightsville Beach",
+    "state": "NC",
+    "country": "USA"
+  },
+  {
+    "lat": 43.9122995,
+    "lon": -78.6891675,
+    "city": "Bowmanville",
+    "state": "ON",
+    "country": "Canada"
+  },
+  {
+    "lat": 36.7509272,
+    "lon": -95.9771779,
+    "city": "Bartlesville",
+    "state": "OK",
+    "country": "USA"
+  },
+  {
+    "lat": 41.2528738,
+    "lon": -73.2973394,
+    "city": "Easton",
+    "state": "CT",
+    "country": "USA"
+  },
+  {
+    "lat": 52.3072593,
+    "lon": 5.0420822,
+    "city": "Weesp",
+    "state": "North Holland",
+    "country": "Netherlands"
+  },
+  {
+    "lat": 21.304547,
+    "lon": -157.855676,
+    "city": "Honolulu",
+    "state": "HI",
+    "country": "USA"
+  },
+  {
+    "lat": 43.7550521,
+    "lon": -71.1528533,
+    "city": "Ossipee",
+    "state": "NH",
+    "country": "USA"
+  },
+  {
+    "lat": 31.3932817,
+    "lon": -99.5988752,
+    "city": "Doole",
+    "state": "TX",
+    "country": "USA"
+  },
+  {
+    "lat": 53.776644,
+    "lon": 20.4777531,
+    "city": "Olsztyn",
+    "state": "Województwo warmińsko-mazurskie",
+    "country": "Poland"
+  },
+  {
+    "lat": 37.5666791,
+    "lon": 126.9782914,
+    "city": "Seoul",
+    "state": "CT",
+    "country": "South Korea"
+  },
+  {
+    "lat": 37.3672744,
+    "lon": -88.4864316,
+    "city": "Golconda",
+    "state": "IL",
+    "country": "USA"
+  },
+  {
+    "lat": 47.6271499,
+    "lon": -115.8584985,
+    "city": "Murray",
+    "state": "ID",
+    "country": "USA"
+  },
+  {
+    "lat": 35.099219,
+    "lon": -78.7882955,
+    "city": "Eastover",
+    "state": "NC",
+    "country": "USA"
+  },
+  {
+    "lat": 39.9100858,
+    "lon": -104.987552,
+    "city": "Northglenn",
+    "state": "CO",
+    "country": "USA"
+  },
+  {
+    "lat": 43.1756235,
+    "lon": -76.1193678,
+    "city": "Cicero",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": 52.9006864,
+    "lon": 21.5570366,
+    "city": "Goworowo",
+    "state": "Masovian Voivodeship",
+    "country": "Poland"
+  },
+  {
+    "lat": 26.1036887,
+    "lon": -97.1646938,
+    "city": "South Padre Island",
+    "state": "TX",
+    "country": "USA"
+  },
+  {
+    "lat": 33.3226624,
+    "lon": -80.4137038,
+    "city": "Holly Hill",
+    "state": "SC",
+    "country": "USA"
+  },
+  {
+    "lat": 53.1569822,
+    "lon": 17.2627004,
+    "city": "Wyrzysk",
+    "state": "Greater Poland Voivodeship",
+    "country": "Poland"
+  },
+  {
+    "lat": 37.0944971,
+    "lon": -88.080301,
+    "city": "Eddyville",
+    "state": "KY",
+    "country": "USA"
+  },
+  {
+    "lat": 41.7170674,
+    "lon": 44.7213757,
+    "city": "Tbilisi",
+    "state": "Tbilisi",
+    "country": "Georgia"
+  },
+  {
+    "lat": 41.5571178,
+    "lon": -83.6279321,
+    "city": "Perrysburg",
+    "state": "OH",
+    "country": "USA"
+  },
+  {
+    "lat": 45.5597489,
+    "lon": -73.5999622,
+    "city": "Saint-Michel",
+    "state": "QC",
+    "country": "Canada"
+  },
+  {
+    "lat": 39.5695818,
+    "lon": 2.6500745,
+    "city": "Palma",
+    "state": "Illes Balears",
+    "country": "Spain"
+  },
+  {
+    "lat": 46.2804298,
+    "lon": -119.275205,
+    "city": "Richland",
+    "state": "WA",
+    "country": "USA"
+  },
+  {
+    "lat": 42.0531385,
+    "lon": -82.5997722,
+    "city": "Leamington",
+    "state": "ON",
+    "country": "Canada"
+  },
+  {
+    "lat": 31.351284,
+    "lon": -85.3421559,
+    "city": "Headland",
+    "state": "AL",
+    "country": "USA"
+  },
+  {
+    "lat": 31.8193025,
+    "lon": 75.1999941,
+    "city": "Batala",
+    "state": "Punjab",
+    "country": "India"
+  },
+  {
+    "lat": 44.648618,
+    "lon": -63.5859487,
+    "city": "Halifax",
+    "state": "NS",
+    "country": "Canada"
+  },
+  {
+    "lat": 39.5755929,
+    "lon": 22.1634449,
+    "city": "",
+    "state": "Thessaly",
+    "country": "Greece"
+  },
+  {
+    "lat": 51.3819167,
+    "lon": 0.526559,
+    "city": "Chatham",
+    "state": "England",
+    "country": "United Kingdom"
+  },
+  {
+    "lat": 30.4380832,
+    "lon": -84.2809332,
+    "city": "Tallahassee",
+    "state": "FL",
+    "country": "USA"
+  },
+  {
+    "lat": 33.4669721,
+    "lon": -117.6981075,
+    "city": "Dana Point",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": 43.7231753,
+    "lon": -111.110887,
+    "city": "Driggs",
+    "state": "ID",
+    "country": "USA"
+  },
+  {
+    "lat": 43.8137417,
+    "lon": -120.6033306,
+    "city": "Brothers",
+    "state": "OR",
+    "country": "USA"
+  },
+  {
+    "lat": 43.6534817,
+    "lon": -79.3839347,
+    "city": "Toronto",
+    "state": "ON",
+    "country": "Canada"
+  },
+  {
+    "lat": 44.9667546,
+    "lon": -92.3732461,
+    "city": "Baldwin",
+    "state": "WI",
+    "country": "USA"
+  },
+  {
+    "lat": 40.6178915,
+    "lon": -75.3786521,
+    "city": "Bethlehem",
+    "state": "PA",
+    "country": "USA"
+  },
+  {
+    "lat": 39.049011,
+    "lon": -95.677556,
+    "city": "Topeka",
+    "state": "KS",
+    "country": "USA"
+  },
+  {
+    "lat": 33.7690164,
+    "lon": -118.191604,
+    "city": "Long Beach",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": 47.3259697,
+    "lon": -122.5878659,
+    "city": "Gig Harbor",
+    "state": "WA",
+    "country": "USA"
+  },
+  {
+    "lat": 45.4208777,
+    "lon": -75.6901106,
+    "city": "Ottawa",
+    "state": "ON",
+    "country": "Canada"
+  },
+  {
+    "lat": 38.8422178,
+    "lon": -106.1311288,
+    "city": "Buena Vista",
+    "state": "CO",
+    "country": "USA"
+  },
+  {
+    "lat": 42.2751873,
+    "lon": -78.6727799,
+    "city": "Ellicottville",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": 33.3686687,
+    "lon": -96.0712987,
+    "city": "Wolfe City",
+    "state": "TX",
+    "country": "USA"
+  },
+  {
+    "lat": 7.0648306,
+    "lon": 125.6080623,
+    "city": "Davao City",
+    "state": "Davao Region",
+    "country": "Philippines"
+  },
+  {
+    "lat": 42.7338254,
+    "lon": -84.5546295,
+    "city": "Lansing",
+    "state": "MI",
+    "country": "USA"
+  },
+  {
+    "lat": 26.1666888,
+    "lon": -80.2787573,
+    "city": "Sunrise",
+    "state": "FL",
+    "country": "USA"
+  },
+  {
+    "lat": 41.3348169,
+    "lon": -73.5712374,
+    "city": "North Salem",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": 44.078473,
+    "lon": -80.203431,
+    "city": "Shelburne",
+    "state": "ON",
+    "country": "Canada"
+  },
+  {
+    "lat": 40.2753487,
+    "lon": -81.7509601,
+    "city": "West Lafayette",
+    "state": "OH",
+    "country": "USA"
+  },
+  {
+    "lat": 55.6867243,
+    "lon": 12.5700724,
+    "city": "København",
+    "state": "",
+    "country": "Denmark"
+  },
+  {
+    "lat": 50.0596288,
+    "lon": 14.4464593,
+    "city": "Praha",
+    "state": "Prague",
+    "country": "Czech Republic"
+  },
+  {
+    "lat": 41.2222218,
+    "lon": -73.0570603,
+    "city": "Milford",
+    "state": "CT",
+    "country": "USA"
+  },
+  {
+    "lat": 51.6467058,
+    "lon": 0.0544098,
+    "city": "Loughton",
+    "state": "England",
+    "country": "United Kingdom"
+  },
+  {
+    "lat": 38.2493581,
+    "lon": -122.039966,
+    "city": "Fairfield",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": 42.7838172,
+    "lon": -82.126915,
+    "city": "Oil Springs",
+    "state": "ON",
+    "country": "Canada"
+  },
+  {
+    "lat": 35.9603948,
+    "lon": -83.9210261,
+    "city": "Knoxville",
+    "state": "TN",
+    "country": "USA"
+  },
+  {
+    "lat": 39.2757359,
+    "lon": -76.8317417,
+    "city": "Ellicott City",
+    "state": "MD",
+    "country": "USA"
+  },
+  {
+    "lat": 42.4126885,
+    "lon": -113.578063,
+    "city": "Albion",
+    "state": "ID",
+    "country": "USA"
+  },
+  {
+    "lat": 38.0464066,
+    "lon": -84.4970393,
+    "city": "Lexington",
+    "state": "KY",
+    "country": "USA"
+  },
+  {
+    "lat": 40.6061337,
+    "lon": -111.9395211,
+    "city": "West Jordan",
+    "state": "UT",
+    "country": "USA"
+  },
+  {
+    "lat": 38.7251776,
+    "lon": -105.607716,
+    "city": "",
+    "state": "CO",
+    "country": "USA"
+  },
+  {
+    "lat": 45.2206945,
+    "lon": -123.076141,
+    "city": "Dayton",
+    "state": "OR",
+    "country": "USA"
+  },
+  {
+    "lat": 43.115019,
+    "lon": -71.100082,
+    "city": "Nottingham",
+    "state": "NH",
+    "country": "USA"
+  },
+  {
+    "lat": 33.8347516,
+    "lon": -117.911732,
+    "city": "Anaheim",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": 35.8224892,
+    "lon": 50.9904681,
+    "city": "Karaj",
+    "state": "Alborz Province",
+    "country": "Iran"
+  },
+  {
+    "lat": 42.0245442,
+    "lon": -71.1286594,
+    "city": "Easton",
+    "state": "MA",
+    "country": "USA"
+  },
+  {
+    "lat": 28.4012536,
+    "lon": 36.567049,
+    "city": "Tabuk",
+    "state": "Tabuk Province",
+    "country": "Saudi Arabia"
+  },
+  {
+    "lat": 40.7195448,
+    "lon": -74.8357215,
+    "city": "Califon",
+    "state": "NJ",
+    "country": "USA"
+  },
+  {
+    "lat": 51.3093522,
+    "lon": -0.1693688,
+    "city": "Chipstead",
+    "state": "England",
+    "country": "United Kingdom"
+  },
+  {
+    "lat": 42.243808,
+    "lon": -122.788924,
+    "city": "Talent",
+    "state": "OR",
+    "country": "USA"
+  },
+  {
+    "lat": 41.5000767,
+    "lon": -74.0098299,
+    "city": "Newburgh",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": 33.8278405,
+    "lon": -78.6800323,
+    "city": "North Myrtle Beach",
+    "state": "SC",
+    "country": "USA"
+  },
+  {
+    "lat": 43.5476008,
+    "lon": -96.7293629,
+    "city": "Sioux Falls",
+    "state": "SD",
+    "country": "USA"
+  },
+  {
+    "lat": 43.0852666,
+    "lon": -77.9418857,
+    "city": "Bergen",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": 38.691184,
+    "lon": -75.0752724,
+    "city": "Dewey Beach",
+    "state": "DE",
+    "country": "USA"
+  },
+  {
+    "lat": -38.102241,
+    "lon": 145.2517182,
+    "city": "Cranbourne West",
+    "state": "Victoria",
+    "country": "Australia"
+  },
+  {
+    "lat": 43.1514226,
+    "lon": -77.7130004,
+    "city": "Gates",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": -13.2543919,
+    "lon": 48.1888417,
+    "city": "Andilana",
+    "state": "Diana",
+    "country": "Madagascar"
+  },
+  {
+    "lat": 38.23166,
+    "lon": 27.02997,
+    "city": "",
+    "state": "İzmir",
+    "country": "Türkiye"
+  },
+  {
+    "lat": 48.8200704,
+    "lon": 16.5654272,
+    "city": "Březí",
+    "state": "Jihomoravský kraj",
+    "country": "Czechia"
+  },
+  {
+    "lat": 40.4417682,
+    "lon": -75.3415667,
+    "city": "Quakertown",
+    "state": "PA",
+    "country": "USA"
+  },
+  {
+    "lat": 37.8483224,
+    "lon": -106.925476,
+    "city": "Creede",
+    "state": "CO",
+    "country": "USA"
+  },
+  {
+    "lat": 34.2978794,
+    "lon": -83.8240663,
+    "city": "Gainesville",
+    "state": "GA",
+    "country": "USA"
+  },
+  {
+    "lat": 41.6731523,
+    "lon": -93.6973395,
+    "city": "Johnston",
+    "state": "IA",
+    "country": "USA"
+  },
+  {
+    "lat": 34.2309805,
+    "lon": -5.7188349,
+    "city": "Sidi Kacem",
+    "state": "Rabat-Salé-Kénitra",
+    "country": "Morocco"
+  },
+  {
+    "lat": 33.4484367,
+    "lon": -112.074141,
+    "city": "Phoenix",
+    "state": "AZ",
+    "country": "USA"
+  },
+  {
+    "lat": 43.6587309,
+    "lon": -123.318698,
+    "city": "Drain",
+    "state": "OR",
+    "country": "USA"
+  },
+  {
+    "lat": 50.7003707,
+    "lon": -1.2952039,
+    "city": "Newport",
+    "state": "England",
+    "country": "United Kingdom"
+  },
+  {
+    "lat": 13.3974574,
+    "lon": 123.7049776,
+    "city": "Malinao",
+    "state": "Bicol",
+    "country": "Philippines"
+  },
+  {
+    "lat": 36.4268068,
+    "lon": -5.1468484,
+    "city": "Estepona",
+    "state": "Andalucía",
+    "country": "Spain"
+  },
+  {
+    "lat": 41.3702916,
+    "lon": -78.4275798,
+    "city": "Trout Run",
+    "state": "PA",
+    "country": "USA"
+  },
+  {
+    "lat": 41.6992717,
+    "lon": -71.4586114,
+    "city": "Warwick",
+    "state": "RI",
+    "country": "USA"
+  },
+  {
+    "lat": 41.3673191,
+    "lon": -82.1073583,
+    "city": "Elyria",
+    "state": "OH",
+    "country": "USA"
+  },
+  {
+    "lat": 33.3943282,
+    "lon": -104.5229518,
+    "city": "Roswell",
+    "state": "NM",
+    "country": "USA"
+  },
+  {
+    "lat": 29.1871986,
+    "lon": -82.1400923,
+    "city": "Ocala",
+    "state": "FL",
+    "country": "USA"
+  },
+  {
+    "lat": 43.157285,
+    "lon": -77.615214,
+    "city": "Rochester",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": 41.0602024,
+    "lon": -76.2461259,
+    "city": "Berwick",
+    "state": "PA",
+    "country": "USA"
+  },
+  {
+    "lat": 45.5202471,
+    "lon": -122.674194,
+    "city": "Portland",
+    "state": "OR",
+    "country": "USA"
+  },
+  {
+    "lat": 27.9920627,
+    "lon": -81.6919685,
+    "city": "Cypress Gardens",
+    "state": "FL",
+    "country": "USA"
+  },
+  {
+    "lat": 41.4664832,
+    "lon": -73.4856789,
+    "city": "New Fairfield",
+    "state": "CT",
+    "country": "USA"
+  },
+  {
+    "lat": 22.8387354,
+    "lon": 88.6245961,
+    "city": "Ashoknagar Kalyangarh",
+    "state": "West Bengal",
+    "country": "India"
+  },
+  {
+    "lat": 38.7991515,
+    "lon": -9.4469662,
+    "city": "Colares",
+    "state": "Lisbon",
+    "country": "Portugal"
+  },
+  {
+    "lat": 27.1832822,
+    "lon": 31.1853836,
+    "city": "",
+    "state": "Asyut",
+    "country": "Egypt"
+  },
+  {
+    "lat": 38.7466555,
+    "lon": -105.1783149,
+    "city": "Cripple Creek",
+    "state": "CO",
+    "country": "USA"
+  },
+  {
+    "lat": 10.4716839,
+    "lon": -84.644436,
+    "city": "La Fortuna",
+    "state": "Alajuela Province",
+    "country": "Costa Rica"
+  },
+  {
+    "lat": 40.8890985,
+    "lon": -73.246843,
+    "city": "Kings Park",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": 42.3315509,
+    "lon": -83.0466403,
+    "city": "Detroit",
+    "state": "MI",
+    "country": "USA"
+  },
+  {
+    "lat": 39.101225,
+    "lon": -74.7176622,
+    "city": "Avalon",
+    "state": "NJ",
+    "country": "USA"
+  },
+  {
+    "lat": 43.5974492,
+    "lon": -86.3379509,
+    "city": "Shelby Township",
+    "state": "MI",
+    "country": "USA"
+  },
+  {
+    "lat": 39.4850848,
+    "lon": -80.1425781,
+    "city": "Fairmont",
+    "state": "WV",
+    "country": "USA"
+  },
+  {
+    "lat": 36.2914512,
+    "lon": -88.7081123,
+    "city": "Dresden",
+    "state": "TN",
+    "country": "USA"
+  },
+  {
+    "lat": 27.7700475,
+    "lon": -82.6359078,
+    "city": "St. Petersburg",
+    "state": "FL",
+    "country": "USA"
+  },
+  {
+    "lat": 40.5275392,
+    "lon": -89.4925979,
+    "city": "Tremont",
+    "state": "IL",
+    "country": "USA"
+  },
+  {
+    "lat": 34.2228884,
+    "lon": -92.004334,
+    "city": "Pine Bluff",
+    "state": "AR",
+    "country": "USA"
+  },
+  {
+    "lat": 33.1859958,
+    "lon": -80.5756534,
+    "city": "St. George",
+    "state": "SC",
+    "country": "USA"
+  },
+  {
+    "lat": 40.745349,
+    "lon": -73.0885161,
+    "city": "Sayville",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": 37.6393419,
+    "lon": -120.9968892,
+    "city": "Modesto",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": 38.545831,
+    "lon": -90.3247272,
+    "city": "Affton",
+    "state": "MO",
+    "country": "USA"
+  },
+  {
+    "lat": 40.317287,
+    "lon": -79.3840301,
+    "city": "Latrobe",
+    "state": "PA",
+    "country": "USA"
+  },
+  {
+    "lat": 34.851354,
+    "lon": -82.3984882,
+    "city": "Greenville",
+    "state": "SC",
+    "country": "USA"
+  },
+  {
+    "lat": 29.3880028,
+    "lon": -82.4481694,
+    "city": "Williston",
+    "state": "FL",
+    "country": "USA"
+  },
+  {
+    "lat": 34.2367621,
+    "lon": -84.4907621,
+    "city": "Canton",
+    "state": "GA",
+    "country": "USA"
+  },
+  {
+    "lat": 55.861155,
+    "lon": -4.2501687,
+    "city": "Glasgow",
+    "state": "Scotland",
+    "country": "United Kingdom"
+  },
+  {
+    "lat": 44.3480865,
+    "lon": -106.699287,
+    "city": "Buffalo",
+    "state": "WY",
+    "country": "USA"
+  },
+  {
+    "lat": 42.2579991,
+    "lon": -88.841734,
+    "city": "Belvidere",
+    "state": "IL",
+    "country": "USA"
+  },
+  {
+    "lat": 40.3446332,
+    "lon": -78.0281185,
+    "city": "Huntingdon",
+    "state": "PA",
+    "country": "USA"
+  },
+  {
+    "lat": 47.0080655,
+    "lon": -122.910368,
+    "city": "Tumwater",
+    "state": "WA",
+    "country": "USA"
+  },
+  {
+    "lat": 33.5966005,
+    "lon": -83.8598742,
+    "city": "Covington",
+    "state": "GA",
+    "country": "USA"
+  },
+  {
+    "lat": 40.9864261,
+    "lon": -75.1946649,
+    "city": "Stroudsburg",
+    "state": "PA",
+    "country": "USA"
+  },
+  {
+    "lat": 4.7616096,
+    "lon": -74.4649986,
+    "city": "Anolaima",
+    "state": "Cundinamarca",
+    "country": "Colombia"
+  },
+  {
+    "lat": 48.8290199,
+    "lon": 16.0619757,
+    "city": "Nový Šaldorf-Sedlešovice",
+    "state": "South Moravian Region",
+    "country": "Czechia"
+  },
+  {
+    "lat": 36.245683,
+    "lon": -81.7676104,
+    "city": "Vilas",
+    "state": "NC",
+    "country": "USA"
+  },
+  {
+    "lat": 43.0394461,
+    "lon": -71.0730253,
+    "city": "Epping",
+    "state": "NH",
+    "country": "USA"
+  },
+  {
+    "lat": 48.5389326,
+    "lon": -121.746928,
+    "city": "Concrete",
+    "state": "WA",
+    "country": "USA"
+  },
+  {
+    "lat": -20.4710507,
+    "lon": 24.5104545,
+    "city": "Khumaga",
+    "state": "Kgaolo ya Legare",
+    "country": "Botswana"
+  },
+  {
+    "lat": 38.8950368,
+    "lon": -77.0365427,
+    "city": "Washington",
+    "state": "DC",
+    "country": "USA"
+  },
+  {
+    "lat": 50.7952074,
+    "lon": -1.1210853,
+    "city": "Gosport",
+    "state": "England",
+    "country": "United Kingdom"
+  },
+  {
+    "lat": 44.1722212,
+    "lon": -122.8606374,
+    "city": "Marcola",
+    "state": "OR",
+    "country": "USA"
+  },
+  {
+    "lat": 35.0073697,
+    "lon": -80.9450759,
+    "city": "Fort Mill",
+    "state": "SC",
+    "country": "USA"
+  },
+  {
+    "lat": 33.5386858,
+    "lon": -112.185994,
+    "city": "Glendale",
+    "state": "AZ",
+    "country": "USA"
+  },
+  {
+    "lat": 42.7777829,
+    "lon": -71.0767724,
+    "city": "Haverhill",
+    "state": "MA",
+    "country": "USA"
+  },
+  {
+    "lat": 27.1556836,
+    "lon": 65.6101216,
+    "city": "",
+    "state": "",
+    "country": "Unspecified"
+  },
+  {
+    "lat": 59.938732,
+    "lon": 30.316229,
+    "city": "Sankt-Peterburg",
+    "state": "Sankt-Peterburg",
+    "country": "Russia"
+  },
+  {
+    "lat": 42.9574845,
+    "lon": -91.6297632,
+    "city": "Elgin",
+    "state": "IA",
+    "country": "USA"
+  },
+  {
+    "lat": 30.7474425,
+    "lon": 120.7510971,
+    "city": "Jiaxing",
+    "state": "Zhejiang",
+    "country": "China"
+  },
+  {
+    "lat": 33.9528472,
+    "lon": -84.5496148,
+    "city": "Marietta",
+    "state": "GA",
+    "country": "USA"
+  },
+  {
+    "lat": 48.5452022,
+    "lon": -58.5871146,
+    "city": "Stephenville",
+    "state": "NL",
+    "country": "Canada"
+  },
+  {
+    "lat": 31.7601164,
+    "lon": -106.4870404,
+    "city": "El Paso",
+    "state": "TX",
+    "country": "USA"
+  },
+  {
+    "lat": 47.2922308,
+    "lon": 9.6534863,
+    "city": "Röthis",
+    "state": "Vorarlberg",
+    "country": "Austria"
+  },
+  {
+    "lat": -27.3656925,
+    "lon": 153.0169605,
+    "city": "Aspley",
+    "state": "Queensland",
+    "country": "Australia"
+  },
+  {
+    "lat": 37.3361663,
+    "lon": -121.890591,
+    "city": "San Jose",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": 49.6945782,
+    "lon": -112.8331033,
+    "city": "Lethbridge",
+    "state": "AB",
+    "country": "Canada"
+  },
+  {
+    "lat": 38.8275491,
+    "lon": -91.0201422,
+    "city": "Wright City",
+    "state": "MO",
+    "country": "USA"
+  },
+  {
+    "lat": 52.2434979,
+    "lon": 5.6343227,
+    "city": "",
+    "state": "",
+    "country": "Netherlands"
+  },
+  {
+    "lat": 40.7127281,
+    "lon": -74.0060152,
+    "city": "New York",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": 41.862302,
+    "lon": -103.6627088,
+    "city": "Scottsbluff",
+    "state": "NE",
+    "country": "USA"
+  },
+  {
+    "lat": 42.9097982,
+    "lon": -73.8951234,
+    "city": "Burnt Hills",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": 37.1955756,
+    "lon": -94.1297212,
+    "city": "Avilla",
+    "state": "MO",
+    "country": "USA"
+  },
+  {
+    "lat": 13.0836939,
+    "lon": 80.270186,
+    "city": "Chennai",
+    "state": "Tamil Nadu",
+    "country": "India"
+  },
+  {
+    "lat": 36.0595148,
+    "lon": -91.9084819,
+    "city": "Melbourne",
+    "state": "AR",
+    "country": "USA"
+  },
+  {
+    "lat": 39.2190607,
+    "lon": -121.06292,
+    "city": "Grass Valley",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": 33.6117105,
+    "lon": -111.717361,
+    "city": "Fountain Hills",
+    "state": "AZ",
+    "country": "USA"
+  },
+  {
+    "lat": 30.625503,
+    "lon": -89.1446298,
+    "city": "Saucier",
+    "state": "MS",
+    "country": "USA"
+  },
+  {
+    "lat": 40.3215212,
+    "lon": -4.19936,
+    "city": "Aldea del Fresno",
+    "state": "Community of Madrid",
+    "country": "Spain"
+  },
+  {
+    "lat": -27.522037,
+    "lon": 153.1918063,
+    "city": "Capalaba",
+    "state": "Queensland",
+    "country": "Australia"
+  },
+  {
+    "lat": 32.7174202,
+    "lon": -117.162772,
+    "city": "San Diego",
+    "state": "CA",
+    "country": "USA"
+  },
+  {
+    "lat": -26.6544338,
+    "lon": 153.0933668,
+    "city": "Sunshine Coast",
+    "state": "Queensland",
+    "country": "Australia"
+  },
+  {
+    "lat": 38.9186766,
+    "lon": -84.2635472,
+    "city": "California",
+    "state": "KY",
+    "country": "USA"
+  },
+  {
+    "lat": 31.5782062,
+    "lon": -84.1556809,
+    "city": "Albany",
+    "state": "GA",
+    "country": "USA"
+  },
+  {
+    "lat": 57.4086082,
+    "lon": -135.4596206,
+    "city": "Sitka",
+    "state": "AK",
+    "country": "USA"
+  },
+  {
+    "lat": 41.9019257,
+    "lon": -71.0931485,
+    "city": "Taunton",
+    "state": "MA",
+    "country": "USA"
+  },
+  {
+    "lat": 50.4652392,
+    "lon": -3.5211361,
+    "city": "Torquay",
+    "state": "England",
+    "country": "United Kingdom"
+  },
+  {
+    "lat": 40.6787196,
+    "lon": -82.5827749,
+    "city": "Lexington",
+    "state": "OH",
+    "country": "USA"
+  },
+  {
+    "lat": 39.9527237,
+    "lon": -75.1635262,
+    "city": "Philadelphia",
+    "state": "PA",
+    "country": "USA"
+  },
+  {
+    "lat": 28.6702526,
+    "lon": -81.2084941,
+    "city": "Oviedo",
+    "state": "FL",
+    "country": "USA"
+  },
+  {
+    "lat": 39.8695516,
+    "lon": -104.985181,
+    "city": "Thornton",
+    "state": "CO",
+    "country": "USA"
+  },
+  {
+    "lat": 40.1743052,
+    "lon": -74.0902219,
+    "city": "Wall Township",
+    "state": "NJ",
+    "country": "USA"
+  },
+  {
+    "lat": 44.7670567,
+    "lon": -93.2773887,
+    "city": "Burnsville",
+    "state": "MN",
+    "country": "USA"
+  },
+  {
+    "lat": 36.1867442,
+    "lon": -94.1288142,
+    "city": "Springdale",
+    "state": "AR",
+    "country": "USA"
+  },
+  {
+    "lat": 39.0916586,
+    "lon": -104.872758,
+    "city": "Monument",
+    "state": "CO",
+    "country": "USA"
+  },
+  {
+    "lat": 43.6166163,
+    "lon": -116.200886,
+    "city": "Boise",
+    "state": "ID",
+    "country": "USA"
+  },
+  {
+    "lat": 45.4649805,
+    "lon": -98.487813,
+    "city": "Aberdeen",
+    "state": "SD",
+    "country": "USA"
+  },
+  {
+    "lat": 46.7544085,
+    "lon": -122.010932,
+    "city": "Ashford",
+    "state": "WA",
+    "country": "USA"
+  },
+  {
+    "lat": 38.372451,
+    "lon": -78.7352814,
+    "city": "McGaheysville",
+    "state": "VA",
+    "country": "USA"
+  },
+  {
+    "lat": 43.08436,
+    "lon": -79.0614686,
+    "city": "Niagara Falls",
+    "state": "NY",
+    "country": "USA"
+  },
+  {
+    "lat": 42.577636,
+    "lon": -121.866126,
+    "city": "Chiloquin",
+    "state": "OR",
+    "country": "USA"
+  },
+  {
+    "lat": 36.1674263,
+    "lon": -115.1484131,
+    "city": "Las Vegas",
+    "state": "NV",
+    "country": "USA"
+  },
+  {
+    "lat": 47.0022547,
+    "lon": -122.2117983,
+    "city": "",
+    "state": "Washington",
+    "country": "Pierce County"
+  },
+  {
+    "lat": 38.5893934,
+    "lon": -119.8345013,
+    "city": "",
+    "state": "California",
+    "country": "Alpine County"
+  },
+  {
+    "lat": 41.7587013,
+    "lon": -73.259781,
+    "city": "",
+    "state": "Connecticut",
+    "country": "Litchfield County"
+  },
+  {
+    "lat": 35.1436639,
+    "lon": -83.3977297,
+    "city": "",
+    "state": "North Carolina",
+    "country": "Macon County"
+  }
+]

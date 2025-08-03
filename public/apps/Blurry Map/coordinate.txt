@@ -1,0 +1,304 @@
+VM5248:1 coord_Warszawa, Województwo mazowieckie, Poland {"lat":52.2333742,"lng":21.0711489,"city":"Warszawa","state":"Województwo mazowieckie","country":"Poland"}
+VM5248:1 coord_Brampton, ON, Canada {"lat":43.685832,"lng":-79.7599366,"city":"Brampton","state":"ON","country":"Canada"}
+VM5248:1 coord_Plymouth, England, United Kingdom {"lat":50.3714122,"lng":-4.1424451,"city":"Plymouth","state":"England","country":"United Kingdom"}
+VM5248:1 coord_Pocatello, ID, USA {"lat":42.8620287,"lng":-112.450627,"city":"Pocatello","state":"ID","country":"USA"}
+VM5248:1 coord_Pehchevo, Municipality of Pehčevo, North Macedonia {"lat":41.7635729,"lng":22.8873017,"city":"Pehchevo","state":"Municipality of Pehčevo","country":"North Macedonia"}
+VM5248:1 coord_Battle Ground, WA, USA {"lat":45.7813532,"lng":-122.5337433,"city":"Battle Ground","state":"WA","country":"USA"}
+VM5248:1 coord_Rimini, Emilia-Romagna, Italy {"lat":43.9465433,"lng":12.630749,"city":"Rimini","state":"Emilia-Romagna","country":"Italy"}
+VM5248:1 coord_New Delhi, Delhi, India {"lat":28.6430858,"lng":77.2192671,"city":"New Delhi","state":"Delhi","country":"India"}
+VM5248:1 coord_Amherst, MA, USA {"lat":42.3731948,"lng":-72.5198761,"city":"Amherst","state":"MA","country":"USA"}
+VM5248:1 coord_Redondo Beach, CA, USA {"lat":33.8398289,"lng":-118.3845942,"city":"Redondo Beach","state":"CA","country":"USA"}
+VM5248:1 coord_West Pasco, WA, USA {"lat":46.2504355,"lng":-119.1878944,"city":"West Pasco","state":"WA","country":"USA"}
+VM5248:1 coord_Sheffield Lake, OH, USA {"lat":41.48754,"lng":-82.101537,"city":"Sheffield Lake","state":"OH","country":"USA"}
+VM5248:1 coord_Minneapolis, MN, USA {"lat":44.9772995,"lng":-93.2654692,"city":"Minneapolis","state":"MN","country":"USA"}
+VM5248:1 coord_Salem, MO, USA {"lat":37.6455993,"lng":-91.5359808,"city":"Salem","state":"MO","country":"USA"}
+VM5248:1 coord_Laguna Beach, CA, USA {"lat":33.5426975,"lng":-117.785366,"city":"Laguna Beach","state":"CA","country":"USA"}
+VM5248:1 coord_Altamont, NY, USA {"lat":42.7006324,"lng":-74.0337382,"city":"Altamont","state":"NY","country":"USA"}
+VM5248:1 coord_Liverpool, England, United Kingdom {"lat":53.4071991,"lng":-2.99168,"city":"Liverpool","state":"England","country":"United Kingdom"}
+VM5248:1 coord_Fort Meade, MD, USA {"lat":39.1031979,"lng":-76.7465173,"city":"Fort Meade","state":"MD","country":"USA"}
+VM5248:1 coord_Huntsville, AL, USA {"lat":34.729847,"lng":-86.5859011,"city":"Huntsville","state":"AL","country":"USA"}
+VM5248:1 coord_Cloverdale, OR, USA {"lat":45.201599,"lng":-123.885091,"city":"Cloverdale","state":"OR","country":"USA"}
+VM5248:1 coord_Barcelona, Catalunya, Spain {"lat":41.3825802,"lng":2.177073,"city":"Barcelona","state":"Catalunya","country":"Spain"}
+VM5248:1 coord_Hodgenville, KY, USA {"lat":37.5737487,"lng":-85.740353,"city":"Hodgenville","state":"KY","country":"USA"}
+VM5248:1 coord_Pueblo, CO, USA {"lat":38.263995,"lng":-104.6141867,"city":"Pueblo","state":"CO","country":"USA"}
+VM5248:1 coord_Burnaby, BC, Canada {"lat":49.2433804,"lng":-122.972545,"city":"Burnaby","state":"BC","country":"Canada"}
+VM5248:1 coord_Kenmore, NY, USA {"lat":42.961748,"lng":-78.870914,"city":"Kenmore","state":"NY","country":"USA"}
+VM5248:1 coord_Mississauga, ON, Canada {"lat":43.5896231,"lng":-79.6443879,"city":"Mississauga","state":"ON","country":"Canada"}
+VM5248:1 coord_Afyonkarahisar, Türkiye {"lat":38.6852729,"lng":30.6427411,"state":"Afyonkarahisar","country":"Türkiye"}
+VM5248:1 coord_Dubrovnik, Dubrovnik-Neretva County, Croatia {"lat":42.6491029,"lng":18.0939501,"city":"Dubrovnik","state":"Dubrovnik-Neretva County","country":"Croatia"}
+VM5248:1 coord_Byblos, Mount Lebanon Governorate, Lebanon {"lat":33.8595746,"lng":35.5588057,"city":"Byblos","state":"Mount Lebanon Governorate","country":"Lebanon"}
+VM5248:1 coord_Conselice, Emilia-Romagna, Italy {"lat":44.5127578,"lng":11.8291743,"city":"Conselice","state":"Emilia-Romagna","country":"Italy"}
+VM5248:1 coord_Danbury, WI, USA {"lat":46.0066117,"lng":-92.3713048,"city":"Danbury","state":"WI","country":"USA"}
+VM5248:1 coord_Wynnum, Queensland, Australia {"lat":-27.4377187,"lng":153.1659743,"city":"Wynnum","state":"Queensland","country":"Australia"}
+VM5248:1 coord_Worcester, MA, USA {"lat":42.2625621,"lng":-71.8018877,"city":"Worcester","state":"MA","country":"USA"}
+VM5248:1 coord_Pajaro Dunes, CA, USA {"lat":36.8673852,"lng":-121.8183169,"city":"Pajaro Dunes","state":"CA","country":"USA"}
+VM5248:1 coord_Pangbourne, England, United Kingdom {"lat":51.483784,"lng":-1.0861578,"city":"Pangbourne","state":"England","country":"United Kingdom"}
+VM5248:1 coord_Albuquerque, NM, USA {"lat":35.0841034,"lng":-106.650985,"city":"Albuquerque","state":"NM","country":"USA"}
+VM5248:1 coord_Seattle, WA, USA {"lat":47.6038321,"lng":-122.330062,"city":"Seattle","state":"WA","country":"USA"}
+VM5248:1 coord_Fortuna Foothills, AZ, USA {"lat":32.6689413,"lng":-114.3982363,"city":"Fortuna Foothills","state":"AZ","country":"USA"}
+VM5248:1 coord_Pearl City, HI, USA {"lat":21.4001231,"lng":-157.969428,"city":"Pearl City","state":"HI","country":"USA"}
+VM5248:1 coord_Jonesborough, TN, USA {"lat":36.2944928,"lng":-82.4734089,"city":"Jonesborough","state":"TN","country":"USA"}
+VM5248:1 coord_Mora, MN, USA {"lat":45.8769031,"lng":-93.2938352,"city":"Mora","state":"MN","country":"USA"}
+VM5248:1 coord_Painesville, OH, USA {"lat":41.7244885,"lng":-81.245657,"city":"Painesville","state":"OH","country":"USA"}
+VM5248:1 coord_Astoria, OR, USA {"lat":46.1882007,"lng":-123.8319802,"city":"Astoria","state":"OR","country":"USA"}
+VM5248:1 coord_Fullerton, CA, USA {"lat":33.8708215,"lng":-117.929416,"city":"Fullerton","state":"CA","country":"USA"}
+VM5248:1 coord_Shoreline, WA, USA {"lat":47.7564667,"lng":-122.3437497,"city":"Shoreline","state":"WA","country":"USA"}
+VM5248:1 coord_Buffalo, NY, USA {"lat":42.8867166,"lng":-78.8783922,"city":"Buffalo","state":"NY","country":"USA"}
+VM5248:1 coord_Goodlettsville, TN, USA {"lat":36.3231067,"lng":-86.7133302,"city":"Goodlettsville","state":"TN","country":"USA"}
+VM5248:1 coord_Lakewood, OH, USA {"lat":41.4819932,"lng":-81.7981908,"city":"Lakewood","state":"OH","country":"USA"}
+VM5248:1 coord_West Springfield, MA, USA {"lat":42.105237,"lng":-72.6213712,"city":"West Springfield","state":"MA","country":"USA"}
+VM5248:1 coord_Osmond, WY, USA {"lat":42.6829842,"lng":-110.9321445,"city":"Osmond","state":"WY","country":"USA"}
+VM5248:1 coord_South Amboy, NJ, USA {"lat":40.4821114,"lng":-74.2828828,"city":"South Amboy","state":"NJ","country":"USA"}
+VM5248:1 coord_San Antonio, TX, USA {"lat":29.4246002,"lng":-98.4951405,"city":"San Antonio","state":"TX","country":"USA"}
+VM5248:1 coord_Los Angeles, CA, USA {"lat":34.0536909,"lng":-118.242766,"city":"Los Angeles","state":"CA","country":"USA"}
+VM5248:1 coord_Colorado Springs, CO, USA {"lat":38.8339578,"lng":-104.825348,"city":"Colorado Springs","state":"CO","country":"USA"}
+VM5248:1 coord_Mogadore, OH, USA {"lat":41.050775,"lng":-81.393946,"city":"Mogadore","state":"OH","country":"USA"}
+VM5248:1 coord_Lineville, AL, USA {"lat":33.3106696,"lng":-85.7544051,"city":"Lineville","state":"AL","country":"USA"}
+VM5248:1 coord_Lake Morton-Berrydale, WA, USA {"lat":47.3300505,"lng":-122.1014808,"city":"Lake Morton-Berrydale","state":"WA","country":"USA"}
+VM5248:1 coord_Pierce County, Washington {"lat":47.0022547,"lng":-122.2117983,"state":"Washington","county":"Pierce County"}
+VM5248:1 coord_Brentwood, CA, USA {"lat":37.9317766,"lng":-121.696026,"city":"Brentwood","state":"CA","country":"USA"}
+VM5248:1 coord_Mesa, AZ, USA {"lat":33.4151005,"lng":-111.831455,"city":"Mesa","state":"AZ","country":"USA"}
+VM5248:1 coord_Alexandria Governorate, Egypt {"lat":30.9432983,"lng":29.765645,"state":"Alexandria Governorate","country":"Egypt"}
+VM5248:1 coord_Olympia, WA, USA {"lat":47.0451022,"lng":-122.8950075,"city":"Olympia","state":"WA","country":"USA"}
+VM5248:1 coord_Zephyrhills, FL, USA {"lat":28.2336196,"lng":-82.1811947,"city":"Zephyrhills","state":"FL","country":"USA"}
+VM5248:1 coord_Lyons, MI, USA {"lat":42.9819773,"lng":-84.9469455,"city":"Lyons","state":"MI","country":"USA"}
+VM5248:1 coord_Boca Raton, FL, USA {"lat":26.3586885,"lng":-80.0830984,"city":"Boca Raton","state":"FL","country":"USA"}
+VM5248:1 coord_Nathrop, CO, USA {"lat":38.7459275,"lng":-106.078549,"city":"Nathrop","state":"CO","country":"USA"}
+VM5248:1 coord_Staunton, VA, USA {"lat":38.1495947,"lng":-79.072557,"city":"Staunton","state":"VA","country":"USA"}
+VM5248:1 coord_Los Banos, CA, USA {"lat":37.0592253,"lng":-120.8505342,"city":"Los Banos","state":"CA","country":"USA"}
+VM5248:1 coord_Bowling Green, KY, USA {"lat":36.9929203,"lng":-86.4428677,"city":"Bowling Green","state":"KY","country":"USA"}
+VM5248:1 coord_Vergennes, VT, USA {"lat":44.1681052,"lng":-73.2518037,"city":"Vergennes","state":"VT","country":"USA"}
+VM5248:1 coord_Port Jervis, NY, USA {"lat":41.3750937,"lng":-74.692663,"city":"Port Jervis","state":"NY","country":"USA"}
+VM5248:1 coord_Franklin, IN, USA {"lat":39.4149034,"lng":-85.0563234,"city":"Franklin","state":"IN","country":"USA"}
+VM5248:1 coord_Spokane, WA, USA {"lat":47.6571934,"lng":-117.42351,"city":"Spokane","state":"WA","country":"USA"}
+VM5248:1 coord_Aurora, CO, USA {"lat":39.7405111,"lng":-104.830994,"city":"Aurora","state":"CO","country":"USA"}
+VM5248:1 coord_Hampton Bays, NY, USA {"lat":40.8695775,"lng":-72.524362,"city":"Hampton Bays","state":"NY","country":"USA"}
+VM5248:1 coord_Paducah, KY, USA {"lat":37.0833893,"lng":-88.6000478,"city":"Paducah","state":"KY","country":"USA"}
+VM5248:1 coord_Allen Park, MI, USA {"lat":42.2595071,"lng":-83.2107671,"city":"Allen Park","state":"MI","country":"USA"}
+VM5248:1 coord_Lumberton, TX, USA {"lat":30.2655322,"lng":-94.1991444,"city":"Lumberton","state":"TX","country":"USA"}
+VM5248:1 coord_Snohomish, WA, USA {"lat":48.0074736,"lng":-121.7304882,"city":"Snohomish","state":"WA","country":"USA"}
+VM5248:1 coord_Fort Green, FL, USA {"lat":27.6125348,"lng":-81.9434182,"city":"Fort Green","state":"FL","country":"USA"}
+VM5248:1 coord_Lowestoft, England, United Kingdom {"lat":52.4766308,"lng":1.7537638,"city":"Lowestoft","state":"England","country":"United Kingdom"}
+VM5248:1 coord_Pahrump, NV, USA {"lat":36.2087301,"lng":-115.984614,"city":"Pahrump","state":"NV","country":"USA"}
+VM5248:1 coord_Gainesville, FL, USA {"lat":29.6519684,"lng":-82.3249846,"city":"Gainesville","state":"FL","country":"USA"}
+VM5248:1 coord_Oconto, WI, USA {"lat":44.9988053,"lng":-88.2480072,"city":"Oconto","state":"WI","country":"USA"}
+VM5248:1 coord_Norton, NB, Canada {"lat":45.6363366,"lng":-65.6952297,"city":"Norton","state":"NB","country":"Canada"}
+VM5248:1 coord_Clearfield, PA, USA {"lat":40.9908706,"lng":-78.4457422,"city":"Clearfield","state":"PA","country":"USA"}
+VM5248:1 coord_Alabaster, AL, USA {"lat":33.2442813,"lng":-86.8163773,"city":"Alabaster","state":"AL","country":"USA"}
+VM5248:1 coord_Fairfax, VA, USA {"lat":38.8462236,"lng":-77.3063733,"city":"Fairfax","state":"VA","country":"USA"}
+VM5248:1 coord_Yarra Junction, Victoria, Australia {"lat":-37.7821693,"lng":145.6150255,"city":"Yarra Junction","state":"Victoria","country":"Australia"}
+VM5248:1 coord_Lone Pine, CA, USA {"lat":36.583176,"lng":-118.0783381,"city":"Lone Pine","state":"CA","country":"USA"}
+VM5248:1 coord_Swindon, England, United Kingdom {"lat":51.5615327,"lng":-1.7854322,"city":"Swindon","state":"England","country":"United Kingdom"}
+VM5248:1 tasks []
+VM5248:1 coord_Clearwater, FL, USA {"lat":27.9658533,"lng":-82.8001026,"city":"Clearwater","state":"FL","country":"USA"}
+VM5248:1 coord_Chicago, IL, USA {"lat":41.8755616,"lng":-87.6244212,"city":"Chicago","state":"IL","country":"USA"}
+VM5248:1 coord_Tokeland, WA, USA {"lat":46.7073149,"lng":-123.9800916,"city":"Tokeland","state":"WA","country":"USA"}
+VM5248:1 coord_Canonsburg, PA, USA {"lat":40.2588431,"lng":-80.186732,"city":"Canonsburg","state":"PA","country":"USA"}
+VM5248:1 coord_Texas City, TX, USA {"lat":29.396013,"lng":-94.9175485,"city":"Texas City","state":"TX","country":"USA"}
+VM5248:1 coord_Pittsburgh, PA, USA {"lat":40.4416941,"lng":-79.9900861,"city":"Pittsburgh","state":"PA","country":"USA"}
+VM5248:1 coord_Bir Jdid, Casablanca-Settat, Morocco {"lat":33.3508565,"lng":-7.99686,"city":"Bir Jdid","state":"Casablanca-Settat","country":"Morocco"}
+VM5248:1 coord_Redmond, WA, USA {"lat":47.6694141,"lng":-122.1238767,"city":"Redmond","state":"WA","country":"USA"}
+VM5248:1 coord_Austin, TX, USA {"lat":30.2711286,"lng":-97.7436995,"city":"Austin","state":"TX","country":"USA"}
+VM5248:1 coord_Sterling Heights, MI, USA {"lat":42.5803122,"lng":-83.0302033,"city":"Sterling Heights","state":"MI","country":"USA"}
+VM5248:1 coord_Alexander, AR, USA {"lat":34.6295373,"lng":-92.4412674,"city":"Alexander","state":"AR","country":"USA"}
+VM5248:1 coord_Deering, NH, USA {"lat":43.073402,"lng":-71.845093,"city":"Deering","state":"NH","country":"USA"}
+VM5248:1 coord_Birmingham, England, United Kingdom {"lat":52.4796992,"lng":-1.9026911,"city":"Birmingham","state":"England","country":"United Kingdom"}
+VM5248:1 coord_Marana, AZ, USA {"lat":32.4483736,"lng":-111.211475,"city":"Marana","state":"AZ","country":"USA"}
+VM5248:1 coord_Wheatland, MO, USA {"lat":37.9461438,"lng":-93.401034,"city":"Wheatland","state":"MO","country":"USA"}
+VM5248:1 coord_Sant Antoni de Portmany, Illes Balears, Spain {"lat":38.9830568,"lng":1.3009485,"city":"Sant Antoni de Portmany","state":"Illes Balears","country":"Spain"}
+VM5248:1 coord_Stanfield, NC, USA {"lat":35.2334772,"lng":-80.4270094,"city":"Stanfield","state":"NC","country":"USA"}
+VM5248:1 coord_Buena Park, CA, USA {"lat":33.870413,"lng":-117.9962165,"city":"Buena Park","state":"CA","country":"USA"}
+VM5248:1 coord_Wheat Ridge, CO, USA {"lat":39.766098,"lng":-105.0772063,"city":"Wheat Ridge","state":"CO","country":"USA"}
+VM5248:1 coord_Wrightsville Beach, NC, USA {"lat":34.2079917,"lng":-77.7955907,"city":"Wrightsville Beach","state":"NC","country":"USA"}
+VM5248:1 coord_Bowmanville, ON, Canada {"lat":43.9122995,"lng":-78.6891675,"city":"Bowmanville","state":"ON","country":"Canada"}
+VM5248:1 coord_Bartlesville, OK, USA {"lat":36.7509272,"lng":-95.9771779,"city":"Bartlesville","state":"OK","country":"USA"}
+VM5248:1 coord_Easton, CT, USA {"lat":41.2528738,"lng":-73.2973394,"city":"Easton","state":"CT","country":"USA"}
+VM5248:1 coord_Weesp, North Holland, Netherlands {"lat":52.3072593,"lng":5.0420822,"city":"Weesp","state":"North Holland","country":"Netherlands"}
+VM5248:1 coord_Honolulu, HI, USA {"lat":21.304547,"lng":-157.855676,"city":"Honolulu","state":"HI","country":"USA"}
+VM5248:1 coord_Ossipee, NH, USA {"lat":43.7550521,"lng":-71.1528533,"city":"Ossipee","state":"NH","country":"USA"}
+VM5248:1 coord_Doole, TX, USA {"lat":31.3932817,"lng":-99.5988752,"city":"Doole","state":"TX","country":"USA"}
+VM5248:1 coord_Olsztyn, Województwo warmińsko-mazurskie, Poland {"lat":53.776644,"lng":20.4777531,"city":"Olsztyn","state":"Województwo warmińsko-mazurskie","country":"Poland"}
+VM5248:1 coord_Seoul, CT, South Korea {"lat":37.5666791,"lng":126.9782914,"city":"Seoul","state":"CT","country":"South Korea"}
+VM5248:1 coord_Golconda, IL, USA {"lat":37.3672744,"lng":-88.4864316,"city":"Golconda","state":"IL","country":"USA"}
+VM5248:1 coord_Murray, ID, USA {"lat":47.6271499,"lng":-115.8584985,"city":"Murray","state":"ID","country":"USA"}
+VM5248:1 coord_Eastover, NC, USA {"lat":35.099219,"lng":-78.7882955,"city":"Eastover","state":"NC","country":"USA"}
+VM5248:1 coord_Northglenn, CO, USA {"lat":39.9100858,"lng":-104.987552,"city":"Northglenn","state":"CO","country":"USA"}
+VM5248:1 coord_Cicero, NY, USA {"lat":43.1756235,"lng":-76.1193678,"city":"Cicero","state":"NY","country":"USA"}
+VM5248:1 coord_Goworowo, Masovian Voivodeship, Poland {"lat":52.9006864,"lng":21.5570366,"city":"Goworowo","state":"Masovian Voivodeship","country":"Poland"}
+VM5248:1 coord_South Padre Island, TX, USA {"lat":26.1036887,"lng":-97.1646938,"city":"South Padre Island","state":"TX","country":"USA"}
+VM5248:1 coord_Holly Hill, SC, USA {"lat":33.3226624,"lng":-80.4137038,"city":"Holly Hill","state":"SC","country":"USA"}
+VM5248:1 coord_Wyrzysk, Greater Poland Voivodeship, Poland {"lat":53.1569822,"lng":17.2627004,"city":"Wyrzysk","state":"Greater Poland Voivodeship","country":"Poland"}
+VM5248:1 coord_Eddyville, KY, USA {"lat":37.0944971,"lng":-88.080301,"city":"Eddyville","state":"KY","country":"USA"}
+VM5248:1 coord_Tbilisi, Tbilisi, Georgia {"lat":41.7170674,"lng":44.7213757,"city":"Tbilisi","state":"Tbilisi","country":"Georgia"}
+VM5248:1 coord_Perrysburg, OH, USA {"lat":41.5571178,"lng":-83.6279321,"city":"Perrysburg","state":"OH","country":"USA"}
+VM5248:1 coord_Saint-Michel, QC, Canada {"lat":45.5597489,"lng":-73.5999622,"city":"Saint-Michel","state":"QC","country":"Canada"}
+VM5248:1 coord_Palma, Illes Balears, Spain {"lat":39.5695818,"lng":2.6500745,"city":"Palma","state":"Illes Balears","country":"Spain"}
+VM5248:1 coord_Richland, WA, USA {"lat":46.2804298,"lng":-119.275205,"city":"Richland","state":"WA","country":"USA"}
+VM5248:1 coord_Leamington, ON, Canada {"lat":42.0531385,"lng":-82.5997722,"city":"Leamington","state":"ON","country":"Canada"}
+VM5248:1 coord_Headland, AL, USA {"lat":31.351284,"lng":-85.3421559,"city":"Headland","state":"AL","country":"USA"}
+VM5248:1 coord_Batala, Punjab, India {"lat":31.8193025,"lng":75.1999941,"city":"Batala","state":"Punjab","country":"India"}
+VM5248:1 coord_Halifax, NS, Canada {"lat":44.648618,"lng":-63.5859487,"city":"Halifax","state":"NS","country":"Canada"}
+VM5248:1 coord_Thessaly, Greece {"lat":39.5755929,"lng":22.1634449,"state":"Thessaly","country":"Greece"}
+VM5248:1 coord_Chatham, England, United Kingdom {"lat":51.3819167,"lng":0.526559,"city":"Chatham","state":"England","country":"United Kingdom"}
+VM5248:1 coord_Tallahassee, FL, USA {"lat":30.4380832,"lng":-84.2809332,"city":"Tallahassee","state":"FL","country":"USA"}
+VM5248:1 coord_Dana Point, CA, USA {"lat":33.4669721,"lng":-117.6981075,"city":"Dana Point","state":"CA","country":"USA"}
+VM5248:1 coord_Driggs, ID, USA {"lat":43.7231753,"lng":-111.110887,"city":"Driggs","state":"ID","country":"USA"}
+VM5248:1 coord_Brothers, OR, USA {"lat":43.8137417,"lng":-120.6033306,"city":"Brothers","state":"OR","country":"USA"}
+VM5248:1 coord_Toronto, ON, Canada {"lat":43.6534817,"lng":-79.3839347,"city":"Toronto","state":"ON","country":"Canada"}
+VM5248:1 coord_Baldwin, WI, USA {"lat":44.9667546,"lng":-92.3732461,"city":"Baldwin","state":"WI","country":"USA"}
+VM5248:1 coord_Bethlehem, PA, USA {"lat":40.6178915,"lng":-75.3786521,"city":"Bethlehem","state":"PA","country":"USA"}
+VM5248:1 coord_Topeka, KS, USA {"lat":39.049011,"lng":-95.677556,"city":"Topeka","state":"KS","country":"USA"}
+VM5248:1 coord_Long Beach, CA, USA {"lat":33.7690164,"lng":-118.191604,"city":"Long Beach","state":"CA","country":"USA"}
+VM5248:1 coord_Gig Harbor, WA, USA {"lat":47.3259697,"lng":-122.5878659,"city":"Gig Harbor","state":"WA","country":"USA"}
+VM5248:1 coord_Ottawa, ON, Canada {"lat":45.4208777,"lng":-75.6901106,"city":"Ottawa","state":"ON","country":"Canada"}
+VM5248:1 coord_Buena Vista, CO, USA {"lat":38.8422178,"lng":-106.1311288,"city":"Buena Vista","state":"CO","country":"USA"}
+VM5248:1 coord_Ellicottville, NY, USA {"lat":42.2751873,"lng":-78.6727799,"city":"Ellicottville","state":"NY","country":"USA"}
+VM5248:1 coord_Wolfe City, TX, USA {"lat":33.3686687,"lng":-96.0712987,"city":"Wolfe City","state":"TX","country":"USA"}
+VM5248:1 coord_Davao City, Davao Region, Philippines {"lat":7.0648306,"lng":125.6080623,"city":"Davao City","state":"Davao Region","country":"Philippines"}
+VM5248:1 coord_Lansing, MI, USA {"lat":42.7338254,"lng":-84.5546295,"city":"Lansing","state":"MI","country":"USA"}
+VM5248:1 coord_Sunrise, FL, USA {"lat":26.1666888,"lng":-80.2787573,"city":"Sunrise","state":"FL","country":"USA"}
+VM5248:1 coord_North Salem, NY, USA {"lat":41.3348169,"lng":-73.5712374,"city":"North Salem","state":"NY","country":"USA"}
+VM5248:1 coord_Shelburne, ON, Canada {"lat":44.078473,"lng":-80.203431,"city":"Shelburne","state":"ON","country":"Canada"}
+VM5248:1 coord_West Lafayette, OH, USA {"lat":40.2753487,"lng":-81.7509601,"city":"West Lafayette","state":"OH","country":"USA"}
+VM5248:1 coord_København, Denmark {"lat":55.6867243,"lng":12.5700724,"city":"København","country":"Denmark"}
+VM5248:1 coord_Praha, Prague, Czech Republic {"lat":50.0596288,"lng":14.4464593,"city":"Praha","state":"Prague","country":"Czech Republic"}
+VM5248:1 coord_Milford, CT, USA {"lat":41.2222218,"lng":-73.0570603,"city":"Milford","state":"CT","country":"USA"}
+VM5248:1 coord_Loughton, England, United Kingdom {"lat":51.6467058,"lng":0.0544098,"city":"Loughton","state":"England","country":"United Kingdom"}
+VM5248:1 coord_Fairfield, CA, USA {"lat":38.2493581,"lng":-122.039966,"city":"Fairfield","state":"CA","country":"USA"}
+VM5248:1 coord_Oil Springs, ON, Canada {"lat":42.7838172,"lng":-82.126915,"city":"Oil Springs","state":"ON","country":"Canada"}
+VM5248:1 coord_Knoxville, TN, USA {"lat":35.9603948,"lng":-83.9210261,"city":"Knoxville","state":"TN","country":"USA"}
+VM5248:1 coord_Ellicott City, MD, USA {"lat":39.2757359,"lng":-76.8317417,"city":"Ellicott City","state":"MD","country":"USA"}
+VM5248:1 coord_Albion, ID, USA {"lat":42.4126885,"lng":-113.578063,"city":"Albion","state":"ID","country":"USA"}
+VM5248:1 coord_Lexington, KY, USA {"lat":38.0464066,"lng":-84.4970393,"city":"Lexington","state":"KY","country":"USA"}
+VM5248:1 coord_West Jordan, UT, USA {"lat":40.6061337,"lng":-111.9395211,"city":"West Jordan","state":"UT","country":"USA"}
+VM5248:1 coord_CO, USA {"lat":38.7251776,"lng":-105.607716,"state":"CO","country":"USA"}
+VM5248:1 coord_Dayton, OR, USA {"lat":45.2206945,"lng":-123.076141,"city":"Dayton","state":"OR","country":"USA"}
+VM5248:1 coord_Nottingham, NH, USA {"lat":43.115019,"lng":-71.100082,"city":"Nottingham","state":"NH","country":"USA"}
+VM5248:1 coord_Anaheim, CA, USA {"lat":33.8347516,"lng":-117.911732,"city":"Anaheim","state":"CA","country":"USA"}
+VM5248:1 coord_Karaj, Alborz Province, Iran {"lat":35.8224892,"lng":50.9904681,"city":"Karaj","state":"Alborz Province","country":"Iran"}
+VM5248:1 coord_Easton, MA, USA {"lat":42.0245442,"lng":-71.1286594,"city":"Easton","state":"MA","country":"USA"}
+VM5248:1 coord_Tabuk, Tabuk Province, Saudi Arabia {"lat":28.4012536,"lng":36.567049,"city":"Tabuk","state":"Tabuk Province","country":"Saudi Arabia"}
+VM5248:1 coord_Califon, NJ, USA {"lat":40.7195448,"lng":-74.8357215,"city":"Califon","state":"NJ","country":"USA"}
+VM5248:1 coord_Chipstead, England, United Kingdom {"lat":51.3093522,"lng":-0.1693688,"city":"Chipstead","state":"England","country":"United Kingdom"}
+VM5248:1 coord_Talent, OR, USA {"lat":42.243808,"lng":-122.788924,"city":"Talent","state":"OR","country":"USA"}
+VM5248:1 coord_Newburgh, NY, USA {"lat":41.5000767,"lng":-74.0098299,"city":"Newburgh","state":"NY","country":"USA"}
+VM5248:1 coord_North Myrtle Beach, SC, USA {"lat":33.8278405,"lng":-78.6800323,"city":"North Myrtle Beach","state":"SC","country":"USA"}
+VM5248:1 coord_Sioux Falls, SD, USA {"lat":43.5476008,"lng":-96.7293629,"city":"Sioux Falls","state":"SD","country":"USA"}
+VM5248:1 coord_Bergen, NY, USA {"lat":43.0852666,"lng":-77.9418857,"city":"Bergen","state":"NY","country":"USA"}
+VM5248:1 coord_Dewey Beach, DE, USA {"lat":38.691184,"lng":-75.0752724,"city":"Dewey Beach","state":"DE","country":"USA"}
+VM5248:1 coord_Cranbourne West, Victoria, Australia {"lat":-38.102241,"lng":145.2517182,"city":"Cranbourne West","state":"Victoria","country":"Australia"}
+VM5248:1 coord_Gates, NY, USA {"lat":43.1514226,"lng":-77.7130004,"city":"Gates","state":"NY","country":"USA"}
+VM5248:1 coord_Andilana, Diana, Madagascar {"lat":-13.2543919,"lng":48.1888417,"city":"Andilana","state":"Diana","country":"Madagascar"}
+VM5248:1 coord_İzmir, Türkiye {"lat":38.23166,"lng":27.02997,"state":"İzmir","country":"Türkiye"}
+VM5248:1 coord_Březí, Jihomoravský kraj, Czechia {"lat":48.8200704,"lng":16.5654272,"city":"Březí","state":"Jihomoravský kraj","country":"Czechia"}
+VM5248:1 coord_Quakertown, PA, USA {"lat":40.4417682,"lng":-75.3415667,"city":"Quakertown","state":"PA","country":"USA"}
+VM5248:1 coord_Creede, CO, USA {"lat":37.8483224,"lng":-106.925476,"city":"Creede","state":"CO","country":"USA"}
+VM5248:1 coord_Gainesville, GA, USA {"lat":34.2978794,"lng":-83.8240663,"city":"Gainesville","state":"GA","country":"USA"}
+VM5248:1 coord_Johnston, IA, USA {"lat":41.6731523,"lng":-93.6973395,"city":"Johnston","state":"IA","country":"USA"}
+VM5248:1 coord_Sidi Kacem, Rabat-Salé-Kénitra, Morocco {"lat":34.2309805,"lng":-5.7188349,"city":"Sidi Kacem","state":"Rabat-Salé-Kénitra","country":"Morocco"}
+VM5248:1 coord_Alpine County, California {"lat":38.5893934,"lng":-119.8345013,"state":"California","county":"Alpine County"}
+VM5248:1 coord_Phoenix, AZ, USA {"lat":33.4484367,"lng":-112.074141,"city":"Phoenix","state":"AZ","country":"USA"}
+VM5248:1 coord_Drain, OR, USA {"lat":43.6587309,"lng":-123.318698,"city":"Drain","state":"OR","country":"USA"}
+VM5248:1 coord_Newport, England, United Kingdom {"lat":50.7003707,"lng":-1.2952039,"city":"Newport","state":"England","country":"United Kingdom"}
+VM5248:1 coord_Malinao, Bicol, Philippines {"lat":13.3974574,"lng":123.7049776,"city":"Malinao","state":"Bicol","country":"Philippines"}
+VM5248:1 coord_Estepona, Andalucía, Spain {"lat":36.4268068,"lng":-5.1468484,"city":"Estepona","state":"Andalucía","country":"Spain"}
+VM5248:1 coord_Trout Run, PA, USA {"lat":41.3702916,"lng":-78.4275798,"city":"Trout Run","state":"PA","country":"USA"}
+VM5248:1 coord_Warwick, RI, USA {"lat":41.6992717,"lng":-71.4586114,"city":"Warwick","state":"RI","country":"USA"}
+VM5248:1 coord_Elyria, OH, USA {"lat":41.3673191,"lng":-82.1073583,"city":"Elyria","state":"OH","country":"USA"}
+VM5248:1 coord_Roswell, NM, USA {"lat":33.3943282,"lng":-104.5229518,"city":"Roswell","state":"NM","country":"USA"}
+VM5248:1 coord_Ocala, FL, USA {"lat":29.1871986,"lng":-82.1400923,"city":"Ocala","state":"FL","country":"USA"}
+VM5248:1 coord_Rochester, NY, USA {"lat":43.157285,"lng":-77.615214,"city":"Rochester","state":"NY","country":"USA"}
+VM5248:1 coord_Berwick, PA, USA {"lat":41.0602024,"lng":-76.2461259,"city":"Berwick","state":"PA","country":"USA"}
+VM5248:1 coord_Portland, OR, USA {"lat":45.5202471,"lng":-122.674194,"city":"Portland","state":"OR","country":"USA"}
+VM5248:1 coord_Cypress Gardens, FL, USA {"lat":27.9920627,"lng":-81.6919685,"city":"Cypress Gardens","state":"FL","country":"USA"}
+VM5248:1 coord_New Fairfield, CT, USA {"lat":41.4664832,"lng":-73.4856789,"city":"New Fairfield","state":"CT","country":"USA"}
+VM5248:1 coord_Ashoknagar Kalyangarh, West Bengal, India {"lat":22.8387354,"lng":88.6245961,"city":"Ashoknagar Kalyangarh","state":"West Bengal","country":"India"}
+VM5248:1 coord_Colares, Lisbon, Portugal {"lat":38.7991515,"lng":-9.4469662,"city":"Colares","state":"Lisbon","country":"Portugal"}
+VM5248:1 coord_Asyut, Egypt {"lat":27.1832822,"lng":31.1853836,"state":"Asyut","country":"Egypt"}
+VM5248:1 coord_Cripple Creek, CO, USA {"lat":38.7466555,"lng":-105.1783149,"city":"Cripple Creek","state":"CO","country":"USA"}
+VM5248:1 coord_La Fortuna, Alajuela Province, Costa Rica {"lat":10.4716839,"lng":-84.644436,"city":"La Fortuna","state":"Alajuela Province","country":"Costa Rica"}
+VM5248:1 coord_Kings Park, NY, USA {"lat":40.8890985,"lng":-73.246843,"city":"Kings Park","state":"NY","country":"USA"}
+VM5248:1 coord_Detroit, MI, USA {"lat":42.3315509,"lng":-83.0466403,"city":"Detroit","state":"MI","country":"USA"}
+VM5248:1 coord_Avalon, NJ, USA {"lat":39.101225,"lng":-74.7176622,"city":"Avalon","state":"NJ","country":"USA"}
+VM5248:1 coord_Shelby Township, MI, USA {"lat":43.5974492,"lng":-86.3379509,"city":"Shelby Township","state":"MI","country":"USA"}
+VM5248:1 coord_Litchfield County, Connecticut {"lat":41.7587013,"lng":-73.259781,"state":"Connecticut","county":"Litchfield County"}
+VM5248:1 coord_Fairmont, WV, USA {"lat":39.4850848,"lng":-80.1425781,"city":"Fairmont","state":"WV","country":"USA"}
+VM5248:1 coord_Dresden, TN, USA {"lat":36.2914512,"lng":-88.7081123,"city":"Dresden","state":"TN","country":"USA"}
+VM5248:1 coord_St. Petersburg, FL, USA {"lat":27.7700475,"lng":-82.6359078,"city":"St. Petersburg","state":"FL","country":"USA"}
+VM5248:1 coord_Tremont, IL, USA {"lat":40.5275392,"lng":-89.4925979,"city":"Tremont","state":"IL","country":"USA"}
+VM5248:1 coord_Pine Bluff, AR, USA {"lat":34.2228884,"lng":-92.004334,"city":"Pine Bluff","state":"AR","country":"USA"}
+VM5248:1 coord_St. George, SC, USA {"lat":33.1859958,"lng":-80.5756534,"city":"St. George","state":"SC","country":"USA"}
+VM5248:1 coord_Sayville, NY, USA {"lat":40.745349,"lng":-73.0885161,"city":"Sayville","state":"NY","country":"USA"}
+VM5248:1 coord_Modesto, CA, USA {"lat":37.6393419,"lng":-120.9968892,"city":"Modesto","state":"CA","country":"USA"}
+VM5248:1 coord_Affton, MO, USA {"lat":38.545831,"lng":-90.3247272,"city":"Affton","state":"MO","country":"USA"}
+VM5248:1 coord_Latrobe, PA, USA {"lat":40.317287,"lng":-79.3840301,"city":"Latrobe","state":"PA","country":"USA"}
+VM5248:1 coord_Greenville, SC, USA {"lat":34.851354,"lng":-82.3984882,"city":"Greenville","state":"SC","country":"USA"}
+VM5248:1 coord_Williston, FL, USA {"lat":29.3880028,"lng":-82.4481694,"city":"Williston","state":"FL","country":"USA"}
+VM5248:1 coord_Canton, GA, USA {"lat":34.2367621,"lng":-84.4907621,"city":"Canton","state":"GA","country":"USA"}
+VM5248:1 coord_Glasgow, Scotland, United Kingdom {"lat":55.861155,"lng":-4.2501687,"city":"Glasgow","state":"Scotland","country":"United Kingdom"}
+VM5248:1 coord_Buffalo, WY, USA {"lat":44.3480865,"lng":-106.699287,"city":"Buffalo","state":"WY","country":"USA"}
+VM5248:1 coord_Belvidere, IL, USA {"lat":42.2579991,"lng":-88.841734,"city":"Belvidere","state":"IL","country":"USA"}
+VM5248:1 coord_Huntingdon, PA, USA {"lat":40.3446332,"lng":-78.0281185,"city":"Huntingdon","state":"PA","country":"USA"}
+VM5248:1 coord_Tumwater, WA, USA {"lat":47.0080655,"lng":-122.910368,"city":"Tumwater","state":"WA","country":"USA"}
+VM5248:1 coord_Covington, GA, USA {"lat":33.5966005,"lng":-83.8598742,"city":"Covington","state":"GA","country":"USA"}
+VM5248:1 coord_Stroudsburg, PA, USA {"lat":40.9864261,"lng":-75.1946649,"city":"Stroudsburg","state":"PA","country":"USA"}
+VM5248:1 coord_Anolaima, Cundinamarca, Colombia {"lat":4.7616096,"lng":-74.4649986,"city":"Anolaima","state":"Cundinamarca","country":"Colombia"}
+VM5248:1 coord_Nový Šaldorf-Sedlešovice, South Moravian Region, Czechia {"lat":48.8290199,"lng":16.0619757,"city":"Nový Šaldorf-Sedlešovice","state":"South Moravian Region","country":"Czechia"}
+VM5248:1 coord_Vilas, NC, USA {"lat":36.245683,"lng":-81.7676104,"city":"Vilas","state":"NC","country":"USA"}
+VM5248:1 coord_Epping, NH, USA {"lat":43.0394461,"lng":-71.0730253,"city":"Epping","state":"NH","country":"USA"}
+VM5248:1 coord_Concrete, WA, USA {"lat":48.5389326,"lng":-121.746928,"city":"Concrete","state":"WA","country":"USA"}
+VM5248:1 coord_Khumaga, Kgaolo ya Legare, Botswana {"lat":-20.4710507,"lng":24.5104545,"city":"Khumaga","state":"Kgaolo ya Legare","country":"Botswana"}
+VM5248:1 coord_Washington, DC, USA {"lat":38.8950368,"lng":-77.0365427,"city":"Washington","state":"DC","country":"USA"}
+VM5248:1 coord_Gosport, England, United Kingdom {"lat":50.7952074,"lng":-1.1210853,"city":"Gosport","state":"England","country":"United Kingdom"}
+VM5248:1 coord_Marcola, OR, USA {"lat":44.1722212,"lng":-122.8606374,"city":"Marcola","state":"OR","country":"USA"}
+VM5248:1 coord_Fort Mill, SC, USA {"lat":35.0073697,"lng":-80.9450759,"city":"Fort Mill","state":"SC","country":"USA"}
+VM5248:1 coord_Glendale, AZ, USA {"lat":33.5386858,"lng":-112.185994,"city":"Glendale","state":"AZ","country":"USA"}
+VM5248:1 coord_Haverhill, MA, USA {"lat":42.7777829,"lng":-71.0767724,"city":"Haverhill","state":"MA","country":"USA"}
+VM5248:1 coord_Unspecified {"lat":27.1556836,"lng":65.6101216,"country":"Unspecified"}
+VM5248:1 coord_Sankt-Peterburg, Sankt-Peterburg, Russia {"lat":59.938732,"lng":30.316229,"city":"Sankt-Peterburg","state":"Sankt-Peterburg","country":"Russia"}
+VM5248:1 coord_Elgin, IA, USA {"lat":42.9574845,"lng":-91.6297632,"city":"Elgin","state":"IA","country":"USA"}
+VM5248:1 coord_Jiaxing, Zhejiang, China {"lat":30.7474425,"lng":120.7510971,"city":"Jiaxing","state":"Zhejiang","country":"China"}
+VM5248:1 coord_Marietta, GA, USA {"lat":33.9528472,"lng":-84.5496148,"city":"Marietta","state":"GA","country":"USA"}
+VM5248:1 coord_Stephenville, NL, Canada {"lat":48.5452022,"lng":-58.5871146,"city":"Stephenville","state":"NL","country":"Canada"}
+VM5248:1 coord_El Paso, TX, USA {"lat":31.7601164,"lng":-106.4870404,"city":"El Paso","state":"TX","country":"USA"}
+VM5248:1 coord_Röthis, Vorarlberg, Austria {"lat":47.2922308,"lng":9.6534863,"city":"Röthis","state":"Vorarlberg","country":"Austria"}
+VM5248:1 coord_Aspley, Queensland, Australia {"lat":-27.3656925,"lng":153.0169605,"city":"Aspley","state":"Queensland","country":"Australia"}
+VM5248:1 coord_San Jose, CA, USA {"lat":37.3361663,"lng":-121.890591,"city":"San Jose","state":"CA","country":"USA"}
+VM5248:1 coord_Lethbridge, AB, Canada {"lat":49.6945782,"lng":-112.8331033,"city":"Lethbridge","state":"AB","country":"Canada"}
+VM5248:1 coord_Wright City, MO, USA {"lat":38.8275491,"lng":-91.0201422,"city":"Wright City","state":"MO","country":"USA"}
+VM5248:1 coord_Netherlands {"lat":52.2434979,"lng":5.6343227,"country":"Netherlands"}
+VM5248:1 coord_New York, NY, USA {"lat":40.7127281,"lng":-74.0060152,"city":"New York","state":"NY","country":"USA"}
+VM5248:1 coord_Scottsbluff, NE, USA {"lat":41.862302,"lng":-103.6627088,"city":"Scottsbluff","state":"NE","country":"USA"}
+VM5248:1 coord_Burnt Hills, NY, USA {"lat":42.9097982,"lng":-73.8951234,"city":"Burnt Hills","state":"NY","country":"USA"}
+VM5248:1 coord_Avilla, MO, USA {"lat":37.1955756,"lng":-94.1297212,"city":"Avilla","state":"MO","country":"USA"}
+VM5248:1 coord_Chennai, Tamil Nadu, India {"lat":13.0836939,"lng":80.270186,"city":"Chennai","state":"Tamil Nadu","country":"India"}
+VM5248:1 coord_Macon County, North Carolina {"lat":35.1436639,"lng":-83.3977297,"state":"North Carolina","county":"Macon County"}
+VM5248:1 coord_Melbourne, AR, USA {"lat":36.0595148,"lng":-91.9084819,"city":"Melbourne","state":"AR","country":"USA"}
+VM5248:1 coord_Grass Valley, CA, USA {"lat":39.2190607,"lng":-121.06292,"city":"Grass Valley","state":"CA","country":"USA"}
+VM5248:1 coord_Fountain Hills, AZ, USA {"lat":33.6117105,"lng":-111.717361,"city":"Fountain Hills","state":"AZ","country":"USA"}
+VM5248:1 coord_Saucier, MS, USA {"lat":30.625503,"lng":-89.1446298,"city":"Saucier","state":"MS","country":"USA"}
+VM5248:1 coord_Aldea del Fresno, Community of Madrid, Spain {"lat":40.3215212,"lng":-4.19936,"city":"Aldea del Fresno","state":"Community of Madrid","country":"Spain"}
+VM5248:1 coord_Capalaba, Queensland, Australia {"lat":-27.522037,"lng":153.1918063,"city":"Capalaba","state":"Queensland","country":"Australia"}
+VM5248:1 coord_San Diego, CA, USA {"lat":32.7174202,"lng":-117.162772,"city":"San Diego","state":"CA","country":"USA"}
+VM5248:1 coord_Sunshine Coast, Queensland, Australia {"lat":-26.6544338,"lng":153.0933668,"city":"Sunshine Coast","state":"Queensland","country":"Australia"}
+VM5248:1 coord_California, KY, USA {"lat":38.9186766,"lng":-84.2635472,"city":"California","state":"KY","country":"USA"}
+VM5248:1 coord_Albany, GA, USA {"lat":31.5782062,"lng":-84.1556809,"city":"Albany","state":"GA","country":"USA"}
+VM5248:1 coord_Sitka, AK, USA {"lat":57.4086082,"lng":-135.4596206,"city":"Sitka","state":"AK","country":"USA"}
+VM5248:1 coord_Taunton, MA, USA {"lat":41.9019257,"lng":-71.0931485,"city":"Taunton","state":"MA","country":"USA"}
+VM5248:1 -walletlink:https://www.walletlink.org:EIP6963ProviderUUID af813f21-30c3-4a17-95be-6cbb62697c2d
+VM5248:1 coord_Torquay, England, United Kingdom {"lat":50.4652392,"lng":-3.5211361,"city":"Torquay","state":"England","country":"United Kingdom"}
+VM5248:1 coord_Lexington, OH, USA {"lat":40.6787196,"lng":-82.5827749,"city":"Lexington","state":"OH","country":"USA"}
+VM5248:1 coord_Philadelphia, PA, USA {"lat":39.9527237,"lng":-75.1635262,"city":"Philadelphia","state":"PA","country":"USA"}
+VM5248:1 coord_Oviedo, FL, USA {"lat":28.6702526,"lng":-81.2084941,"city":"Oviedo","state":"FL","country":"USA"}
+VM5248:1 coord_Thornton, CO, USA {"lat":39.8695516,"lng":-104.985181,"city":"Thornton","state":"CO","country":"USA"}
+VM5248:1 coord_Wall Township, NJ, USA {"lat":40.1743052,"lng":-74.0902219,"city":"Wall Township","state":"NJ","country":"USA"}
+VM5248:1 coord_Burnsville, MN, USA {"lat":44.7670567,"lng":-93.2773887,"city":"Burnsville","state":"MN","country":"USA"}
+VM5248:1 coord_Springdale, AR, USA {"lat":36.1867442,"lng":-94.1288142,"city":"Springdale","state":"AR","country":"USA"}
+VM5248:1 coord_Monument, CO, USA {"lat":39.0916586,"lng":-104.872758,"city":"Monument","state":"CO","country":"USA"}
+VM5248:1 coord_Boise, ID, USA {"lat":43.6166163,"lng":-116.200886,"city":"Boise","state":"ID","country":"USA"}
+VM5248:1 coord_Aberdeen, SD, USA {"lat":45.4649805,"lng":-98.487813,"city":"Aberdeen","state":"SD","country":"USA"}
+VM5248:1 coord_Ashford, WA, USA {"lat":46.7544085,"lng":-122.010932,"city":"Ashford","state":"WA","country":"USA"}
+VM5248:1 coord_McGaheysville, VA, USA {"lat":38.372451,"lng":-78.7352814,"city":"McGaheysville","state":"VA","country":"USA"}
+VM5248:1 coord_Niagara Falls, NY, USA {"lat":43.08436,"lng":-79.0614686,"city":"Niagara Falls","state":"NY","country":"USA"}
+VM5248:1 coord_Chiloquin, OR, USA {"lat":42.577636,"lng":-121.866126,"city":"Chiloquin","state":"OR","country":"USA"}
+VM5248:1 coord_Las Vegas, NV, USA {"lat":36.1674263,"lng":-115.1484131,"city":"Las Vegas","state":"NV","country":"USA"}

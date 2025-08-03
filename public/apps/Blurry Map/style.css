@@ -227,3 +227,16 @@ header h1 {
     top: calc(80vh + 50px); /* Below sidebar toggle */
   }
 }
+
+#loading {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 1000;
+}
