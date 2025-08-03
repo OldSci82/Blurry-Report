@@ -102,7 +102,10 @@ function addToUnmappedList(sighting) {
     <i>${sighting.City || "Unknown"}, ${
     sighting.State || sighting.Country || "Unknown"
   }</i><br>
-    <small>Event Date: ${sighting.Occurred || "Unknown"}</small>`;
+    <small>Event Date: ${sighting.Occurred || "Unknown"}</small><br>
+        <small>Event Source: <a href="https://nuforc.org/" target="_blank">${
+          sighting.source
+        }</a></small>`;
   unmappedUL.appendChild(li);
 }
 
@@ -154,8 +157,8 @@ async function loadSightings() {
         <i>${sighting.City || "Unknown"}, ${
         state || country || "Unknown"
       }</i><br>
-        <small>Event Date: ${sighting.Occurred || "Unknown"}</small>
-        <small>Event Source: <a href="https://nuforc.org/" target="">${
+        <small>Event Date: ${sighting.Occurred || "Unknown"}</small><br>
+        <small>Event Source: <a href="https://nuforc.org/" target="_blank">${
           sighting.source
         }</a></small>
       `;
