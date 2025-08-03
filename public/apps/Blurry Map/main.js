@@ -155,7 +155,9 @@ async function loadSightings() {
         state || country || "Unknown"
       }</i><br>
         <small>Event Date: ${sighting.Occurred || "Unknown"}</small>
-        <small>Event Source: ${sighting.source}</small>
+        <small>Event Source: <a href="https://nuforc.org/">${
+          sighting.source
+        }</a></small>
       `;
 
       const ufoIcon = L.icon({
