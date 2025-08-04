@@ -248,14 +248,16 @@ async function saveReports(
 const sampleTextOldFormat = ``;
 
 const sampleTextNewFormat = `
-Wilkinson County, Georgia
+Woodbury County, Iowa
 
 Show:  
 Class A, B, & C Reports
   
 
 Reports:
-November 2009 (Class B) - Hunter describes possible Sasquatch activity near Oconee River and Bells Ferry State Park
+August 1997 (Class A) - Bigfoot creature being seen & heard throughout night and footprint evidence found
+Summer 1970 (Class B) - Two men remember hearing bone-chilling scream while parking at lookout point in Stone State Park
+
 `;
 
 saveReports(sampleTextOldFormat, sampleTextNewFormat)
