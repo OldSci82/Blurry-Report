@@ -248,15 +248,14 @@ async function saveReports(
 const sampleTextOldFormat = ``;
 
 const sampleTextNewFormat = `
-Winston County, Alabama
+Windham County, Connecticut
 
 Show:  
 Class A, B, & C Reports
   
 
 Reports:
-December 2013 (Class A) - Multiple encounters at a home near Haleyville
-Summer 2010 (Class B) - Outdoorsman experiences vocalizations and rock throwing on the Sipsey River.
+February 2009 (Class B) - Woman witnesses tall creature looking into her kitchen window near Woodstock
 `;
 
 saveReports(sampleTextOldFormat, sampleTextNewFormat)
