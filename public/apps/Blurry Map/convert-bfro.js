@@ -248,16 +248,14 @@ async function saveReports(
 const sampleTextOldFormat = ``;
 
 const sampleTextNewFormat = `
-Washington County, Florida
+Wilkinson County, Georgia
 
 Show:  
 Class A, B, & C Reports
   
 
 Reports:
-August 2004 (Class A) - Man has nighttime sighting in his yard
-October 2003 (Class B) - Possible daytime highway crossing on US-90 outside Caryville
-February 2003 (Class A) - Road crossing sighting by motorist
+November 2009 (Class B) - Hunter describes possible Sasquatch activity near Oconee River and Bells Ferry State Park
 `;
 
 saveReports(sampleTextOldFormat, sampleTextNewFormat)
