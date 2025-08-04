@@ -15,6 +15,15 @@ body {
   cursor: default; /* Default cursor for non-interactive elements */
 }
 
+.cav {
+  text-align: center;
+  font-size: 12px;
+  color: #FFCC00;
+  text-shadow: 0 0 10px #B13BFF, 0 0 20px #B13BFF;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
 /* Header */
 header {
   padding: 1.5rem;
