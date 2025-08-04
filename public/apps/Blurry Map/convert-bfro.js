@@ -248,14 +248,16 @@ async function saveReports(
 const sampleTextOldFormat = ``;
 
 const sampleTextNewFormat = `
-Windham County, Connecticut
+Washington County, Florida
 
 Show:  
 Class A, B, & C Reports
   
 
 Reports:
-February 2009 (Class B) - Woman witnesses tall creature looking into her kitchen window near Woodstock
+August 2004 (Class A) - Man has nighttime sighting in his yard
+October 2003 (Class B) - Possible daytime highway crossing on US-90 outside Caryville
+February 2003 (Class A) - Road crossing sighting by motorist
 `;
 
 saveReports(sampleTextOldFormat, sampleTextNewFormat)
