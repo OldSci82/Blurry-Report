@@ -43,18 +43,23 @@ body {
 }
 
 /*
- * Viewport centers the scaled stage between banner and docked controls.
+ * Viewport centers the scaled stage + docked controls as one column.
  * Stage shell = post-scale layout box (width/height set by JS).
- * Stage = fixed desktop design size; JS applies transform: scale(s).
+ * Stage = fixed design size that includes all seat overhang; JS scales it.
+ * Design is tight to content (not inflated empty side padding) so phones
+ * get a larger scale and less vertical letterbox.
  */
 #game-stage-viewport {
     flex: 1 1 auto;
     min-height: 0;
     width: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 #game-stage-shell {
@@ -62,14 +67,18 @@ body {
     overflow: hidden;
     margin: 0;
     position: relative;
-    /* JS sets width/height to design * scale */
+    /* JS sets width/height to design * scale — never width:100% */
 }
 
 #game-stage {
-    width: 1260px;   /* DESIGN_WIDTH: 700 felt + 280px side padding each */
-    height: 740px;   /* DESIGN_HEIGHT: seats + felt (controls dock below stage) */
+    /* DESIGN: 700 felt + left overhang pad + right overhang (mothman+info) */
+    width: 1040px;
+    height: 730px;
     transform-origin: top left;
     will-change: transform;
+    /* Fixed design size — do not stretch to viewport before measuring */
+    max-width: none;
+    flex-shrink: 0;
 }
 
 #game-container {
@@ -77,11 +86,11 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    /* Room for top NPC above felt; sides; compact controls below human */
-    width: 1260px;
-    padding: 130px 280px 16px;
+    /* Asymmetric side pads: left seat ~75px, right mothman+label ~220px */
+    width: 1040px;
+    padding: 130px 230px 16px 110px;
     box-sizing: border-box;
-    margin: 0 auto;
+    margin: 0;
 }
 
 #table {
@@ -275,13 +284,12 @@ body {
 
 /* Controls docked under scaled stage — native size for touch targets */
 #action-area {
-    flex-shrink: 0;
-    margin-top: auto;
+    flex: 0 0 auto;
     width: 100%;
     max-width: 520px;
     background-color: transparent;
     border: none;
-    padding: 8px 12px calc(12px + env(safe-area-inset-bottom, 0px));
+    padding: 4px 12px calc(10px + env(safe-area-inset-bottom, 0px));
     border-radius: 0;
     text-align: center;
     box-shadow: none;

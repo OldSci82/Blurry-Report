@@ -9,80 +9,81 @@
 <body>
     <div id="status-banner">Welcome to Texas Hold'em! Click "Start Game" to begin.</div>
 
+    <!-- Stage + docked controls centered as one column (no orphaned button / huge mid gaps) -->
     <div id="game-stage-viewport">
-    <div id="game-stage-shell">
-        <div id="game-stage">
-            <div id="game-container">
-                <div id="table">
-                    <div id="pot-display">Pot: $0</div>
-                    <div id="community-cards"></div>
+        <div id="game-stage-shell">
+            <div id="game-stage">
+                <div id="game-container">
+                    <div id="table">
+                        <div id="pot-display">Pot: $0</div>
+                        <div id="community-cards"></div>
 
-                    <!-- Top seat: NPC 3 (Goliath) — full player, dealer button rotates here too -->
-                    <div class="player-area player-top">
-                        <img src="images/npcs/goliath.png" alt="Goliath" class="player-image npc-goliath">
-                        <div class="player-info">
-                            <span class="player-name">Goliath</span><br>
-                            Chips: <span class="player-chips">$100</span>
-                        </div>
-                        <div class="player-hand-display"></div>
-                    </div>
-
-                    <!-- Left: NPC 1 -->
-                    <div class="player-area player-left">
-                        <img src="images/npcs/agent.png" alt="NPC 1" class="player-image npc-agent">
-                        <div class="player-info">
-                            <span class="player-name">NPC 1</span><br>
-                            Chips: <span class="player-chips">$100</span>
+                        <!-- Top seat: NPC 3 (Goliath) — full player, dealer button rotates here too -->
+                        <div class="player-area player-top">
+                            <img src="images/npcs/goliath.png" alt="Goliath" class="player-image npc-goliath">
+                            <div class="player-info">
+                                <span class="player-name">Goliath</span><br>
+                                Chips: <span class="player-chips">$100</span>
+                            </div>
                             <div class="player-hand-display"></div>
                         </div>
-                    </div>
 
-                    <!-- Right: NPC 2 -->
-                    <div class="player-area player-right">
-                        <img src="images/npcs/mothman.png" alt="NPC 2" class="player-image npc-mothman">
-                        <div class="player-info">
-                            <span class="player-name">NPC 2</span><br>
-                            Chips: <span class="player-chips">$100</span>
-                            <div class="player-hand-display"></div>
+                        <!-- Left: NPC 1 -->
+                        <div class="player-area player-left">
+                            <img src="images/npcs/agent.png" alt="NPC 1" class="player-image npc-agent">
+                            <div class="player-info">
+                                <span class="player-name">NPC 1</span><br>
+                                Chips: <span class="player-chips">$100</span>
+                                <div class="player-hand-display"></div>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Bottom: You -->
-                    <div class="player-area player-bottom player-human-area">
-                        <div class="player-hand-display"></div>
-                        <img src="images/players/player1.png" alt="You" class="player-image player-human">
-                        <div class="player-info">
-                            <span class="player-name">You</span><br>
-                            Chips: <span class="player-chips">$100</span>
+                        <!-- Right: NPC 2 -->
+                        <div class="player-area player-right">
+                            <img src="images/npcs/mothman.png" alt="NPC 2" class="player-image npc-mothman">
+                            <div class="player-info">
+                                <span class="player-name">NPC 2</span><br>
+                                Chips: <span class="player-chips">$100</span>
+                                <div class="player-hand-display"></div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom: You -->
+                        <div class="player-area player-bottom player-human-area">
+                            <div class="player-hand-display"></div>
+                            <img src="images/players/player1.png" alt="You" class="player-image player-human">
+                            <div class="player-info">
+                                <span class="player-name">You</span><br>
+                                Chips: <span class="player-chips">$100</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    </div>
 
-    <!-- Controls docked below the scaled stage at native size (usable hit targets on phones) -->
-    <div id="action-area">
-        <div id="player-options" class="hidden">
-            <div id="bet-live-info">
-                <span id="call-amount-label"></span>
-                <span id="raise-to-label"></span>
-                <span id="allin-label" class="hidden"></span>
+        <!-- Controls docked directly under the scaled stage at native size -->
+        <div id="action-area">
+            <div id="player-options" class="hidden">
+                <div id="bet-live-info">
+                    <span id="call-amount-label"></span>
+                    <span id="raise-to-label"></span>
+                    <span id="allin-label" class="hidden"></span>
+                </div>
+                <div class="bet-slider-row">
+                    <label id="bet-slider-label" for="bet-slider">Raise to (total this round)</label>
+                    <input type="range" id="bet-slider" min="0" max="100" value="0">
+                    <span id="bet-amount">$0</span>
+                </div>
+                <div class="action-buttons">
+                    <button id="fold-btn">Fold</button>
+                    <button id="check-call-btn">Check / Call</button>
+                    <button id="bet-raise-btn">Bet / Raise</button>
+                </div>
             </div>
-            <div class="bet-slider-row">
-                <label id="bet-slider-label" for="bet-slider">Raise to (total this round)</label>
-                <input type="range" id="bet-slider" min="0" max="100" value="0">
-                <span id="bet-amount">$0</span>
-            </div>
-            <div class="action-buttons">
-                <button id="fold-btn">Fold</button>
-                <button id="check-call-btn">Check / Call</button>
-                <button id="bet-raise-btn">Bet / Raise</button>
-            </div>
+            <button id="start-game-btn">Start Game</button>
+            <button id="next-round-btn" class="hidden">Next Round</button>
         </div>
-        <button id="start-game-btn">Start Game</button>
-        <button id="next-round-btn" class="hidden">Next Round</button>
     </div>
 
     <script src="main.js"></script>

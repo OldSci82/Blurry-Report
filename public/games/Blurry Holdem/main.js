@@ -1313,12 +1313,13 @@ betRaiseBtn.addEventListener("click", () => {
 initGame();
 
 // --- Mobile / viewport stage fit ---
-// Desktop table+seats layout is a fixed 1260×740 design. Scale that stage to
-// fit the viewport (minus status banner, docked controls, and padding) so
-// phones (~360–390px) see the full table with no horizontal scroll.
-// Action buttons stay outside the scaled stage at native size for touch.
-const STAGE_DESIGN_WIDTH = 1260;
-const STAGE_DESIGN_HEIGHT = 740;
+// Fixed design size wraps ALL seats (left overhang + right mothman/label).
+// Scale that stage into the viewport (minus banner / docked controls / pad).
+// Design is intentionally tight (~1040×730) so phone scale is ~0.3–0.4 and
+// the table+seats actually shrink into view instead of letterboxing a padded
+// 1260-wide box. Action buttons stay outside the transform at native size.
+const STAGE_DESIGN_WIDTH = 1040;
+const STAGE_DESIGN_HEIGHT = 730;
 const STAGE_PAD_X = 8;
 const STAGE_PAD_Y = 4;
 
@@ -1326,19 +1327,37 @@ function fitGameStage() {
   const shell = document.getElementById("game-stage-shell");
   const stage = document.getElementById("game-stage");
   const action = document.getElementById("action-area");
+  const viewport = document.getElementById("game-stage-viewport");
   if (!shell || !stage) return;
+
+  // Reset any prior stretch so measurement is against the viewport, not a
+  // width:100% stage (that would make availW ≈ designW and keep scale ~1).
+  stage.style.width = STAGE_DESIGN_WIDTH + "px";
+  stage.style.height = STAGE_DESIGN_HEIGHT + "px";
+  stage.style.maxWidth = "none";
+
+  const vv = window.visualViewport;
+  const layoutW = vv && vv.width ? vv.width : window.innerWidth;
+  const layoutH = vv && vv.height ? vv.height : window.innerHeight;
 
   const bannerH = statusBanner ? statusBanner.offsetHeight : 0;
   const actionH = action ? action.offsetHeight : 0;
-  const availW = Math.max(0, window.innerWidth - STAGE_PAD_X * 2);
-  const availH = Math.max(
-    0,
-    window.innerHeight - bannerH - actionH - STAGE_PAD_Y * 2
-  );
+  // Prefer the flex viewport's content box when available (accounts for gap).
+  let availW = layoutW - STAGE_PAD_X * 2;
+  let availH = layoutH - bannerH - actionH - STAGE_PAD_Y * 2;
+  if (viewport) {
+    const gap = 8; // matches #game-stage-viewport gap
+    const vw = viewport.clientWidth;
+    const vh = viewport.clientHeight;
+    if (vw > 0) availW = Math.min(availW, vw - STAGE_PAD_X * 2);
+    if (vh > 0) availH = Math.min(availH, vh - actionH - gap - STAGE_PAD_Y * 2);
+  }
+  availW = Math.max(0, availW);
+  availH = Math.max(0, availH);
 
   let s = Math.min(availW / STAGE_DESIGN_WIDTH, availH / STAGE_DESIGN_HEIGHT);
-  if (!Number.isFinite(s) || s <= 0) s = 1;
-  // Never upscale past the desktop design size
+  if (!Number.isFinite(s) || s <= 0) s = 0.25;
+  // Never upscale past the desktop design size; allow well below 1 on phones
   s = Math.min(s, 1);
 
   stage.style.transform = `scale(${s})`;
