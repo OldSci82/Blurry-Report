@@ -243,10 +243,10 @@ body {
 
 #player-options {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 10px;
-    flex-wrap: wrap;
 }
 
 #bet-slider {
@@ -293,4 +293,51 @@ button:disabled {
 }
 .player-hand-display:not(:empty) {
     min-height: 70px;
+}
+
+/* Bet slider clarity (raise-to = total contribution this street) */
+#bet-live-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 18px;
+    width: 100%;
+    margin-bottom: 8px;
+    font-size: 0.95em;
+    color: #ddd;
+}
+
+#bet-live-info span:not(.hidden) {
+    background-color: rgba(0, 0, 0, 0.35);
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+#allin-label {
+    color: #ffcc66;
+    font-weight: bold;
+}
+
+.bet-slider-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#bet-slider-label {
+    width: 100%;
+    font-size: 0.85em;
+    color: #aaa;
+}
+
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }

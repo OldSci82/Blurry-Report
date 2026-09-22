@@ -52,11 +52,21 @@
         <div id="action-area">
             <div id="game-messages">Welcome to Texas Hold'em! Click "Start Game" to begin.</div>
             <div id="player-options" class="hidden">
-                <input type="range" id="bet-slider" min="0" max="100" value="0">
-                <span id="bet-amount">$0</span>
-                <button id="fold-btn">Fold</button>
-                <button id="check-call-btn">Check / Call</button>
-                <button id="bet-raise-btn">Bet / Raise</button>
+                <div id="bet-live-info">
+                    <span id="call-amount-label"></span>
+                    <span id="raise-to-label"></span>
+                    <span id="allin-label" class="hidden"></span>
+                </div>
+                <div class="bet-slider-row">
+                    <label id="bet-slider-label" for="bet-slider">Raise to (total this round)</label>
+                    <input type="range" id="bet-slider" min="0" max="100" value="0">
+                    <span id="bet-amount">$0</span>
+                </div>
+                <div class="action-buttons">
+                    <button id="fold-btn">Fold</button>
+                    <button id="check-call-btn">Check / Call</button>
+                    <button id="bet-raise-btn">Bet / Raise</button>
+                </div>
             </div>
             <button id="start-game-btn">Start Game</button>
             <button id="next-round-btn" class="hidden">Next Round</button>

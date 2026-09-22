@@ -18,6 +18,11 @@ let currentBet = 0; // The highest bet placed in the current betting round
 let bettingRound = "pre-flop"; // pre-flop, flop, turn, river, showdown
 let roundMessage = ""; // Message to display for the current round
 
+// Blinds / min-raise (simple cash-game style: min raise = last bet/raise size or BB)
+const SMALL_BLIND = 5;
+const BIG_BLIND = 10;
+let minRaiseSize = BIG_BLIND; // chips added by the last full bet/raise this street
+
 // Act-tracking: a street ends only when every still-in, non-all-in player
 // has acted since the last bet/raise AND matched currentBet.
 let playersActedThisRound = new Set(); // player indices who have acted since last aggression
@@ -30,6 +35,10 @@ const startGameBtn = document.getElementById("start-game-btn");
 const nextRoundBtn = document.getElementById("next-round-btn");
 const betSlider = document.getElementById("bet-slider");
 const betAmountSpan = document.getElementById("bet-amount");
+const betSliderLabel = document.getElementById("bet-slider-label");
+const callAmountLabel = document.getElementById("call-amount-label");
+const raiseToLabel = document.getElementById("raise-to-label");
+const allinLabel = document.getElementById("allin-label");
 const foldBtn = document.getElementById("fold-btn");
 const checkCallBtn = document.getElementById("check-call-btn");
 const betRaiseBtn = document.getElementById("bet-raise-btn");
@@ -157,6 +166,7 @@ function startNewRound() {
   communityCards = [];
   pot = 0;
   currentBet = 0;
+  minRaiseSize = BIG_BLIND;
   bettingRound = "pre-flop";
   playersActedThisRound = new Set();
 
@@ -189,12 +199,10 @@ function startNewRound() {
     utgIndex = nextLiveSeat(bigBlindIndex);
   }
 
-  const smallBlindAmount = 5;
-  const bigBlindAmount = 10;
-
-  postBlind(players[smallBlindIndex], smallBlindAmount);
-  postBlind(players[bigBlindIndex], bigBlindAmount);
-  currentBet = bigBlindAmount;
+  postBlind(players[smallBlindIndex], SMALL_BLIND);
+  postBlind(players[bigBlindIndex], BIG_BLIND);
+  currentBet = BIG_BLIND;
+  minRaiseSize = BIG_BLIND; // next raise must be at least one BB more
   // Blinds are forced bets, not voluntary actions — BB still gets option if all limp.
 
   // Deal hole cards only to players in this hand (not busted/folded out)
@@ -323,6 +331,7 @@ function endBettingRound() {
 
   updateCommunityCardsDisplay();
   currentBet = 0;
+  minRaiseSize = BIG_BLIND;
 
   if (bettingRound === "showdown") {
     scheduleAction(showdown, 2000);
@@ -367,61 +376,123 @@ function dealCommunityCards(count) {
 }
 
 // --- Player Actions (Human) ---
+/**
+ * Slider convention: RAISE-TO / BET-TO = total contribution THIS STREET.
+ * Call is a separate button (never driven by the slider).
+ * Max = chips remaining + already contributed this street (true all-in).
+ */
+function streetAllInTotal(player) {
+  return player.chips + player.currentBetInRound;
+}
+
+function chipsToCallAmount(player) {
+  return Math.max(0, currentBet - player.currentBetInRound);
+}
+
+/** Minimum legal bet/raise-to total this street (or short all-in total). */
+function minRaiseToTotal(player) {
+  const maxTotal = streetAllInTotal(player);
+  if (maxTotal <= 0) return 0;
+  if (currentBet === 0) {
+    // Opening bet: at least one big blind (or all-in if short)
+    return Math.min(maxTotal, BIG_BLIND);
+  }
+  // Raise: at least previous raise size more than currentBet
+  const fullMin = currentBet + minRaiseSize;
+  return Math.min(maxTotal, fullMin);
+}
+
+function updateBetLiveLabels(player) {
+  const toCall = chipsToCallAmount(player);
+  const maxTotal = streetAllInTotal(player);
+  const raiseTo = parseInt(betSlider.value, 10) || 0;
+  const opening = currentBet === 0;
+
+  if (toCall > 0) {
+    callAmountLabel.textContent = `Call: $${toCall}`;
+    callAmountLabel.classList.remove("hidden");
+  } else {
+    callAmountLabel.textContent = "Call: —";
+    callAmountLabel.classList.add("hidden");
+  }
+
+  if (opening) {
+    raiseToLabel.textContent = `Bet to: $${raiseTo} total this round`;
+    betSliderLabel.textContent = "Bet to (total this round)";
+  } else {
+    raiseToLabel.textContent = `Raise to: $${raiseTo} total this round`;
+    betSliderLabel.textContent = "Raise to (total this round)";
+  }
+
+  const atAllIn = raiseTo >= maxTotal && maxTotal > 0;
+  if (atAllIn) {
+    allinLabel.textContent = `All-in ($${maxTotal})`;
+    allinLabel.classList.remove("hidden");
+  } else {
+    allinLabel.textContent = "";
+    allinLabel.classList.add("hidden");
+  }
+
+  betAmountSpan.textContent = `$${raiseTo}`;
+}
+
 function showPlayerOptions(player) {
   playerOptionsDiv.classList.remove("hidden");
 
-  let minBet = currentBet - player.currentBetInRound;
-  if (minBet < 0) minBet = 0;
-  const maxBet = player.chips;
+  const toCall = chipsToCallAmount(player);
+  const maxTotal = streetAllInTotal(player);
+  const canCheck = toCall === 0;
+  const opening = currentBet === 0;
+  const minTo = minRaiseToTotal(player);
+  // Can raise/bet if we can put more in than just matching currentBet
+  const canRaise = maxTotal > currentBet && player.chips > 0;
+  // Short all-in above call but below full min raise still allowed via slider max
+  const canOnlyShove =
+    canRaise && maxTotal < (opening ? BIG_BLIND : currentBet + minRaiseSize);
 
-  betSlider.min = minBet;
-  betSlider.max = maxBet;
-  betSlider.value = minBet;
-
-  if (currentBet === 0 || player.currentBetInRound === currentBet) {
+  if (canCheck) {
     checkCallBtn.textContent = "Check";
-    betRaiseBtn.textContent = "Bet";
-    betSlider.min = 0;
   } else {
-    checkCallBtn.textContent = `Call ($${
-      currentBet - player.currentBetInRound
-    })`;
-    betRaiseBtn.textContent = "Raise";
+    checkCallBtn.textContent = `Call $${toCall}`;
   }
+
+  if (opening) {
+    betRaiseBtn.textContent = canOnlyShove
+      ? `All-in $${maxTotal}`
+      : "Bet";
+  } else {
+    betRaiseBtn.textContent = canOnlyShove
+      ? `All-in $${maxTotal}`
+      : "Raise";
+  }
+
+  // Slider = total contribution this street (raise-to / bet-to)
+  betSlider.min = minTo;
+  betSlider.max = Math.max(minTo, maxTotal);
+  betSlider.value = minTo;
 
   if (player.chips === 0) {
     betSlider.disabled = true;
     foldBtn.disabled = true;
     betRaiseBtn.disabled = true;
-    if (player.currentBetInRound < currentBet) {
-      checkCallBtn.disabled = true;
-    } else {
-      checkCallBtn.disabled = false;
-    }
+    checkCallBtn.disabled = toCall > 0; // already all-in; nothing to do
   } else {
-    betSlider.disabled = false;
     foldBtn.disabled = false;
-    betRaiseBtn.disabled = false;
     checkCallBtn.disabled = false;
+    betSlider.disabled = !canRaise;
+    betRaiseBtn.disabled = !canRaise;
   }
 
-  betAmountSpan.textContent = `$${betSlider.value}`;
+  updateBetLiveLabels(player);
   betSlider.oninput = () => {
-    betAmountSpan.textContent = `$${betSlider.value}`;
-    if (
-      betSlider.value < currentBet + 10 &&
-      currentBet > 0 &&
-      betSlider.value - player.currentBetInRound <
-        currentBet - player.currentBetInRound + 10
-    ) {
-      betRaiseBtn.disabled = true;
-    } else {
-      betRaiseBtn.disabled = false;
-    }
-
-    if (betSlider.value < currentBet - player.currentBetInRound) {
-      betRaiseBtn.disabled = true;
-    }
+    updateBetLiveLabels(player);
+    const val = parseInt(betSlider.value, 10) || 0;
+    const fullMin = opening ? BIG_BLIND : currentBet + minRaiseSize;
+    // Allow short all-in; otherwise require full min raise-to
+    const legal =
+      canRaise &&
+      (val >= fullMin || val >= maxTotal);
+    betRaiseBtn.disabled = !legal;
   };
 }
 
@@ -456,27 +527,38 @@ function handlePlayerAction(actionType, amount = 0) {
       );
       break;
     case "bet":
-    case "raise":
-      actualAmount = parseInt(betSlider.value);
-      actualAmount = Math.min(
-        actualAmount,
-        player.chips + player.currentBetInRound
-      );
+    case "raise": {
+      // Slider value = total contribution this street ("raise to" / "bet to")
+      actualAmount = parseInt(betSlider.value, 10);
+      const maxTotal = streetAllInTotal(player);
+      actualAmount = Math.min(actualAmount, maxTotal);
+      const fullMin = currentBet === 0 ? BIG_BLIND : currentBet + minRaiseSize;
+      const isAllIn = actualAmount >= maxTotal;
       if (
-        actualAmount < currentBet &&
-        actualAmount < player.chips + player.currentBetInRound
+        actualAmount <= currentBet ||
+        (!isAllIn && actualAmount < fullMin)
       ) {
         displayMessage("Invalid bet/raise amount.");
         showPlayerOptions(player);
         return;
       }
+      const prevBet = currentBet;
       performBet(player, actualAmount - player.currentBetInRound, actionType);
-      currentBet = actualAmount;
+      const newTotal = player.currentBetInRound;
+      const raiseBy = newTotal - prevBet;
+      currentBet = newTotal;
+      // Full min-raise updates the minimum for the next raiser; short all-in does not
+      if (raiseBy >= minRaiseSize) {
+        minRaiseSize = raiseBy;
+      }
       noteAggression(playerIndex);
       displayMessage(
-        `You ${actionType === "bet" ? "bet" : "raised"} to $${actualAmount}.`
+        player.chips === 0
+          ? `You go all-in — $${newTotal} total this round!`
+          : `You ${actionType === "bet" ? "bet" : "raised"} to $${newTotal} total this round.`
       );
       break;
+    }
   }
   updatePlayerDisplays();
   updatePotDisplay();
@@ -484,10 +566,35 @@ function handlePlayerAction(actionType, amount = 0) {
 }
 
 // --- NPC Logic (Simplified) ---
+/** Apply a bet/raise-to total this street; updates currentBet + minRaiseSize. */
+function npcBetOrRaiseTo(npc, targetTotal) {
+  const maxTotal = streetAllInTotal(npc);
+  let raiseTo = Math.min(Math.floor(targetTotal), maxTotal);
+  const fullMin = currentBet === 0 ? BIG_BLIND : currentBet + minRaiseSize;
+  // If they planned a raise but can't meet min and aren't shoving past current, just call
+  if (raiseTo <= currentBet) {
+    return false;
+  }
+  if (raiseTo < fullMin && raiseTo < maxTotal) {
+    raiseTo = Math.min(maxTotal, fullMin);
+  }
+  if (raiseTo <= currentBet) return false;
+
+  const prevBet = currentBet;
+  performBet(npc, raiseTo - npc.currentBetInRound, "raise");
+  const newTotal = npc.currentBetInRound;
+  const raiseBy = newTotal - prevBet;
+  currentBet = newTotal;
+  if (raiseBy >= minRaiseSize) {
+    minRaiseSize = raiseBy;
+  }
+  return true;
+}
+
 function npcTurn(npc) {
   const npcIndex = players.indexOf(npc);
   const handStrength = evaluateBestHand(npc.hand, communityCards).category;
-  const chipsToCall = currentBet - npc.currentBetInRound;
+  const chipsToCall = chipsToCallAmount(npc);
   let actionMessage = "";
 
   // Short all-in: never fold when you still have chips but can't cover the call
@@ -507,11 +614,21 @@ function npcTurn(npc) {
   if (npc.name === "NPC 1") {
     if (handStrength >= 6 || (handStrength >= 2 && chipsToCall < 20)) {
       if (currentBet === 0 || (handStrength >= 6 && Math.random() < 0.6)) {
-        let betAmount = Math.min(npc.chips, Math.max(currentBet * 1.5, 20));
-        performBet(npc, betAmount - npc.currentBetInRound, "raise");
-        currentBet = npc.currentBetInRound;
-        noteAggression(npcIndex);
-        actionMessage = `${npc.name} raises to $${npc.currentBetInRound}!`;
+        const target = Math.max(currentBet === 0 ? BIG_BLIND : currentBet + minRaiseSize, currentBet * 1.5, 20);
+        if (npcBetOrRaiseTo(npc, target)) {
+          noteAggression(npcIndex);
+          actionMessage =
+            npc.chips === 0
+              ? `${npc.name} goes all-in — $${npc.currentBetInRound} total this round!`
+              : `${npc.name} raises to $${npc.currentBetInRound} total this round!`;
+        } else if (chipsToCall > 0) {
+          performBet(npc, chipsToCall, "call");
+          notePlayerActed(npcIndex);
+          actionMessage = `${npc.name} calls $${chipsToCall}.`;
+        } else {
+          notePlayerActed(npcIndex);
+          actionMessage = `${npc.name} checks.`;
+        }
       } else {
         performBet(npc, chipsToCall, "call");
         notePlayerActed(npcIndex);
@@ -528,14 +645,25 @@ function npcTurn(npc) {
   } else if (npc.name === "NPC 2") {
     if (handStrength >= 4 || (handStrength >= 1 && Math.random() < 0.4)) {
       if (currentBet === 0 || Math.random() < 0.7) {
-        let betAmount = Math.min(
-          npc.chips,
-          Math.max(currentBet * 2, 25 + Math.floor(Math.random() * 15))
+        const target = Math.max(
+          currentBet === 0 ? BIG_BLIND : currentBet + minRaiseSize,
+          currentBet * 2,
+          25 + Math.floor(Math.random() * 15)
         );
-        performBet(npc, betAmount - npc.currentBetInRound, "raise");
-        currentBet = npc.currentBetInRound;
-        noteAggression(npcIndex);
-        actionMessage = `${npc.name} aggressively raises to $${npc.currentBetInRound}!`;
+        if (npcBetOrRaiseTo(npc, target)) {
+          noteAggression(npcIndex);
+          actionMessage =
+            npc.chips === 0
+              ? `${npc.name} goes all-in — $${npc.currentBetInRound} total this round!`
+              : `${npc.name} aggressively raises to $${npc.currentBetInRound} total this round!`;
+        } else if (chipsToCall > 0) {
+          performBet(npc, chipsToCall, "call");
+          notePlayerActed(npcIndex);
+          actionMessage = `${npc.name} calls $${chipsToCall}.`;
+        } else {
+          notePlayerActed(npcIndex);
+          actionMessage = `${npc.name} checks.`;
+        }
       } else {
         performBet(npc, chipsToCall, "call");
         notePlayerActed(npcIndex);
@@ -986,6 +1114,22 @@ function showdown() {
     }
   });
 
+  // Chip conservation: side-pot amounts must equal contributions; awardPotChips
+  // already gives odd split chips to earliest seats. If anything is still left
+  // in `pot` (should be 0), hand remainder to earliest still-active seat.
+  const distributed = sidePots.reduce((s, p) => s + p.amount, 0);
+  let leftover = pot - distributed;
+  if (leftover > 0) {
+    const fallback = activePlayers.slice().sort(
+      (a, b) => players.indexOf(a) - players.indexOf(b)
+    );
+    if (fallback.length) {
+      awardPotChips(leftover, fallback);
+      messages.push(
+        `$${leftover} leftover chip(s) awarded by seat order.`
+      );
+    }
+  }
   pot = 0;
   displayMessage(messages.join(" "));
   updatePlayerDisplays();
