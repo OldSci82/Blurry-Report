@@ -144,7 +144,8 @@ const allinLabel = document.getElementById("allin-label");
 const foldBtn = document.getElementById("fold-btn");
 const checkCallBtn = document.getElementById("check-call-btn");
 const betRaiseBtn = document.getElementById("bet-raise-btn");
-const potDisplay = document.getElementById("pot-display");
+/** Last status sentence; the banner always prefixes the live pot. */
+let statusText = "Welcome to Texas Hold'em! Pick a look and click 'Start Game'.";
 const communityCardsDiv = document.getElementById("community-cards");
 
 function clearPendingTimer() {
@@ -1425,7 +1426,7 @@ function updatePlayerDisplays() {
 }
 
 function updatePotDisplay() {
-  potDisplay.textContent = `Pot: $${pot}`;
+  renderStatusBanner();
 }
 
 function updateCommunityCardsDisplay() {
@@ -1439,8 +1440,14 @@ function potWinPhrase(name) {
   return name === "You" ? "You win" : `${name} wins`;
 }
 
+function renderStatusBanner() {
+  if (!statusBanner) return;
+  statusBanner.textContent = `Pot ($${pot}): ${statusText}`;
+}
+
 function displayMessage(message) {
-  statusBanner.textContent = message;
+  statusText = message;
+  renderStatusBanner();
 }
 
 // --- Event Listeners ---
@@ -1487,9 +1494,9 @@ initGame();
 // Design tracks NPC avatar size (~244 desktop / ~256 mobile, 1.6× human base)
 // so phone scale stays usable. Action buttons stay outside the transform at
 // native size. Viewport flex-end docks stage+controls above the bottom status
-// banner (spare space clears above the table / pot).
+// banner (spare space clears above the table / top seat). Pot is in that banner.
 const STAGE_DESIGN_WIDTH = 1460;
-const STAGE_DESIGN_HEIGHT = 1140;
+const STAGE_DESIGN_HEIGHT = 990;
 const STAGE_PAD_X = 8;
 const STAGE_PAD_Y = 4;
 
@@ -1505,7 +1512,7 @@ function fitGameStage() {
   stage.style.height = "";
   stage.style.maxWidth = "none";
 
-  // Read design size from computed CSS (desktop 1460×960; mobile 1520×1000)
+  // Read design size from computed CSS (desktop 1460×990; mobile 1560×1030)
   const designW =
     Math.round(parseFloat(getComputedStyle(stage).width)) || STAGE_DESIGN_WIDTH;
   const designH =
@@ -1535,12 +1542,10 @@ function fitGameStage() {
   availW = Math.max(0, availW);
   availH = Math.max(0, availH);
 
-  // Seat + pot pills counter-scale to ~design size on screen; reserve slack so
-  // the shell can grow by that overflow (pot sits above top seat) without
+  // Seat name pills counter-scale to ~design size on screen; reserve slack so
+  // the shell can grow by that overflow (top name grows upward) without
   // eating the action dock. On phones, trim reserve a bit for larger scale.
   const LABEL_DESIGN_H = 46;
-  // Pot badge shares the same counter-scale above the top name pill.
-  const POT_DESIGN_H = 32;
   const labelReserve = isNarrow
     ? Math.min(28, Math.max(0, availH * 0.06))
     : Math.min(42, Math.max(0, availH * 0.09));
@@ -1558,15 +1563,15 @@ function fitGameStage() {
   // padding-top + bottom height so top NPC is not clipped. Viewport uses
   // justify-content:flex-end so spare height clears above the table; status
   // banner sits below controls as the page footer.
-  // Top name grows up (origin: bottom); pot above it also grows up.
-  const labelOverflowY = Math.ceil((LABEL_DESIGN_H + POT_DESIGN_H) * (1 - s));
+  // Top name grows up (origin: bottom).
+  const labelOverflowY = Math.ceil(LABEL_DESIGN_H * (1 - s));
   shell.style.boxSizing = "content-box";
   shell.style.paddingTop = `${labelOverflowY}px`;
   shell.style.width = `${Math.round(designW * s)}px`;
   shell.style.height = `${Math.round(designH * s) + labelOverflowY}px`;
   if (viewport) {
     // Status banner is the footer under controls. Keep a little top air so
-    // counter-scaled pot/name never kiss the viewport top after flex-end
+    // the counter-scaled top name never kisses the viewport top after flex-end
     // docks stage+controls above the banner.
     const topGap = labelOverflowY > 0
       ? Math.min(isNarrow ? 14 : 28, Math.max(isNarrow ? 6 : 18, Math.round(labelOverflowY * (isNarrow ? 0.25 : 0.4))))

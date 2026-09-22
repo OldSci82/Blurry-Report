@@ -50,7 +50,7 @@ body {
 
 /*
  * Viewport docks the scaled stage + controls above the bottom status banner
- * (flex-end). Spare height clears above the table (pot / top seat). Stage shell
+ * (flex-end). Spare height clears above the table (top seat). Stage shell
  * = post-scale layout box (width/height set by JS). Stage = fixed design size
  * that includes all seat overhang; JS scales it.
  */
@@ -70,7 +70,7 @@ body {
 
 #game-stage-shell {
     flex: 0 0 auto;
-    /* visible: counter-scaled seat/pot labels may extend past design box */
+    /* visible: counter-scaled seat labels may extend past design box */
     overflow: visible;
     margin: 0;
     position: relative;
@@ -80,7 +80,7 @@ body {
 #game-stage {
     /* DESIGN: 700 felt + left overhang (mothman@1.6×) + right overhang (mothman+info) */
     width: 1460px;
-    height: 1140px;
+    height: 990px;
     transform-origin: top left;
     will-change: transform;
     /* Fixed design size — do not stretch to viewport before measuring */
@@ -95,8 +95,8 @@ body {
     gap: 4px;
     /* Side pads clear mothman wings when seat-mothman; regular seats sit flush */
     width: 1460px;
-    /* Extra top pad: pot badge sits above top seat + counter-scaled name */
-    padding: 480px 440px 16px 320px;
+    /* Top pad clears the top-seat name; pot amount lives in the status banner */
+    padding: 330px 440px 16px 320px;
     box-sizing: border-box;
     margin: 0;
 }
@@ -175,8 +175,7 @@ body {
     transform-origin: center top;
 }
 .player-right .player-info {
-    transform-origin: left center;
-    align-items: flex-start;
+    transform-origin: center top;
 }
 .player-human-area .player-info {
     transform-origin: center top;
@@ -239,24 +238,30 @@ body {
     transform-origin: center center;
 }
 
-/* Right NPC seat — default flush for regular NPCs (NOT mothman-tuned). */
+/* Right NPC seat — default flush for regular NPCs (NOT mothman-tuned).
+ * Name/chips stack under the sprite, same as the left seat. */
 .player-right {
     /* S=244: center at 700+S/4 → left = 700 - S/4 */
     left: 639px;
     right: auto;
     top: calc(50% - 122px);
     transform: none;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    gap: 14px;
+    gap: 8px;
 }
 .player-right .player-image {
     transform: rotate(90deg);
     transform-origin: center center;
+    position: relative;
+    z-index: 1;
 }
 .player-right .player-info {
-    text-align: left;
-    /* transform-origin / align set with seat-label rules above */
+    text-align: center;
+    align-items: center;
+    /* Rotated art (Mothman wings) overflows the layout box onto this pill.
+       Draw the label above the sprite so the name stays readable. */
+    z-index: 8;
 }
 /* Mothman right: rotate +90° to face table; body center = regular seat */
 .player-right.seat-mothman {
@@ -293,14 +298,19 @@ body {
 /* Top NPC seat — overhang matches taller 244px NPC avatar */
 .player-top {
     left: 50%;
-    /* S=244: nudge up so stomach/hands sit on purple rail (not buried in felt) */
-    top: -255px;
+    /* S=244: 20px lower than -255 so stomach/hands meet the purple rail.
+       Not as low as the old -190 bury-into-felt position. */
+    top: -235px;
     transform: translateX(-50%);
     flex-direction: column-reverse;
     gap: 6px;
 }
+/* Mothman on top already sits flush — keep the previous offset. */
+.player-top.seat-mothman {
+    top: -255px;
+}
 
-/* Top seat hole cards on the felt below the avatar (clears pot at ~128px) */
+/* Top seat hole cards on the felt below the avatar */
 .player-top .player-hand-display {
     position: absolute;
     left: 50%;
@@ -435,28 +445,6 @@ body {
 }
 .card.hidden .card-pip {
     visibility: hidden;
-}
-
-/* Pot badge — above the top seat (not on felt / board cards) */
-#pot-display {
-    position: absolute;
-    /* Above top-seat name pill (counter-scaled); not on felt/board */
-    top: -440px;
-    left: 50%;
-    transform: translateX(-50%) scale(var(--inv-stage-scale, 1));
-    transform-origin: center bottom;
-    font-size: 14px;
-    font-weight: 700;
-    color: #fff;
-    background-color: rgba(12, 12, 12, 0.82);
-    padding: 6px 14px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
-    z-index: 7;
-    white-space: nowrap;
-    pointer-events: none;
 }
 
 /* Controls docked under scaled stage — native size for touch targets */
@@ -704,15 +692,11 @@ button:disabled {
     .player-human-area .player-info {
         margin-top: 4px;
     }
-    #pot-display {
-        /* Above raised top seat + name; origin bottom grows upward */
-        top: -530px;
-    }
     /* Grow design box so larger NPC (1.6×) overhang still fits after scale */
     #game-stage {
-        /* Wider + taller: mothman wing pad + pot above top seat */
+        /* Wider: mothman wing pad. Pot amount is in the status banner. */
         width: 1560px;
-        height: 1200px;
+        height: 1030px;
     }
     /* Human mild bump; NPC 1.6× of mobile human base (160→256 / wide 512) */
     .player-image {
@@ -760,9 +744,12 @@ button:disabled {
         transform-origin: center center;
     }
     .player-top {
-        /* Nudge up: stomach/hands on purple rail without clipping name */
-        top: -265px;
+        /* Same 20px drop as desktop (-265 → -245); mothman stays put */
+        top: -245px;
         gap: 4px;
+    }
+    .player-top.seat-mothman {
+        top: -265px;
     }
     .player-human-area {
         top: 404px;
@@ -775,8 +762,8 @@ button:disabled {
     }
     #game-container {
         width: 1560px;
-        /* More side/top pad: mothman wings + pot above top seat */
-        padding: 510px 480px 12px 380px;
+        /* Side pad for mothman wings; top pad for the name pill only */
+        padding: 340px 480px 12px 380px;
     }
     /* Extra hole-card size so stage scale on phones doesn't crush rank/suit */
     .player-hand-display .card {
