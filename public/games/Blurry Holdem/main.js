@@ -24,12 +24,12 @@ function renderCardHtml(card) {
 
 // --- Character roster (art under images/npcs and images/players) ---
 const NPC_ROSTER = [
-  { id: "goliath", name: "Goliath", src: "images/npcs/goliath.png", wide: false },
-  { id: "agent", name: "Man in Black", src: "images/npcs/agent.png", wide: false },
-  { id: "mothman", name: "Mothman", src: "images/npcs/mothman.png", wide: true },
-  { id: "bigfoot", name: "Bigfoot", src: "images/npcs/bigfoot.png", wide: false },
-  { id: "alien", name: "Alien", src: "images/npcs/alien.png", wide: false },
-  { id: "wolfman", name: "Wolfman", src: "images/npcs/wolfman.png", wide: false },
+  { id: "goliath", name: "Goliath", src: "images/npcs/goliath.png", wide: false, style: "tag" },
+  { id: "agent", name: "Man in Black", src: "images/npcs/agent.png", wide: false, style: "tag" },
+  { id: "mothman", name: "Mothman", src: "images/npcs/mothman.png", wide: true, style: "maniac" },
+  { id: "bigfoot", name: "Bigfoot", src: "images/npcs/bigfoot.png", wide: false, style: "rock" },
+  { id: "alien", name: "Alien", src: "images/npcs/alien.png", wide: false, style: "station" },
+  { id: "wolfman", name: "Wolfman", src: "images/npcs/wolfman.png", wide: false, style: "lag" },
 ];
 
 const PLAYER_SKINS = [
@@ -129,26 +129,22 @@ function applyPlayerSkin(skinId) {
 
 /**
  * Pick 3 distinct NPCs and assign them randomly to left / top / right seats.
- * AI style is by seat (not display name): left=balanced, top=tight, right=aggressive.
+ * Playing style travels with the character (not the seat).
  * Returns [{ area, name, aiStyle, npcDef }, ...] in seat order left, top, right.
  */
 function rollNpcRoster() {
   const picked = shuffleCopy(NPC_ROSTER).slice(0, 3);
   // Random placement among the three NPC seats
   const placed = shuffleCopy(picked);
-  const seats = [
-    { selector: ".player-left", aiStyle: "balanced" },
-    { selector: ".player-top", aiStyle: "tight" },
-    { selector: ".player-right", aiStyle: "aggressive" },
-  ];
-  return seats.map((seat, i) => {
+  const seats = [".player-left", ".player-top", ".player-right"];
+  return seats.map((selector, i) => {
     const npcDef = placed[i];
-    const area = document.querySelector(seat.selector);
+    const area = document.querySelector(selector);
     applyNpcArt(area, npcDef);
     return {
       area,
       name: npcDef.name,
-      aiStyle: seat.aiStyle,
+      aiStyle: npcDef.style,
       npcDef,
     };
   });
@@ -810,7 +806,135 @@ function handlePlayerAction(actionType, amount = 0) {
   moveToNextPlayer();
 }
 
-// --- NPC Logic (Simplified) ---
+// --- NPC Logic ---
+// Styles are the usual tight/loose × passive/aggressive set:
+// rock (tight-passive), tag (tight-aggressive), station (loose-passive),
+// lag (loose-aggressive), maniac (ultra loose-aggressive).
+const NPC_STYLES = {
+  rock: {
+    playMin: 64,
+    callMax: 18,
+    monster: 90,
+    raiseMin: 86,
+    raiseFreq: 0.28,
+    bluffFreq: 0,
+    bluffMax: 0,
+    openChips: 16,
+    raiseMult: 1.6,
+  },
+  tag: {
+    playMin: 44,
+    callMax: 28,
+    monster: 80,
+    raiseMin: 52,
+    raiseFreq: 0.8,
+    bluffFreq: 0.1,
+    bluffMax: 14,
+    openChips: 24,
+    raiseMult: 2.3,
+  },
+  station: {
+    playMin: 18,
+    callMax: 60,
+    monster: 48,
+    raiseMin: 90,
+    raiseFreq: 0.25,
+    bluffFreq: 0,
+    bluffMax: 0,
+    openChips: 14,
+    raiseMult: 1.5,
+  },
+  lag: {
+    playMin: 30,
+    callMax: 36,
+    monster: 70,
+    raiseMin: 38,
+    raiseFreq: 0.74,
+    bluffFreq: 0.34,
+    bluffMax: 30,
+    openChips: 34,
+    raiseMult: 2.8,
+  },
+  maniac: {
+    playMin: 0,
+    callMax: 100,
+    monster: 0,
+    raiseMin: 0,
+    raiseFreq: 0.9,
+    bluffFreq: 0,
+    bluffMax: 100,
+    openChips: 50,
+    raiseMult: 3.5,
+  },
+};
+
+function preflopScore(hand) {
+  if (!hand || hand.length < 2) return 0;
+  const a = rankValue(hand[0].rank);
+  const b = rankValue(hand[1].rank);
+  const hi = Math.max(a, b);
+  const lo = Math.min(a, b);
+  const suited = hand[0].suit === hand[1].suit;
+  const gap = hi - lo;
+  if (a === b) return Math.min(96, 58 + hi * 3);
+  let score = 10 + hi * 1.5;
+  if (suited) score += 7;
+  if (gap === 1) score += 6;
+  else if (gap === 2) score += 3;
+  if (hi >= 12) score += 12;
+  if (hi >= 11 && lo >= 10) score += 8;
+  if (hi >= 12 && lo >= 9) score += 8;
+  return Math.min(88, Math.round(score));
+}
+
+function postflopScore(evaluated) {
+  const top =
+    evaluated.tiebreakers && evaluated.tiebreakers.length
+      ? evaluated.tiebreakers[0]
+      : 0;
+  // Same 0–100 scale as the style thresholds. High card stays weak,
+  // a big pair can call a small bet, two pair and better are monsters.
+  switch (evaluated.category) {
+    case HAND_CATEGORY.HIGH_CARD:
+      return 8 + top;
+    case HAND_CATEGORY.PAIR:
+      return Math.round(44 + top * 2.4);
+    case HAND_CATEGORY.TWO_PAIR:
+      return 90;
+    case HAND_CATEGORY.THREE_OF_A_KIND:
+      return 92;
+    case HAND_CATEGORY.STRAIGHT:
+      return 94;
+    case HAND_CATEGORY.FLUSH:
+      return 96;
+    case HAND_CATEGORY.FULL_HOUSE:
+      return 98;
+    default:
+      return evaluated.category >= HAND_CATEGORY.FOUR_OF_A_KIND ? 99 : 10;
+  }
+}
+
+function hasFlushDraw(hole, board) {
+  if (!board || board.length < 3) return false;
+  const suits = {};
+  for (const card of [...hole, ...board]) {
+    suits[card.suit] = (suits[card.suit] || 0) + 1;
+  }
+  return Object.values(suits).some((n) => n === 4);
+}
+
+function npcHandScore(npc) {
+  const evaluated = evaluateBestHand(npc.hand, communityCards);
+  if (communityCards.length === 0) return preflopScore(npc.hand);
+  let score = postflopScore(evaluated);
+  if (hasFlushDraw(npc.hand, communityCards)) score += 10;
+  return Math.min(100, score);
+}
+
+function npcStyleOf(npc) {
+  return NPC_STYLES[npc.aiStyle] || NPC_STYLES.tag;
+}
+
 /** Apply a bet/raise-to total this street; updates currentBet + minRaiseSize. */
 function npcBetOrRaiseTo(npc, targetTotal) {
   const maxTotal = streetAllInTotal(npc);
@@ -838,7 +962,6 @@ function npcBetOrRaiseTo(npc, targetTotal) {
 
 function npcTurn(npc) {
   const npcIndex = players.indexOf(npc);
-  const handStrength = evaluateBestHand(npc.hand, communityCards).category;
   const chipsToCall = chipsToCallAmount(npc);
   let actionMessage = "";
 
@@ -852,112 +975,50 @@ function npcTurn(npc) {
     return;
   }
 
-  // --- Basic NPC Strategy (by seat aiStyle, not display name) ---
-  const style = npc.aiStyle || "tight";
-  if (style === "balanced") {
-    if (handStrength >= 6 || (handStrength >= 2 && chipsToCall < 20)) {
-      if (currentBet === 0 || (handStrength >= 6 && Math.random() < 0.6)) {
-        const target = Math.max(currentBet === 0 ? BIG_BLIND : currentBet + minRaiseSize, currentBet * 1.5, 20);
-        if (npcBetOrRaiseTo(npc, target)) {
-          noteAggression(npcIndex);
-          actionMessage =
-            npc.chips === 0
-              ? `${npc.name} goes all-in — $${npc.currentBetInRound} total this round!`
-              : `${npc.name} raises to $${npc.currentBetInRound} total this round!`;
-        } else if (chipsToCall > 0) {
-          performBet(npc, chipsToCall, "call");
-          notePlayerActed(npcIndex);
-          actionMessage = `${npc.name} calls $${chipsToCall}.`;
-        } else {
-          notePlayerActed(npcIndex);
-          actionMessage = `${npc.name} checks.`;
-        }
-      } else {
-        performBet(npc, chipsToCall, "call");
-        notePlayerActed(npcIndex);
-        actionMessage = `${npc.name} calls $${chipsToCall}.`;
-      }
-    } else if (currentBet === 0 || chipsToCall === 0) {
-      notePlayerActed(npcIndex);
-      actionMessage = `${npc.name} checks.`;
-    } else {
-      npc.folded = true;
-      notePlayerActed(npcIndex);
-      actionMessage = `${npc.name} folds.`;
+  const style = npcStyleOf(npc);
+  const score = npcHandScore(npc);
+  const facing = chipsToCall > 0;
+  const roll = Math.random();
+  const wantRaise = facing
+    ? (score >= style.raiseMin && roll < style.raiseFreq) ||
+      (score < style.raiseMin &&
+        roll < style.bluffFreq &&
+        chipsToCall <= style.bluffMax)
+    : (score >= style.raiseMin && roll < style.raiseFreq) ||
+      (score < style.playMin && roll < style.bluffFreq);
+
+  if (wantRaise) {
+    const target = facing
+      ? Math.max(
+          currentBet + minRaiseSize,
+          Math.floor(currentBet * style.raiseMult),
+          style.openChips
+        )
+      : Math.max(BIG_BLIND, style.openChips);
+    if (npcBetOrRaiseTo(npc, target)) {
+      noteAggression(npcIndex);
+      const verb = facing ? "raises to" : "bets";
+      actionMessage =
+        npc.chips === 0
+          ? `${npc.name} goes all-in — $${npc.currentBetInRound} total this round!`
+          : `${npc.name} ${verb} $${npc.currentBetInRound} total this round!`;
     }
-  } else if (style === "aggressive") {
-    if (handStrength >= 4 || (handStrength >= 1 && Math.random() < 0.4)) {
-      if (currentBet === 0 || Math.random() < 0.7) {
-        const target = Math.max(
-          currentBet === 0 ? BIG_BLIND : currentBet + minRaiseSize,
-          currentBet * 2,
-          25 + Math.floor(Math.random() * 15)
-        );
-        if (npcBetOrRaiseTo(npc, target)) {
-          noteAggression(npcIndex);
-          actionMessage =
-            npc.chips === 0
-              ? `${npc.name} goes all-in — $${npc.currentBetInRound} total this round!`
-              : `${npc.name} aggressively raises to $${npc.currentBetInRound} total this round!`;
-        } else if (chipsToCall > 0) {
-          performBet(npc, chipsToCall, "call");
-          notePlayerActed(npcIndex);
-          actionMessage = `${npc.name} calls $${chipsToCall}.`;
-        } else {
-          notePlayerActed(npcIndex);
-          actionMessage = `${npc.name} checks.`;
-        }
-      } else {
-        performBet(npc, chipsToCall, "call");
-        notePlayerActed(npcIndex);
-        actionMessage = `${npc.name} calls $${chipsToCall}.`;
-      }
-    } else if (currentBet === 0 || chipsToCall === 0) {
+  }
+
+  if (!actionMessage) {
+    const pricedIn =
+      score >= style.monster ||
+      (score >= style.playMin && chipsToCall <= style.callMax);
+    if (!facing) {
       notePlayerActed(npcIndex);
       actionMessage = `${npc.name} checks.`;
-    } else {
-      npc.folded = true;
-      notePlayerActed(npcIndex);
-      actionMessage = `${npc.name} folds.`;
-    }
-  } else {
-    // tight (top seat) and fallback: tight-aggressive king energy
-    if (handStrength >= 5 || (handStrength >= 2 && chipsToCall <= 15)) {
-      if (currentBet === 0 || (handStrength >= 5 && Math.random() < 0.55)) {
-        const target = Math.max(
-          currentBet === 0 ? BIG_BLIND : currentBet + minRaiseSize,
-          Math.floor(currentBet * 1.75),
-          20 + Math.floor(Math.random() * 10)
-        );
-        if (npcBetOrRaiseTo(npc, target)) {
-          noteAggression(npcIndex);
-          actionMessage =
-            npc.chips === 0
-              ? `${npc.name} goes all-in — $${npc.currentBetInRound} total this round!`
-              : `${npc.name} raises to $${npc.currentBetInRound} total this round!`;
-        } else if (chipsToCall > 0) {
-          performBet(npc, chipsToCall, "call");
-          notePlayerActed(npcIndex);
-          actionMessage = `${npc.name} calls $${chipsToCall}.`;
-        } else {
-          notePlayerActed(npcIndex);
-          actionMessage = `${npc.name} checks.`;
-        }
-      } else if (chipsToCall > 0) {
-        performBet(npc, chipsToCall, "call");
-        notePlayerActed(npcIndex);
-        actionMessage = `${npc.name} calls $${chipsToCall}.`;
-      } else {
-        notePlayerActed(npcIndex);
-        actionMessage = `${npc.name} checks.`;
-      }
-    } else if (currentBet === 0 || chipsToCall === 0) {
-      notePlayerActed(npcIndex);
-      actionMessage = `${npc.name} checks.`;
-    } else if (chipsToCall <= 10 && Math.random() < 0.35) {
+    } else if (pricedIn) {
       performBet(npc, chipsToCall, "call");
       notePlayerActed(npcIndex);
-      actionMessage = `${npc.name} calls $${chipsToCall}.`;
+      actionMessage =
+        npc.chips === 0
+          ? `${npc.name} goes all-in calling $${chipsToCall}!`
+          : `${npc.name} calls $${chipsToCall}.`;
     } else {
       npc.folded = true;
       notePlayerActed(npcIndex);
