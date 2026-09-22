@@ -190,7 +190,7 @@ const foldBtn = document.getElementById("fold-btn");
 const checkCallBtn = document.getElementById("check-call-btn");
 const betRaiseBtn = document.getElementById("bet-raise-btn");
 /** Last status sentence; the banner always prefixes the live pot. */
-let statusText = "Welcome to Texas Hold'em! Pick a look and click 'Start Game'.";
+let statusText = "Welcome to Blurry Hold'em! Pick a look and click 'Start Game'.";
 const communityCardsDiv = document.getElementById("community-cards");
 
 function clearPendingTimer() {
@@ -274,7 +274,7 @@ function initGame() {
   ];
   dealerIndex = 0; // Start with 'You' as dealer, rotates among all live seats
   updatePlayerDisplays();
-  displayMessage("Welcome to Texas Hold'em! Pick a look and click 'Start Game'.");
+  displayMessage("Welcome to Blurry Hold'em! Pick a look and click 'Start Game'.");
   startGameBtn.classList.remove("hidden");
   const playerSelect = document.getElementById("player-select");
   if (playerSelect) playerSelect.classList.remove("hidden");

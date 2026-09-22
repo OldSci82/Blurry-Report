@@ -479,11 +479,21 @@ body {
     -webkit-text-stroke: 0.55px currentColor;
 }
 
-/* Community board — modest readability bump (default .card size) */
+/* Community board — same readable size used on phones (flop through river) */
 #community-cards .card {
-    width: 58px;
-    height: 82px;
-    font-size: 1.4em;
+    width: 112px;
+    height: 156px;
+    font-size: 52px;
+    border-width: 3px;
+}
+
+/* Once the board is out, drop your hand onto the avatar and shrink it slightly. */
+#table.board-out .player-human-area .player-hand-display {
+    bottom: auto;
+    top: 18px;
+    transform: translateX(-50%) scale(0.88);
+    transform-origin: center top;
+    z-index: 6;
 }
 
 .card.hidden {
