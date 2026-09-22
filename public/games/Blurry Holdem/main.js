@@ -2,6 +2,12 @@
 const SUITS = ["♠", "♥", "♦", "♣"];
 const RANKS = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"];
 
+const DISPLAY_RANKS = { T: "10" };
+
+function formatCard(card) {
+  return `${DISPLAY_RANKS[card.rank] || card.rank}${card.suit}`;
+}
+
 let deck = [];
 let players = [];
 let communityCards = [];
@@ -614,7 +620,7 @@ function showdown() {
   activePlayers.forEach((p) => {
     const handDisplay = p.playerArea.querySelector(".player-hand-display");
     handDisplay.innerHTML = p.hand
-      .map((card) => `<div class="card">${card.rank}${card.suit}</div>`)
+      .map((card) => `<div class="card">${formatCard(card)}</div>`)
       .join("");
 
     const strength = calculateHandStrength(p.hand, communityCards);
@@ -662,11 +668,11 @@ function updatePlayerDisplays() {
       handDisplay.innerHTML = "";
     } else if (p.isHuman) {
       handDisplay.innerHTML = p.hand
-        .map((card) => `<div class="card">${card.rank}${card.suit}</div>`)
+        .map((card) => `<div class="card">${formatCard(card)}</div>`)
         .join("");
     } else if (bettingRound === "showdown" && !p.folded) {
       handDisplay.innerHTML = p.hand
-        .map((card) => `<div class="card">${card.rank}${card.suit}</div>`)
+        .map((card) => `<div class="card">${formatCard(card)}</div>`)
         .join("");
     } else if (p.hand.length > 0 && !p.folded) {
       handDisplay.innerHTML = `<div class="card hidden"></div><div class="card hidden"></div>`;
@@ -691,7 +697,7 @@ function updateCommunityCardsDisplay() {
   communityCards.forEach((card) => {
     const cardDiv = document.createElement("div");
     cardDiv.classList.add("card");
-    cardDiv.textContent = `${card.rank}${card.suit}`;
+    cardDiv.textContent = formatCard(card);
     communityCardsDiv.appendChild(cardDiv);
   });
 }
