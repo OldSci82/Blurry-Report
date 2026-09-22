@@ -191,7 +191,7 @@ body {
     transform-origin: center center;
 }
 
-.npc-mothman {
+.npc-wide {
     width: 200px;
     height: 100px;
     border-radius: 0px;
@@ -200,7 +200,7 @@ body {
 
 /* --- PLAYER PLACEMENT (around 700×500 felt) --- */
 
-/* Hat Man — left rail */
+/* Left NPC seat */
 .player-left {
     left: -75px;
     top: calc(50% - 50px);
@@ -210,7 +210,7 @@ body {
     transform: rotate(-90deg);
 }
 
-/* Mothman — right rail */
+/* Right NPC seat */
 .player-right {
     left: 625px;
     right: auto;
@@ -249,7 +249,7 @@ body {
     min-height: 70px;
 }
 
-/* Goliath — top rail (full player seat) */
+/* Top NPC seat */
 .player-top {
     left: 50%;
     top: -116px;
@@ -479,6 +479,51 @@ button:disabled {
     gap: 8px;
 }
 
+
+/* Compact player skin picker (start screen) */
+#player-select {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+.player-select-label {
+    font-size: 0.85em;
+    color: #bbb;
+    letter-spacing: 0.02em;
+}
+.player-select-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+.skin-btn {
+    padding: 4px;
+    min-height: 0;
+    background: rgba(0, 0, 0, 0.35);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    line-height: 0;
+}
+.skin-btn img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    display: block;
+    border-radius: 4px;
+}
+.skin-btn:hover:not([disabled]) {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+.skin-btn.selected {
+    border-color: #4CAF50;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.55);
+    background: rgba(76, 175, 80, 0.15);
+}
+
 /* Dealer button (D) — rotates among all four seats */
 .dealer-button {
     position: absolute;
@@ -569,6 +614,50 @@ button:disabled {
     }
     #pot-display {
         /* Sit a touch lower so grown pot badge clears top-seat cards */
-        top: 140px;
+        top: 148px;
+    }
+    /* Grow design box so larger seat overhang still fits after scale */
+    #game-stage {
+        width: 1080px;
+        height: 770px;
+    }
+    /* Larger avatars — user has unused space under the scaled stage */
+    .player-image {
+        width: 128px;
+        height: 128px;
+    }
+    .npc-wide {
+        width: 256px;
+        height: 128px;
+    }
+    .player-left {
+        left: -68px;
+        top: calc(50% - 64px);
+    }
+    .player-right {
+        left: 598px;
+        top: calc(50% - 64px);
+    }
+    .player-top {
+        top: -140px;
+        gap: 4px;
+    }
+    .player-human-area {
+        top: 422px;
+    }
+    .player-human-area .dealer-button {
+        left: calc(50% - 64px - 6px);
+    }
+    /* Slightly less empty letterbox under table on phones */
+    #table {
+        margin-bottom: 78px;
+    }
+    #game-container {
+        width: 1080px;
+        padding: 148px 250px 12px 120px;
+    }
+    .skin-btn img {
+        width: 56px;
+        height: 56px;
     }
 }

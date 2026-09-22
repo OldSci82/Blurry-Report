@@ -8,6 +8,90 @@ function formatCard(card) {
   return `${DISPLAY_RANKS[card.rank] || card.rank}${card.suit}`;
 }
 
+// --- Character roster (art under images/npcs and images/players) ---
+const NPC_ROSTER = [
+  { id: "goliath", name: "Goliath", src: "images/npcs/goliath.png", wide: false },
+  { id: "agent", name: "Man in Black", src: "images/npcs/agent.png", wide: false },
+  { id: "mothman", name: "Mothman", src: "images/npcs/mothman.png", wide: true },
+  { id: "bigfoot", name: "Bigfoot", src: "images/npcs/bigfoot.png", wide: false },
+  { id: "alien", name: "Alien", src: "images/npcs/alien.png", wide: false },
+  { id: "wolfman", name: "Wolfman", src: "images/npcs/wolfman.png", wide: false },
+];
+
+const PLAYER_SKINS = [
+  { id: "player1", src: "images/players/player1.png" },
+  { id: "player2", src: "images/players/player2.png" },
+  { id: "player3", src: "images/players/player3.png" },
+  { id: "player4", src: "images/players/player4.png" },
+];
+
+/** Session-persisted human skin id (player1–4). */
+let selectedPlayerSkin = "player1";
+
+function shuffleCopy(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/** Apply NPC art + display name to a seat DOM node. */
+function applyNpcArt(playerArea, npcDef) {
+  if (!playerArea || !npcDef) return;
+  const img = playerArea.querySelector(".player-image");
+  if (img) {
+    img.src = npcDef.src;
+    img.alt = npcDef.name;
+    img.className = "player-image" + (npcDef.wide ? " npc-wide" : "");
+  }
+  const nameEl = playerArea.querySelector(".player-name");
+  if (nameEl) nameEl.textContent = npcDef.name;
+}
+
+function applyPlayerSkin(skinId) {
+  const skin =
+    PLAYER_SKINS.find((s) => s.id === skinId) || PLAYER_SKINS[0];
+  selectedPlayerSkin = skin.id;
+  const img = document.querySelector(".player-human-area .player-image");
+  if (img) {
+    img.src = skin.src;
+    img.alt = "You";
+  }
+  document.querySelectorAll(".skin-btn").forEach((btn) => {
+    btn.classList.toggle("selected", btn.dataset.skin === selectedPlayerSkin);
+  });
+}
+
+/**
+ * Pick 3 distinct NPCs and assign them randomly to left / top / right seats.
+ * AI style is by seat (not display name): left=balanced, top=tight, right=aggressive.
+ * Returns [{ area, name, aiStyle, npcDef }, ...] in seat order left, top, right.
+ */
+function rollNpcRoster() {
+  const picked = shuffleCopy(NPC_ROSTER).slice(0, 3);
+  // Random placement among the three NPC seats
+  const placed = shuffleCopy(picked);
+  const seats = [
+    { selector: ".player-left", aiStyle: "balanced" },
+    { selector: ".player-top", aiStyle: "tight" },
+    { selector: ".player-right", aiStyle: "aggressive" },
+  ];
+  return seats.map((seat, i) => {
+    const npcDef = placed[i];
+    const area = document.querySelector(seat.selector);
+    applyNpcArt(area, npcDef);
+    return {
+      area,
+      name: npcDef.name,
+      aiStyle: seat.aiStyle,
+      npcDef,
+    };
+  });
+}
+
+
 let deck = [];
 let players = [];
 let communityCards = [];
@@ -75,7 +159,10 @@ function liveSeatIndices() {
 
 // --- Game Initialization ---
 function initGame() {
-  // Seating clockwise: You (bottom) → Hat Man (left) → Goliath (top) → Mothman (right)
+  // Fresh random NPC roster for this table; human keeps session skin
+  applyPlayerSkin(selectedPlayerSkin);
+  const npcSeats = rollNpcRoster(); // left, top, right — random 3 of 6, shuffled seats
+  // Seating clockwise: You (bottom) → left NPC → top NPC → right NPC
   players = [
     {
       name: "You",
@@ -88,40 +175,45 @@ function initGame() {
       playerArea: document.querySelector(".player-human-area"),
     },
     {
-      name: "Hat Man",
+      name: npcSeats[0].name,
+      aiStyle: npcSeats[0].aiStyle,
       chips: 100,
       hand: [],
       isHuman: false,
       folded: false,
       currentBetInRound: 0,
       totalContribution: 0,
-      playerArea: document.querySelector(".player-left"),
+      playerArea: npcSeats[0].area,
     },
     {
-      name: "Goliath",
+      name: npcSeats[1].name,
+      aiStyle: npcSeats[1].aiStyle,
       chips: 100,
       hand: [],
       isHuman: false,
       folded: false,
       currentBetInRound: 0,
       totalContribution: 0,
-      playerArea: document.querySelector(".player-top"),
+      playerArea: npcSeats[1].area,
     },
     {
-      name: "Mothman",
+      name: npcSeats[2].name,
+      aiStyle: npcSeats[2].aiStyle,
       chips: 100,
       hand: [],
       isHuman: false,
       folded: false,
       currentBetInRound: 0,
       totalContribution: 0,
-      playerArea: document.querySelector(".player-right"),
+      playerArea: npcSeats[2].area,
     },
   ];
   dealerIndex = 0; // Start with 'You' as dealer, rotates among all live seats
   updatePlayerDisplays();
-  displayMessage("Welcome to Texas Hold'em! Click 'Start Game' to begin.");
+  displayMessage("Welcome to Texas Hold'em! Pick a look and click 'Start Game'.");
   startGameBtn.classList.remove("hidden");
+  const playerSelect = document.getElementById("player-select");
+  if (playerSelect) playerSelect.classList.remove("hidden");
   nextRoundBtn.classList.add("hidden");
   playerOptionsDiv.classList.add("hidden");
 }
@@ -149,8 +241,65 @@ function dealCard() {
 
 // --- Game Flow Functions ---
 function startGame() {
+  // New table: re-roll 3 distinct NPCs into the three seats; keep human skin
+  applyPlayerSkin(selectedPlayerSkin);
+  const npcSeats = rollNpcRoster();
+  // Preserve chip stacks only if this is mid-session resume with 2+ live;
+  // otherwise reset to a fresh $100 table (typical Start Game).
+  const liveCount = players.filter((p) => p.chips > 0).length;
+  const freshTable = !players.length || liveCount < 2;
+  players = [
+    {
+      name: "You",
+      chips: freshTable ? 100 : players[0].chips,
+      hand: [],
+      isHuman: true,
+      folded: false,
+      currentBetInRound: 0,
+      totalContribution: 0,
+      playerArea: document.querySelector(".player-human-area"),
+    },
+    {
+      name: npcSeats[0].name,
+      aiStyle: npcSeats[0].aiStyle,
+      chips: freshTable ? 100 : (players[1] ? players[1].chips : 100),
+      hand: [],
+      isHuman: false,
+      folded: false,
+      currentBetInRound: 0,
+      totalContribution: 0,
+      playerArea: npcSeats[0].area,
+    },
+    {
+      name: npcSeats[1].name,
+      aiStyle: npcSeats[1].aiStyle,
+      chips: freshTable ? 100 : (players[2] ? players[2].chips : 100),
+      hand: [],
+      isHuman: false,
+      folded: false,
+      currentBetInRound: 0,
+      totalContribution: 0,
+      playerArea: npcSeats[1].area,
+    },
+    {
+      name: npcSeats[2].name,
+      aiStyle: npcSeats[2].aiStyle,
+      chips: freshTable ? 100 : (players[3] ? players[3].chips : 100),
+      hand: [],
+      isHuman: false,
+      folded: false,
+      currentBetInRound: 0,
+      totalContribution: 0,
+      playerArea: npcSeats[2].area,
+    },
+  ];
+  if (freshTable) dealerIndex = 0;
+
   startGameBtn.classList.add("hidden");
+  const playerSelect = document.getElementById("player-select");
+  if (playerSelect) playerSelect.classList.add("hidden");
   nextRoundBtn.classList.add("hidden");
+  updatePlayerDisplays();
   startNewRound();
 }
 
@@ -168,6 +317,8 @@ function startNewRound() {
         : "Game over — no players left with chips."
     );
     startGameBtn.classList.remove("hidden");
+    const playerSelectEnd = document.getElementById("player-select");
+    if (playerSelectEnd) playerSelectEnd.classList.remove("hidden");
     return;
   }
 
@@ -637,8 +788,9 @@ function npcTurn(npc) {
     return;
   }
 
-  // --- Basic NPC Strategy ---
-  if (npc.name === "Hat Man") {
+  // --- Basic NPC Strategy (by seat aiStyle, not display name) ---
+  const style = npc.aiStyle || "tight";
+  if (style === "balanced") {
     if (handStrength >= 6 || (handStrength >= 2 && chipsToCall < 20)) {
       if (currentBet === 0 || (handStrength >= 6 && Math.random() < 0.6)) {
         const target = Math.max(currentBet === 0 ? BIG_BLIND : currentBet + minRaiseSize, currentBet * 1.5, 20);
@@ -669,7 +821,7 @@ function npcTurn(npc) {
       notePlayerActed(npcIndex);
       actionMessage = `${npc.name} folds.`;
     }
-  } else if (npc.name === "Mothman") {
+  } else if (style === "aggressive") {
     if (handStrength >= 4 || (handStrength >= 1 && Math.random() < 0.4)) {
       if (currentBet === 0 || Math.random() < 0.7) {
         const target = Math.max(
@@ -705,7 +857,7 @@ function npcTurn(npc) {
       actionMessage = `${npc.name} folds.`;
     }
   } else {
-    // Goliath (top seat) and any other NPC: tight-aggressive king energy
+    // tight (top seat) and fallback: tight-aggressive king energy
     if (handStrength >= 5 || (handStrength >= 2 && chipsToCall <= 15)) {
       if (currentBet === 0 || (handStrength >= 5 && Math.random() < 0.55)) {
         const target = Math.max(
@@ -1209,7 +1361,7 @@ function showdown() {
 
 // --- UI Update Functions ---
 function updateDealerButton() {
-  // Dealer button (D) rotates among all live seats, including top (Goliath).
+  // Dealer button (D) rotates among all live seats, including top NPC.
   players.forEach((p, i) => {
     let btn = p.playerArea.querySelector(".dealer-button");
     if (i === dealerIndex) {
@@ -1229,6 +1381,8 @@ function updateDealerButton() {
 function updatePlayerDisplays() {
   players.forEach((p) => {
     const playerInfoDiv = p.playerArea.querySelector(".player-info");
+    const playerNameSpan = playerInfoDiv.querySelector(".player-name");
+    if (playerNameSpan) playerNameSpan.textContent = p.name;
     const playerChipsSpan = playerInfoDiv.querySelector(".player-chips");
     playerChipsSpan.textContent = `$${p.chips}`;
 
@@ -1281,6 +1435,12 @@ function displayMessage(message) {
 }
 
 // --- Event Listeners ---
+document.querySelectorAll(".skin-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    applyPlayerSkin(btn.dataset.skin);
+  });
+});
+
 startGameBtn.addEventListener("click", startGame);
 nextRoundBtn.addEventListener("click", () => {
   clearPendingTimer();
@@ -1330,11 +1490,20 @@ function fitGameStage() {
   const viewport = document.getElementById("game-stage-viewport");
   if (!shell || !stage) return;
 
-  // Reset any prior stretch so measurement is against the viewport, not a
-  // width:100% stage (that would make availW ≈ designW and keep scale ~1).
-  stage.style.width = STAGE_DESIGN_WIDTH + "px";
-  stage.style.height = STAGE_DESIGN_HEIGHT + "px";
+  // Clear inline size so CSS (incl. mobile media query) defines design size
+  stage.style.width = "";
+  stage.style.height = "";
   stage.style.maxWidth = "none";
+
+  // Read design size from computed CSS (desktop 1040×730; mobile 1080×770)
+  const designW =
+    Math.round(parseFloat(getComputedStyle(stage).width)) || STAGE_DESIGN_WIDTH;
+  const designH =
+    Math.round(parseFloat(getComputedStyle(stage).height)) || STAGE_DESIGN_HEIGHT;
+
+  // Lock measured design size for transform math
+  stage.style.width = designW + "px";
+  stage.style.height = designH + "px";
 
   const vv = window.visualViewport;
   const layoutW = vv && vv.width ? vv.width : window.innerWidth;
@@ -1343,10 +1512,11 @@ function fitGameStage() {
   const bannerH = statusBanner ? statusBanner.offsetHeight : 0;
   const actionH = action ? action.offsetHeight : 0;
   // Prefer the flex viewport's content box when available (accounts for gap).
+  const isNarrow = layoutW <= 480;
+  const gap = isNarrow ? 4 : 8; // slightly less empty mid gap on phones
   let availW = layoutW - STAGE_PAD_X * 2;
   let availH = layoutH - bannerH - actionH - STAGE_PAD_Y * 2;
   if (viewport) {
-    const gap = 8; // matches #game-stage-viewport gap
     const vw = viewport.clientWidth;
     const vh = viewport.clientHeight;
     if (vw > 0) availW = Math.min(availW, vw - STAGE_PAD_X * 2);
@@ -1357,11 +1527,14 @@ function fitGameStage() {
 
   // Seat/pot pills counter-scale to ~design size on screen; reserve slack so
   // the shell can grow by that overflow without eating the action dock.
+  // On phones, trim reserve a bit — unused bottom space → larger scale.
   const LABEL_DESIGN_H = 46;
-  const labelReserve = Math.min(36, Math.max(0, availH * 0.08));
+  const labelReserve = isNarrow
+    ? Math.min(22, Math.max(0, availH * 0.05))
+    : Math.min(36, Math.max(0, availH * 0.08));
   const fitH = Math.max(0, availH - labelReserve);
 
-  let s = Math.min(availW / STAGE_DESIGN_WIDTH, fitH / STAGE_DESIGN_HEIGHT);
+  let s = Math.min(availW / designW, fitH / designH);
   if (!Number.isFinite(s) || s <= 0) s = 0.25;
   // Never upscale past the desktop design size; allow well below 1 on phones
   s = Math.min(s, 1);
@@ -1371,17 +1544,18 @@ function fitGameStage() {
   // Counter-scaled pills keep ~design size on screen. Top seat grows upward
   // (origin: center bottom); bottom grows down. Prior shell height only grew
   // downward, which biased the centered stage toward the banner and clipped
-  // Goliath. Mirror the overflow as shell padding-top + bottom height, and
+  // top NPC. Mirror the overflow as shell padding-top + bottom height, and
   // add a few px under the banner — enough clearance, not a huge void.
   const labelOverflowY = Math.ceil(LABEL_DESIGN_H * (1 - s));
   shell.style.boxSizing = "content-box";
   shell.style.paddingTop = `${labelOverflowY}px`;
-  shell.style.width = `${Math.round(STAGE_DESIGN_WIDTH * s)}px`;
-  shell.style.height = `${Math.round(STAGE_DESIGN_HEIGHT * s) + labelOverflowY}px`;
+  shell.style.width = `${Math.round(designW * s)}px`;
+  shell.style.height = `${Math.round(designH * s) + labelOverflowY}px`;
   if (viewport) {
     const bannerGap = labelOverflowY > 0 ? Math.min(10, Math.max(4, Math.round(labelOverflowY * 0.3))) : 0;
     viewport.style.paddingTop = `${bannerGap}px`;
     viewport.style.boxSizing = "border-box";
+    viewport.style.gap = `${gap}px`;
   }
 
   document.documentElement.style.setProperty("--stage-scale", String(s));
