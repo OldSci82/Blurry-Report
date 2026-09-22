@@ -74,6 +74,7 @@ function initGame() {
       isHuman: true,
       folded: false,
       currentBetInRound: 0,
+      totalContribution: 0, // chips put into pots this hand (for side pots)
       playerArea: document.querySelector(".player-bottom-left"),
     },
     {
@@ -83,6 +84,7 @@ function initGame() {
       isHuman: false,
       folded: false,
       currentBetInRound: 0,
+      totalContribution: 0,
       playerArea: document.querySelector(".player-top-left"),
     },
     {
@@ -92,6 +94,7 @@ function initGame() {
       isHuman: false,
       folded: false,
       currentBetInRound: 0,
+      totalContribution: 0,
       playerArea: document.querySelector(".player-top-right"),
     },
   ];
@@ -162,6 +165,8 @@ function startNewRound() {
     p.hand = [];
     p.folded = p.chips <= 0; // eliminate / skip broke seats
     p.currentBetInRound = 0;
+    p.totalContribution = 0;
+    p._lastShowdownHand = null;
     p.playerArea.classList.remove("active-player");
     p.playerArea.querySelector(".player-hand-display").innerHTML = "";
   });
@@ -215,6 +220,7 @@ function postBlind(player, amount) {
   player.chips -= actualAmount;
   pot += actualAmount;
   player.currentBetInRound += actualAmount;
+  player.totalContribution += actualAmount;
   displayMessage(`${player.name} posts a blind of $${actualAmount}.`);
 }
 
@@ -437,10 +443,17 @@ function handlePlayerAction(actionType, amount = 0) {
       displayMessage(`You checked.`);
       break;
     case "call":
-      actualAmount = currentBet - player.currentBetInRound;
+      actualAmount = Math.min(
+        player.chips,
+        currentBet - player.currentBetInRound
+      );
       performBet(player, actualAmount, "call");
       notePlayerActed(playerIndex);
-      displayMessage(`You called $${actualAmount}.`);
+      displayMessage(
+        player.chips === 0
+          ? `You go all-in calling $${actualAmount}!`
+          : `You called $${actualAmount}.`
+      );
       break;
     case "bet":
     case "raise":
@@ -550,6 +563,7 @@ function performBet(player, amount, action) {
   player.chips -= actualAmount;
   pot += actualAmount;
   player.currentBetInRound += actualAmount;
+  player.totalContribution += actualAmount;
 }
 
 // --- Texas Hold'em Hand Evaluation (best 5 of up to 7) ---
@@ -816,13 +830,82 @@ function scorePartialHand(cards) {
   };
 }
 
-// --- Showdown & Winner Determination ---
+// --- Showdown & Side Pots ---
+/**
+ * Build main + side pots from each player's totalContribution this hand.
+ * Layer algorithm: sort unique contribution amounts; each layer is contested
+ * only by players who put in at least that much (folded players cannot win
+ * but their chips stay in the pot). Odd chips on a split go to the earliest
+ * seat among tied winners (players[] order).
+ */
+function buildSidePots() {
+  const levels = [
+    ...new Set(
+      players
+        .filter((p) => p.totalContribution > 0)
+        .map((p) => p.totalContribution)
+    ),
+  ].sort((a, b) => a - b);
+
+  const pots = [];
+  let prev = 0;
+  for (const level of levels) {
+    const layerSize = level - prev;
+    if (layerSize <= 0) continue;
+    const contributors = players.filter((p) => p.totalContribution >= level);
+    const amount = layerSize * contributors.length;
+    const eligible = contributors.filter((p) => !p.folded);
+    if (amount > 0) {
+      pots.push({ amount, eligible, level });
+    }
+    prev = level;
+  }
+  return pots;
+}
+
+/** Split amount among winners; odd chips go to earliest seats in players[]. */
+function awardPotChips(amount, winners) {
+  if (!winners.length || amount <= 0) return;
+  // Seat order for odd-chip priority
+  const ordered = [...winners].sort(
+    (a, b) => players.indexOf(a) - players.indexOf(b)
+  );
+  const share = Math.floor(amount / ordered.length);
+  let remainder = amount - share * ordered.length;
+  ordered.forEach((w) => {
+    const extra = remainder > 0 ? 1 : 0;
+    if (remainder > 0) remainder--;
+    w.chips += share + extra;
+  });
+}
+
+function winnersAmongEligible(eligible) {
+  if (eligible.length === 0) return [];
+  if (eligible.length === 1) return eligible.slice();
+
+  let bestHand = null;
+  const winners = [];
+  for (const p of eligible) {
+    const evaluated =
+      p._lastShowdownHand || evaluateBestHand(p.hand, communityCards);
+    p._lastShowdownHand = evaluated;
+    if (!bestHand || compareEvaluatedHands(evaluated, bestHand) > 0) {
+      bestHand = evaluated;
+      winners.length = 0;
+      winners.push(p);
+    } else if (compareEvaluatedHands(evaluated, bestHand) === 0) {
+      winners.push(p);
+    }
+  }
+  return winners;
+}
+
 function showdown() {
   clearPendingTimer();
-  displayMessage("Showdown! Revealing hands...");
+  displayMessage("Showdown! Settling pots...");
   playerOptionsDiv.classList.add("hidden");
 
-  let activePlayers = players.filter((p) => !p.folded);
+  const activePlayers = players.filter((p) => !p.folded);
 
   if (activePlayers.length === 0) {
     displayMessage(
@@ -832,58 +915,81 @@ function showdown() {
     return;
   }
 
-  if (activePlayers.length === 1) {
-    const winner = activePlayers[0];
-    winner.chips += pot;
-    displayMessage(
-      `${potWinPhrase(winner.name)} the pot of $${pot} because everyone else folded!`
-    );
-    updatePlayerDisplays();
-    nextRoundBtn.classList.remove("hidden");
+  const sidePots = buildSidePots();
+  if (sidePots.length === 0) {
+    displayMessage("No pot to award. Starting new round.");
+    scheduleAction(startNewRound, 3000);
     return;
   }
 
-  let bestHand = null;
-  let winners = [];
-
-  activePlayers.forEach((p) => {
+  // Reveal hands for anyone who may need a showdown (eligible in a multi-way pot)
+  const needsReveal = new Set();
+  for (const potInfo of sidePots) {
+    if (potInfo.eligible.length > 1) {
+      potInfo.eligible.forEach((p) => needsReveal.add(p));
+    }
+  }
+  needsReveal.forEach((p) => {
     const handDisplay = p.playerArea.querySelector(".player-hand-display");
     handDisplay.innerHTML = p.hand
       .map((card) => `<div class="card">${formatCard(card)}</div>`)
       .join("");
+    p._lastShowdownHand = evaluateBestHand(p.hand, communityCards);
+  });
 
-    const evaluated = evaluateBestHand(p.hand, communityCards);
-    p._lastShowdownHand = evaluated;
+  const messages = [];
+  const multiPot = sidePots.length > 1;
 
-    if (!bestHand || compareEvaluatedHands(evaluated, bestHand) > 0) {
-      bestHand = evaluated;
-      winners = [p];
-    } else if (compareEvaluatedHands(evaluated, bestHand) === 0) {
-      winners.push(p);
+  sidePots.forEach((potInfo, idx) => {
+    const label = multiPot
+      ? idx === 0
+        ? "main pot"
+        : `side pot ${idx}`
+      : "pot";
+    const { amount } = potInfo;
+    // If every contributor at this layer folded (rare: fold when able to check),
+    // fall back to any still-active players so chips are never stranded.
+    let eligible = potInfo.eligible;
+    if (eligible.length === 0) {
+      eligible = activePlayers;
+    }
+
+    if (eligible.length === 1) {
+      const winner = eligible[0];
+      awardPotChips(amount, [winner]);
+      messages.push(
+        `${potWinPhrase(winner.name)} the ${label} of $${amount}${
+          activePlayers.length === 1 ? " because everyone else folded" : " (uncontested)"
+        }!`
+      );
+      return;
+    }
+
+    const winners = winnersAmongEligible(eligible);
+    const handName = winners[0]._lastShowdownHand
+      ? winners[0]._lastShowdownHand.name
+      : "their hand";
+
+    if (winners.length === 1) {
+      awardPotChips(amount, winners);
+      messages.push(
+        `${potWinPhrase(winners[0].name)} the ${label} of $${amount} with a ${handName}!`
+      );
+    } else {
+      awardPotChips(amount, winners);
+      const share = Math.floor(amount / winners.length);
+      messages.push(
+        `Tie (${handName}) on the ${label} of $${amount}: ${winners
+          .map((w) => w.name)
+          .join(", ")} split (~$${share} each; odd chips to earliest seat).`
+      );
     }
   });
 
-  if (winners.length === 1) {
-    const winner = winners[0];
-    winner.chips += pot;
-    const handName = bestHand ? bestHand.name : "their hand";
-    displayMessage(
-      `${potWinPhrase(winner.name)} the pot of $${pot} with a ${handName}!`
-    );
-  } else {
-    const share = Math.floor(pot / winners.length);
-    winners.forEach((w) => {
-      w.chips += share;
-    });
-    const handName = bestHand ? bestHand.name : "the same hand";
-    displayMessage(
-      `It's a tie (${handName})! ${winners
-        .map((w) => w.name)
-        .join(", ")} split the pot of $${pot}. Each gets $${share}.`
-    );
-  }
-
+  pot = 0;
+  displayMessage(messages.join(" "));
   updatePlayerDisplays();
+  updatePotDisplay();
   nextRoundBtn.classList.remove("hidden");
 }
 
