@@ -765,16 +765,43 @@ button:disabled {
         /* Side pad for mothman wings; top pad for the name pill only */
         padding: 340px 480px 12px 380px;
     }
-    /* Extra hole-card size so stage scale on phones doesn't crush rank/suit */
-    .player-hand-display .card {
+    /* NPC hole cards only — human + board share a larger readable size below */
+    .player-left .player-hand-display .card,
+    .player-right .player-hand-display .card,
+    .player-top .player-hand-display .card {
         width: 82px;
         height: 116px;
         font-size: 1.85em;
     }
+    /*
+     * Human hole cards and the board share one phone size so flop/turn/river
+     * read as clearly as your hand. No hole-card boost here: that scale was
+     * covering the felt. Preflop the hand sits on the lower felt; once the
+     * board is out it drops onto the avatar and shrinks slightly.
+     */
+    .player-human-area .player-hand-display {
+        transform: translateX(-50%) scale(1);
+        transform-origin: center bottom;
+        bottom: calc(100% + 8px);
+        z-index: 3;
+    }
+    .player-human-area .player-hand-display .card,
     #community-cards .card {
-        width: 64px;
-        height: 90px;
-        font-size: 1.5em;
+        width: 112px;
+        height: 156px;
+        /* px, not em: the seat and the board inherit different parent sizes */
+        font-size: 52px;
+        border-width: 3px;
+    }
+    #community-cards {
+        gap: 8px;
+    }
+    #table.board-out .player-human-area .player-hand-display {
+        bottom: auto;
+        top: 22px;
+        transform: translateX(-50%) scale(0.88);
+        transform-origin: center top;
+        z-index: 6;
     }
     .skin-btn img {
         width: 56px;

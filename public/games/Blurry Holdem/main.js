@@ -1434,6 +1434,10 @@ function updateCommunityCardsDisplay() {
   communityCards.forEach((card) => {
     communityCardsDiv.insertAdjacentHTML("beforeend", renderCardHtml(card));
   });
+  // Phone layout: hole cards stay on the felt preflop, then drop onto
+  // the human avatar once the board is out.
+  const table = document.getElementById("table");
+  if (table) table.classList.toggle("board-out", communityCards.length > 0);
 }
 
 function potWinPhrase(name) {
