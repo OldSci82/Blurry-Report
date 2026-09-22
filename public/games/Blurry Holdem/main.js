@@ -369,7 +369,14 @@ function endBettingRound() {
   }
 }
 
+/** Discard one unseen card (standard: burn before flop/turn/river). */
+function burnCard() {
+  dealCard();
+}
+
 function dealCommunityCards(count) {
+  // One burn before each street's community cards
+  burnCard();
   for (let i = 0; i < count; i++) {
     communityCards.push(dealCard());
   }
@@ -1138,6 +1145,24 @@ function showdown() {
 }
 
 // --- UI Update Functions ---
+function updateDealerButton() {
+  // Flavor top "Dealer" NPC is not a seat — mark the rotating dealerIndex seat.
+  players.forEach((p, i) => {
+    let btn = p.playerArea.querySelector(".dealer-button");
+    if (i === dealerIndex) {
+      if (!btn) {
+        btn = document.createElement("div");
+        btn.className = "dealer-button";
+        btn.textContent = "D";
+        btn.title = "Dealer";
+        p.playerArea.appendChild(btn);
+      }
+    } else if (btn) {
+      btn.remove();
+    }
+  });
+}
+
 function updatePlayerDisplays() {
   players.forEach((p) => {
     const playerInfoDiv = p.playerArea.querySelector(".player-info");
@@ -1167,6 +1192,7 @@ function updatePlayerDisplays() {
       p.playerArea.classList.remove("folded");
     }
   });
+  updateDealerButton();
 }
 
 function updatePotDisplay() {

@@ -99,7 +99,9 @@ body {
  * Extra gap so mothman wings (after rotate) do not cover name/chips.
  */
 .player-top-right {
-    left: 642px;
+    /* Nudge left so rotated mothman base sits flush on purple rail
+       (mirrors left seat ~25px onto table; was 655→642, now 642→625). */
+    left: 625px;
     right: auto;
     /* Portrait center on horizontal midline */
     top: calc(50% - 50px);
@@ -340,4 +342,79 @@ button:disabled {
     justify-content: center;
     align-items: center;
     gap: 10px;
+}
+
+/* Dealer button (D) — marks current dealerIndex seat, not the flavor top NPC */
+.dealer-button {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #f5f5f5;
+    color: #111;
+    font-weight: bold;
+    font-size: 0.75em;
+    line-height: 22px;
+    text-align: center;
+    border: 2px solid #222;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    z-index: 5;
+    pointer-events: none;
+}
+.player-top-left .dealer-button {
+    /* Keep off the rotated portrait / toward outside of table */
+    top: auto;
+    bottom: -4px;
+    left: auto;
+    right: -4px;
+}
+.player-top-right .dealer-button {
+    top: -4px;
+    left: -4px;
+}
+.player-human-area .dealer-button {
+    top: -4px;
+    left: calc(50% - 50px - 6px);
+}
+
+/* --- Light mobile / narrow pass --- */
+@media (max-width: 1100px) {
+    #game-container {
+        padding: 160px 120px 12px;
+        transform: scale(0.85);
+        transform-origin: top center;
+    }
+    #action-area {
+        width: min(600px, 92vw);
+        box-sizing: border-box;
+        padding: 14px;
+    }
+}
+
+@media (max-width: 780px) {
+    #game-container {
+        padding: 120px 40px 8px;
+        transform: scale(0.62);
+        transform-origin: top center;
+    }
+    #action-area {
+        width: min(600px, 96vw);
+        font-size: 0.95em;
+        padding: 12px 10px;
+    }
+    .action-buttons {
+        gap: 8px;
+    }
+    .action-buttons button {
+        padding: 8px 12px;
+        font-size: 0.95em;
+    }
+    #bet-slider {
+        width: min(200px, 55vw);
+    }
+    .bet-slider-row {
+        gap: 8px;
+    }
 }
