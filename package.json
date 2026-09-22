@@ -4,7 +4,8 @@
   "homepage": "https://your-username.github.io/blurry-report",
   "scripts": {
     "fetch-news": "node scripts/fetch-news.js",
-    "deploy": "gh-pages -d public"
+    "deploy": "gh-pages -d public",
+    "refresh-chatter": "node scripts/refresh-chatter-from-published.js"
   },
   "dependencies": {
     "axios": "^1.10.0",

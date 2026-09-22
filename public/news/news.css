@@ -361,3 +361,33 @@ footer {
   margin-bottom: 1rem;
   text-align: center;
 }
+
+
+/* Latest Chatter — @TheBlurryReport feed */
+.chatter-body {
+  color: #FFCC00;
+  opacity: 0.9;
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  line-height: 1.45;
+  margin: 0.6rem 0 0.4rem;
+  white-space: pre-wrap;
+}
+.chatter-meta {
+  color: burlywood;
+  font-size: 0.8rem;
+  margin: 0;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.chatter-kind {
+  text-transform: uppercase;
+  color: #B13BFF;
+}
+.empty-chatter {
+  color: #FFCC00;
+  text-shadow: 0 0 5px #B13BFF;
+  padding: 2rem 1rem;
+  border: 2px dashed #FFCC00;
+  border-radius: 10px;
+  background: rgba(9, 0, 64, 0.6);
+}
