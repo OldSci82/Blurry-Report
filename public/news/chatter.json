@@ -1,15 +1,24 @@
 {
-  "updated_at": "2026-09-22T16:03:00.564Z",
-  "source": "seed-from-live-x-statuses+scout-queue",
+  "updated_at": "2026-09-22T16:04:28.747Z",
+  "source": "scout-published",
   "account": "https://x.com/TheBlurryReport",
   "published_dir": "/workspace/blurry-report/published",
   "posts": [
     {
+      "id": "2102408214671245335",
+      "url": "https://x.com/TheBlurryReport/status/2102408214671245335",
+      "text": "Point Pleasant, West Virginia, late November 1966. Drivers on Route 62 said a tall gray figure with a ten-foot wingspan rose off a hillside and paced their car along the dark road near the TNT area. Bright red eyes. No sound of wings. Then it peeled up into the black sky over the bridge approach.\n\nNot a bird. Not a plane. Just a silhouette that should not fly like that.\n\nSource: https://www.legendsofamerica.com/wv-mothman/",
+      "headline": "Point Pleasant, West Virginia, late November 1966. Drivers on Route 62 said a tall gray figure with a ten-foot wingspan rose off a hillsi...",
+      "published_at": "2026-09-22T14:40:00.000Z",
+      "kind": "case",
+      "source": "@TheBlurryReport"
+    },
+    {
       "id": "2102400077532667943",
       "url": "https://x.com/TheBlurryReport/status/2102400077532667943",
       "text": "Southeast Fresno, California, late 2007. A homeowner checks his security camera after weeks of mystery triggers and finds two pale, leggy figures gliding across the front lawn like walking pairs of pants. No torso you can trust. No face. About twenty seconds of footage and they are gone. The internet named them Nightcrawlers. Nearly two decades later the clip is still the weirdest yard video in the Central Valley, and nothing since has quite matched it.\n\nSource: https://en.wikipedia.org/wiki/Fresno_nightcrawler\n\n#FresnoNightcrawler #cryptid #paranormal #Fresno",
-      "headline": "Southeast Fresno — Nightcrawlers on the security cam",
-      "published_at": "2026-09-22T14:10:13Z",
+      "headline": "Southeast Fresno, California, late 2007. A homeowner checks his security camera after weeks of mystery triggers and finds two pale, leggy...",
+      "published_at": "2026-09-22T14:00:00.000Z",
       "kind": "case",
       "source": "@TheBlurryReport"
     },
@@ -17,8 +26,8 @@
       "id": "2102398709099077651",
       "url": "https://x.com/TheBlurryReport/status/2102398709099077651",
       "text": "Fall River, Massachusetts. April 2026 overnight at the Lizzie Borden House. A visiting investigator says the energy got heavier hour by hour: growling in the dark, hands pressing a partner's shoulders hard enough to knock the wind out, then the sensation of sheets being tucked under her legs and hair brushed behind her ear. In the morning a tour guide shrugged like it was a house specialty. Mrs. Borden, they said, still tucks in the guests she likes.\n\nSource: https://www.unilad.com/film-and-tv/lizzie-borden-house-spirit-footage-618255-20260917\n\n#haunted #paranormal #LizzieBorden #FallRiver",
-      "headline": "Fall River — overnight at the Lizzie Borden House",
-      "published_at": "2026-09-22T14:04:47Z",
+      "headline": "Fall River, Massachusetts. April 2026 overnight at the Lizzie Borden House. A visiting investigator says the energy got heavier hour by h...",
+      "published_at": "2026-09-22T13:30:00.000Z",
       "kind": "case",
       "source": "@TheBlurryReport"
     },
@@ -26,17 +35,17 @@
       "id": "2102396436419576119",
       "url": "https://x.com/TheBlurryReport/status/2102396436419576119",
       "text": "Farm Street, Dover, Massachusetts. Night of April 21, 1977. Seventeen-year-old Bill Bartlett catches something on a broken stone wall in the headlights: about four feet tall, watermelon head, no clear face, eyes that burn. Same night and the next, two more teens report the same impossible silhouette on nearby roads. Three sketches. One straight-line path across town. Loren Coleman later gave it a name. The Dover Demon. Nearly fifty years later, nobody has crowded the explanation into a neat box.\n\nSource: https://en.wikipedia.org/wiki/Dover_Demon\n\n#DoverDemon #cryptid #paranormal #Massachusetts",
-      "headline": "Dover, MA — the Dover Demon on Farm Street, 1977",
-      "published_at": "2026-09-22T13:55:45Z",
+      "headline": "Farm Street, Dover, Massachusetts. Night of April 21, 1977. Seventeen-year-old Bill Bartlett catches something on a broken stone wall in...",
+      "published_at": "2026-09-22T13:00:00.000Z",
       "kind": "case",
       "source": "@TheBlurryReport"
     },
     {
       "id": "2102376993035624511",
       "url": "https://x.com/TheBlurryReport/status/2102376993035624511",
-      "text": "Over Brookhaven, New York on September 21, 2026. A dark gray object that looked like a cube one second and almost spherical the next hovered, then drifted across the sky flashing a bright light. No wings. No aircraft silhouette that makes sense. Multiple clips from the same event landed in the public MUFON queue the same day.\n\nSource: https://mufoncms.com/last_20_public.html\n\n#UAP #UFO #MUFON #Brookhaven",
-      "headline": "Brookhaven, NY — cube/sphere UAP flashing light",
-      "published_at": "2026-09-22T12:38:30Z",
+      "text": "Over Brookhaven, New York on September 21, 2026. A dark gray object that looked like a cube one second and almost spherical the next hovered, then drifted across the sky flashing a bright light. No wings. No aircraft silhouette that makes sense. Multiple clips from the same event landed in the public MUFON queue the same day.\n\nSource: https://mufoncms.com/last_20_public.html",
+      "headline": "Over Brookhaven, New York on September 21, 2026. A dark gray object that looked like a cube one second and almost spherical the next hove...",
+      "published_at": "2026-09-22T12:30:00.000Z",
       "kind": "case",
       "source": "@TheBlurryReport"
     },
@@ -44,26 +53,26 @@
       "id": "2102369687447249170",
       "url": "https://x.com/TheBlurryReport/status/2102369687447249170",
       "text": "Just off the top of Slumgullion Pass on Hwy 149, about ten miles southeast of Lake City, Colorado. Midafternoon, July 28, 2026. A skeptic riding shotgun watches the treeline for elk and instead sees a dark, 7-to-9-foot figure step out and glide uphill along the woods. No neck. Long arms. Four or five strides and it was gone. Later they walked the slope and found a barefoot print that did not belong to any tourist trail.\n\nSource: https://www.bfro.net/GDB/show_report.asp?id=81439\n\n#cryptid #Bigfoot",
-      "headline": "Slumgullion Pass, CO — daylight figure on Hwy 149",
-      "published_at": "2026-09-22T12:09:28Z",
+      "headline": "Just off the top of Slumgullion Pass on Hwy 149, about ten miles southeast of Lake City, Colorado. Midafternoon, July 28, 2026. A skeptic...",
+      "published_at": "2026-09-22T12:00:00.000Z",
       "kind": "case",
       "source": "@TheBlurryReport"
     },
     {
       "id": "2102365938230206586",
       "url": "https://x.com/TheBlurryReport/status/2102365938230206586",
-      "text": "Nearly noon on County Road C north of Washburn, Wisconsin. August 2, 2026. Something all black, very tall, with arms too long for a person, crosses the highway in about four strides and vanishes into the ditch timber. The driver thought hoodie-and-pants for half a second. Then the pointed head shape and the speed made that story fall apart. No other traffic. No tracks in the dry gravel. Just a biped on a mission.\n\nSource: https://reports.woodape.org/data/?action=details&case=26080601\n\n#cryptid #Bigfoot #WoodApe",
-      "headline": "Washburn, WI — tall biped crosses County Road C",
-      "published_at": "2026-09-22T11:54:34Z",
+      "text": "Nearly noon on County Road C north of Washburn, Wisconsin. August 2, 2026. Something all black, very tall, with arms too long for a person, crosses the highway in about four strides and vanishes into the ditch timber. The driver thought hoodie-and-pants for half a second. Then the pointed head shape and the speed made that story fall apart. No other traffic. No tracks in the dry gravel. Just a biped on a mission.\n\nSource: https://reports.woodape.org/data/?action=details&case=26080601",
+      "headline": "Nearly noon on County Road C north of Washburn, Wisconsin. August 2, 2026. Something all black, very tall, with arms too long for a perso...",
+      "published_at": "2026-09-22T11:30:00.000Z",
       "kind": "case",
       "source": "@TheBlurryReport"
     },
     {
       "id": "2102362629054288115",
       "url": "https://x.com/TheBlurryReport/status/2102362629054288115",
-      "text": "Noon on Wind River Hwy near Carson, WA. Rocks tumble down a roadside embankment. The driver looks up. At the top edge: a reddish-brown furry figure standing upright among the trees, back turned. Not a bear. Not a person. May 8, 2026.\n\nSource: https://www.bfro.net/GDB/show_report.asp?id=80159\n\n#cryptid #Bigfoot",
-      "headline": "Carson, WA — reddish-brown figure on Wind River Hwy",
-      "published_at": "2026-09-22T11:41:25Z",
+      "text": "Noon on Wind River Hwy near Carson, WA. Rocks tumble down a roadside embankment. The driver looks up. At the top edge: a reddish-brown furry figure standing upright among the trees, back turned. Not a bear. Not a person. May 8, 2026.\n\nSource: https://www.bfro.net/GDB/show_report.asp?id=80159",
+      "headline": "Noon on Wind River Hwy near Carson, WA. Rocks tumble down a roadside embankment. The driver looks up. At the top edge: a reddish-brown fu...",
+      "published_at": "2026-09-22T11:00:00.000Z",
       "kind": "case",
       "source": "@TheBlurryReport"
     }
