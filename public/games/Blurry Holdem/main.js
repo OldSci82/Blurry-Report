@@ -75,7 +75,7 @@ function liveSeatIndices() {
 
 // --- Game Initialization ---
 function initGame() {
-  // Seating clockwise: You (bottom) → NPC1 (left) → Goliath (top) → NPC2 (right)
+  // Seating clockwise: You (bottom) → Hat Man (left) → Goliath (top) → Mothman (right)
   players = [
     {
       name: "You",
@@ -88,7 +88,7 @@ function initGame() {
       playerArea: document.querySelector(".player-human-area"),
     },
     {
-      name: "NPC 1",
+      name: "Hat Man",
       chips: 100,
       hand: [],
       isHuman: false,
@@ -108,7 +108,7 @@ function initGame() {
       playerArea: document.querySelector(".player-top"),
     },
     {
-      name: "NPC 2",
+      name: "Mothman",
       chips: 100,
       hand: [],
       isHuman: false,
@@ -638,7 +638,7 @@ function npcTurn(npc) {
   }
 
   // --- Basic NPC Strategy ---
-  if (npc.name === "NPC 1") {
+  if (npc.name === "Hat Man") {
     if (handStrength >= 6 || (handStrength >= 2 && chipsToCall < 20)) {
       if (currentBet === 0 || (handStrength >= 6 && Math.random() < 0.6)) {
         const target = Math.max(currentBet === 0 ? BIG_BLIND : currentBet + minRaiseSize, currentBet * 1.5, 20);
@@ -669,7 +669,7 @@ function npcTurn(npc) {
       notePlayerActed(npcIndex);
       actionMessage = `${npc.name} folds.`;
     }
-  } else if (npc.name === "NPC 2") {
+  } else if (npc.name === "Mothman") {
     if (handStrength >= 4 || (handStrength >= 1 && Math.random() < 0.4)) {
       if (currentBet === 0 || Math.random() < 0.7) {
         const target = Math.max(
@@ -1368,9 +1368,21 @@ function fitGameStage() {
 
   stage.style.transform = `scale(${s})`;
   const inv = s > 0.01 ? 1 / s : 1;
+  // Counter-scaled pills keep ~design size on screen. Top seat grows upward
+  // (origin: center bottom); bottom grows down. Prior shell height only grew
+  // downward, which biased the centered stage toward the banner and clipped
+  // Goliath. Mirror the overflow as shell padding-top + bottom height, and
+  // add a few px under the banner — enough clearance, not a huge void.
   const labelOverflowY = Math.ceil(LABEL_DESIGN_H * (1 - s));
+  shell.style.boxSizing = "content-box";
+  shell.style.paddingTop = `${labelOverflowY}px`;
   shell.style.width = `${Math.round(STAGE_DESIGN_WIDTH * s)}px`;
   shell.style.height = `${Math.round(STAGE_DESIGN_HEIGHT * s) + labelOverflowY}px`;
+  if (viewport) {
+    const bannerGap = labelOverflowY > 0 ? Math.min(10, Math.max(4, Math.round(labelOverflowY * 0.3))) : 0;
+    viewport.style.paddingTop = `${bannerGap}px`;
+    viewport.style.boxSizing = "border-box";
+  }
 
   document.documentElement.style.setProperty("--stage-scale", String(s));
   document.documentElement.style.setProperty("--inv-stage-scale", String(inv));

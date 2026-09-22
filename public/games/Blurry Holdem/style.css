@@ -200,7 +200,7 @@ body {
 
 /* --- PLAYER PLACEMENT (around 700×500 felt) --- */
 
-/* NPC 1 — left rail */
+/* Hat Man — left rail */
 .player-left {
     left: -75px;
     top: calc(50% - 50px);
@@ -210,7 +210,7 @@ body {
     transform: rotate(-90deg);
 }
 
-/* NPC 2 — right rail */
+/* Mothman — right rail */
 .player-right {
     left: 625px;
     right: auto;
@@ -249,7 +249,7 @@ body {
     min-height: 70px;
 }
 
-/* Goliath / NPC 3 — top rail (full player seat) */
+/* Goliath — top rail (full player seat) */
 .player-top {
     left: 50%;
     top: -116px;
