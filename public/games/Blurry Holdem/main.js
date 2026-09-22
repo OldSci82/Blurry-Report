@@ -1483,13 +1483,13 @@ initGame();
 
 // --- Mobile / viewport stage fit ---
 // Fixed design size wraps ALL seats (left overhang + right mothman+label).
-// Scale that stage into the viewport (minus banner / docked controls / pad).
+// Scale that stage into the viewport (minus footer banner / docked controls / pad).
 // Design tracks NPC avatar size (~244 desktop / ~256 mobile, 1.6× human base)
 // so phone scale stays usable. Action buttons stay outside the transform at
-// native size. Viewport flex-end docks stage+controls to the bottom (spare
-// space stays under the status banner).
+// native size. Viewport flex-end docks stage+controls above the bottom status
+// banner (spare space clears above the table / pot).
 const STAGE_DESIGN_WIDTH = 1460;
-const STAGE_DESIGN_HEIGHT = 1080;
+const STAGE_DESIGN_HEIGHT = 1140;
 const STAGE_PAD_X = 8;
 const STAGE_PAD_Y = 4;
 
@@ -1556,7 +1556,8 @@ function fitGameStage() {
   // Counter-scaled pills keep ~design size on screen. Top seat grows upward
   // (origin: center bottom); bottom grows down. Mirror label overflow as shell
   // padding-top + bottom height so top NPC is not clipped. Viewport uses
-  // justify-content:flex-end so spare height becomes empty space under the banner.
+  // justify-content:flex-end so spare height clears above the table; status
+  // banner sits below controls as the page footer.
   // Top name grows up (origin: bottom); pot above it also grows up.
   const labelOverflowY = Math.ceil((LABEL_DESIGN_H + POT_DESIGN_H) * (1 - s));
   shell.style.boxSizing = "content-box";
@@ -1564,12 +1565,14 @@ function fitGameStage() {
   shell.style.width = `${Math.round(designW * s)}px`;
   shell.style.height = `${Math.round(designH * s) + labelOverflowY}px`;
   if (viewport) {
-    // Keep a little air under the status banner so counter-scaled pot/name
-    // never kiss the banner after flex-end docks the stage to the bottom.
-    const bannerGap = labelOverflowY > 0
+    // Status banner is the footer under controls. Keep a little top air so
+    // counter-scaled pot/name never kiss the viewport top after flex-end
+    // docks stage+controls above the banner.
+    const topGap = labelOverflowY > 0
       ? Math.min(isNarrow ? 14 : 28, Math.max(isNarrow ? 6 : 18, Math.round(labelOverflowY * (isNarrow ? 0.25 : 0.4))))
       : 0;
-    viewport.style.paddingTop = `${bannerGap}px`;
+    viewport.style.paddingTop = `${topGap}px`;
+    viewport.style.paddingBottom = "0px";
     viewport.style.boxSizing = "border-box";
     viewport.style.gap = `${gap}px`;
   }

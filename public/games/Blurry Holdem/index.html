@@ -7,9 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="status-banner">Welcome to Texas Hold'em! Pick a look and click "Start Game".</div>
-
-    <!-- Stage + docked controls centered as one column (no orphaned button / huge mid gaps) -->
+    <!-- Stage + docked controls; status banner is footer below -->
     <div id="game-stage-viewport">
         <div id="game-stage-shell">
             <div id="game-stage">
@@ -102,6 +100,9 @@
             <button id="next-round-btn" class="hidden">Next Round</button>
         </div>
     </div>
+
+    <!-- Status/info strip at absolute bottom (under controls) -->
+    <div id="status-banner">Welcome to Texas Hold'em! Pick a look and click "Start Game".</div>
 
     <script src="main.js"></script>
 </body>
