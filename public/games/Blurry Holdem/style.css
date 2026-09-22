@@ -48,11 +48,10 @@ body {
 }
 
 /*
- * Viewport centers the scaled stage + docked controls as one column.
- * Stage shell = post-scale layout box (width/height set by JS).
+ * Viewport docks the scaled stage + controls to the bottom (flex-end) so
+ * Fold/Call/Raise sit at the screen bottom with empty clearance under the
+ * status banner. Stage shell = post-scale layout box (width/height set by JS).
  * Stage = fixed design size that includes all seat overhang; JS scales it.
- * Design is tight to content (not inflated empty side padding) so phones
- * get a larger scale and less vertical letterbox.
  */
 #game-stage-viewport {
     flex: 1 1 auto;
@@ -61,7 +60,9 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    /* Dock stage + controls to bottom so Fold/Call/Raise sit at screen bottom
+     * with generous empty clearance under the status banner. */
+    justify-content: flex-end;
     gap: 8px;
     overflow: hidden;
     box-sizing: border-box;
@@ -77,9 +78,9 @@ body {
 }
 
 #game-stage {
-    /* DESIGN: 700 felt + left overhang (mothman) + right overhang (mothman+info) */
-    width: 1180px;
-    height: 820px;
+    /* DESIGN: 700 felt + left overhang (mothman@1.6×) + right overhang (mothman+info) */
+    width: 1460px;
+    height: 960px;
     transform-origin: top left;
     will-change: transform;
     /* Fixed design size — do not stretch to viewport before measuring */
@@ -93,8 +94,8 @@ body {
     align-items: center;
     gap: 4px;
     /* Side pads clear mothman wings when seat-mothman; regular seats sit flush */
-    width: 1180px;
-    padding: 168px 280px 16px 200px;
+    width: 1460px;
+    padding: 300px 440px 16px 320px;
     box-sizing: border-box;
     margin: 0;
 }
@@ -181,6 +182,7 @@ body {
 }
 
 .player-image {
+    /* Human ("You") base size — leave near current */
     width: 152px;
     height: 152px;
     border-radius: 0%;
@@ -191,9 +193,17 @@ body {
     transform-origin: center center;
 }
 
+/* NPC seats only — 1.6× base (152→244); mothman wide = 2× NPC size */
+.player-top .player-image,
+.player-left .player-image,
+.player-right .player-image {
+    width: 244px;
+    height: 244px;
+}
+
 .npc-wide {
-    width: 304px;
-    height: 152px;
+    width: 488px;
+    height: 244px;
     border-radius: 0px;
     object-fit: cover;
 }
@@ -201,11 +211,11 @@ body {
 /* --- PLAYER PLACEMENT (around 700×500 felt) --- */
 
 /* Left NPC seat — flush to purple rail (same stomach inset as top/bottom).
- * Wide mothman offsets live under .seat-mothman only. */
+ * Wide mothman offsets live under .seat-mothman only. S=244 (1.6×). */
 .player-left {
-    /* S=152: center at -S/4 so body sits just outside felt like top/bottom */
-    left: -114px;
-    top: calc(50% - 76px);
+    /* S=244: center at -S/4 so body sits just outside felt like top/bottom */
+    left: -183px; /* -3S/4 */
+    top: calc(50% - 122px);
     transform: none;
 }
 .player-left .player-image {
@@ -214,7 +224,7 @@ body {
 }
 /* Mothman left: box is 2× wide; shift outward so body center matches regular */
 .player-left.seat-mothman {
-    left: -190px; /* -S/4 - W/2 = -38 - 152 */
+    left: -305px; /* -S/4 - W/2 = -61 - 244 */
 }
 .player-left.seat-mothman .player-image {
     /* Keep rotate around sprite center so wings span the rail, not the felt */
@@ -224,10 +234,10 @@ body {
 
 /* Right NPC seat — default flush for regular NPCs (NOT mothman-tuned). */
 .player-right {
-    /* S=152: center at 700+S/4 → left = 700 - S/4 */
-    left: 662px;
+    /* S=244: center at 700+S/4 → left = 700 - S/4 */
+    left: 639px;
     right: auto;
-    top: calc(50% - 76px);
+    top: calc(50% - 122px);
     transform: none;
     flex-direction: row;
     align-items: center;
@@ -243,7 +253,7 @@ body {
 }
 /* Mothman right: same body-center as regular; wide box needs outward shift */
 .player-right.seat-mothman {
-    left: 586px; /* 700 + S/4 - W/2 = 738 - 152 */
+    left: 517px; /* 700 + S/4 - W/2 = 761 - 244 */
 }
 .player-right.seat-mothman .player-image {
     transform: rotate(90deg);
@@ -261,20 +271,21 @@ body {
 .player-human-area .player-hand-display {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
-    bottom: calc(100% + 42px);
+    transform: translateX(-50%) scale(var(--hole-card-boost, 1));
+    transform-origin: center bottom;
+    bottom: calc(100% + 36px);
     margin: 0;
     min-height: 0;
     z-index: 2;
 }
 .player-human-area .player-hand-display:not(:empty) {
-    min-height: 70px;
+    min-height: 100px;
 }
 
-/* Top NPC seat */
+/* Top NPC seat — overhang matches taller 244px NPC avatar */
 .player-top {
     left: 50%;
-    top: -168px;
+    top: -292px;
     transform: translateX(-50%);
     flex-direction: column-reverse;
     gap: 6px;
@@ -284,14 +295,15 @@ body {
 .player-top .player-hand-display {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) scale(var(--hole-card-boost, 1));
+    transform-origin: center top;
     top: calc(100% + 2px);
     margin: 0;
     min-height: 0;
     z-index: 2;
 }
 .player-top .player-hand-display:not(:empty) {
-    min-height: 70px;
+    min-height: 100px;
 }
 
 .player-area.active-player .player-image {
@@ -311,7 +323,8 @@ body {
     position: absolute;
     left: calc(100% + 6px);
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) scale(var(--hole-card-boost, 1));
+    transform-origin: left center;
     margin: 0;
     min-height: 0;
     z-index: 2;
@@ -321,7 +334,8 @@ body {
     right: calc(100% + 6px);
     left: auto;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) scale(var(--hole-card-boost, 1));
+    transform-origin: right center;
     margin: 0;
     min-height: 0;
     z-index: 2;
@@ -330,42 +344,95 @@ body {
 /* Community board — center of felt */
 #community-cards {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-height: 80px;
+    min-height: 90px;
     z-index: 1;
     pointer-events: none;
 }
 
 .card {
-    width: 50px;
-    height: 70px;
-    background-color: white;
-    border: 1px solid #333;
-    border-radius: 5px;
+    width: 56px;
+    height: 78px;
+    background-color: #fff;
+    border: 2px solid #1a1a1a;
+    border-radius: 6px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.2em;
-    font-weight: bold;
-    color: black;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    font-size: 1.35em;
+    font-weight: 800;
+    color: #111;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.35);
     background-size: cover;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+}
+
+/* Stronger rank/suit pip contrast */
+.card-pip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    line-height: 1.02;
+    font-weight: 800;
+    text-shadow: 0 0 0.5px currentColor;
+}
+.card-rank {
+    font-size: 1.05em;
+    font-weight: 900;
+}
+.card-suit {
+    font-size: 1.2em;
+    margin-top: -1px;
+    font-weight: 900;
+    -webkit-text-stroke: 0.4px currentColor;
+}
+.card-red {
+    color: #c41818;
+}
+.card-black {
+    color: #0d0d0d;
+}
+
+/* Hole cards — larger design size + thicker pip for readability */
+.player-hand-display .card {
+    width: 74px;
+    height: 104px;
+    font-size: 1.7em;
+    border-width: 2.5px;
+    border-radius: 7px;
+}
+.player-hand-display .card-suit {
+    font-size: 1.28em;
+    -webkit-text-stroke: 0.55px currentColor;
+}
+
+/* Community board — modest readability bump (default .card size) */
+#community-cards .card {
+    width: 58px;
+    height: 82px;
+    font-size: 1.4em;
 }
 
 .card.hidden {
     background-color: #777;
     color: transparent;
 }
+.card.hidden .card-pip {
+    visibility: hidden;
+}
 
 /* Pot on the felt — top-center; counter-scaled with seat labels */
 #pot-display {
     position: absolute;
-    /* Below top-seat hole cards, above centered community board */
-    top: 128px;
+    /* Below larger top-seat hole cards, above centered community board */
+    top: 175px;
     left: 50%;
     transform: translateX(-50%) scale(var(--inv-stage-scale, 1));
     transform-origin: center center;
@@ -446,13 +513,13 @@ button:disabled {
 
 .player-hand-display {
     display: flex;
-    gap: 5px;
+    gap: 6px;
     justify-content: center;
     margin-top: 5px;
     min-height: 0;
 }
 .player-hand-display:not(:empty) {
-    min-height: 70px;
+    min-height: 104px;
 }
 
 #bet-live-info {
@@ -629,41 +696,47 @@ button:disabled {
         margin-top: 4px;
     }
     #pot-display {
-        /* Sit a touch lower so grown pot badge clears top-seat cards */
-        top: 160px;
+        /* Sit lower so grown pot badge clears boosted top-seat hole cards */
+        top: 210px;
     }
-    /* Grow design box so larger seat overhang still fits after scale */
+    /* Grow design box so larger NPC (1.6×) overhang still fits after scale */
     #game-stage {
-        width: 1220px;
-        height: 860px;
+        width: 1520px;
+        height: 1000px;
     }
-    /* Larger avatars (~160 regular / 320 wide) */
+    /* Human mild bump; NPC 1.6× of mobile human base (160→256 / wide 512) */
     .player-image {
         width: 160px;
         height: 160px;
     }
-    .npc-wide {
-        width: 320px;
-        height: 160px;
+    .player-top .player-image,
+    .player-left .player-image,
+    .player-right .player-image {
+        width: 256px;
+        height: 256px;
     }
-    /* S=160 flush: left=-3S/4, right=700-S/4 */
+    .npc-wide {
+        width: 512px;
+        height: 256px;
+    }
+    /* S=256 flush: left=-3S/4, right=700-S/4 */
     .player-left {
-        left: -120px;
-        top: calc(50% - 80px);
+        left: -192px;
+        top: calc(50% - 128px);
     }
     .player-right {
-        left: 660px;
-        top: calc(50% - 80px);
+        left: 636px;
+        top: calc(50% - 128px);
     }
-    /* Mothman-only outward (W=320): keep body center = regular center */
+    /* Mothman-only outward (W=512): keep body center = regular center */
     .player-left.seat-mothman {
-        left: -200px; /* -S/4 - W/2 = -40 - 160 */
+        left: -320px; /* -S/4 - W/2 = -64 - 256 */
     }
     .player-right.seat-mothman {
-        left: 580px; /* 700 + S/4 - W/2 = 740 - 160 */
+        left: 508px; /* 700 + S/4 - W/2 = 764 - 256 */
     }
     .player-top {
-        top: -176px;
+        top: -308px;
         gap: 4px;
     }
     .player-human-area {
@@ -676,8 +749,19 @@ button:disabled {
         margin-bottom: 120px;
     }
     #game-container {
-        width: 1220px;
-        padding: 184px 300px 12px 210px;
+        width: 1520px;
+        padding: 320px 460px 12px 340px;
+    }
+    /* Extra hole-card size so stage scale on phones doesn't crush rank/suit */
+    .player-hand-display .card {
+        width: 82px;
+        height: 116px;
+        font-size: 1.85em;
+    }
+    #community-cards .card {
+        width: 64px;
+        height: 90px;
+        font-size: 1.5em;
     }
     .skin-btn img {
         width: 56px;

@@ -8,6 +8,20 @@ function formatCard(card) {
   return `${DISPLAY_RANKS[card.rank] || card.rank}${card.suit}`;
 }
 
+/** HTML for a face-up card with colored suit pip (stronger contrast). */
+function renderCardHtml(card) {
+  const rank = DISPLAY_RANKS[card.rank] || card.rank;
+  const isRed = card.suit === "♥" || card.suit === "♦";
+  const colorClass = isRed ? "card-red" : "card-black";
+  return (
+    `<div class="card ${colorClass}">` +
+    `<span class="card-pip">` +
+    `<span class="card-rank">${rank}</span>` +
+    `<span class="card-suit">${card.suit}</span>` +
+    `</span></div>`
+  );
+}
+
 // --- Character roster (art under images/npcs and images/players) ---
 const NPC_ROSTER = [
   { id: "goliath", name: "Goliath", src: "images/npcs/goliath.png", wide: false },
@@ -1285,9 +1299,7 @@ function showdown() {
   }
   needsReveal.forEach((p) => {
     const handDisplay = p.playerArea.querySelector(".player-hand-display");
-    handDisplay.innerHTML = p.hand
-      .map((card) => `<div class="card">${formatCard(card)}</div>`)
-      .join("");
+    handDisplay.innerHTML = p.hand.map(renderCardHtml).join("");
     p._lastShowdownHand = evaluateBestHand(p.hand, communityCards);
   });
 
@@ -1394,13 +1406,9 @@ function updatePlayerDisplays() {
     if (p.chips <= 0 && p.hand.length === 0) {
       handDisplay.innerHTML = "";
     } else if (p.isHuman) {
-      handDisplay.innerHTML = p.hand
-        .map((card) => `<div class="card">${formatCard(card)}</div>`)
-        .join("");
+      handDisplay.innerHTML = p.hand.map(renderCardHtml).join("");
     } else if (bettingRound === "showdown" && !p.folded) {
-      handDisplay.innerHTML = p.hand
-        .map((card) => `<div class="card">${formatCard(card)}</div>`)
-        .join("");
+      handDisplay.innerHTML = p.hand.map(renderCardHtml).join("");
     } else if (p.hand.length > 0 && !p.folded) {
       handDisplay.innerHTML = `<div class="card hidden"></div><div class="card hidden"></div>`;
     } else {
@@ -1423,10 +1431,7 @@ function updatePotDisplay() {
 function updateCommunityCardsDisplay() {
   communityCardsDiv.innerHTML = "";
   communityCards.forEach((card) => {
-    const cardDiv = document.createElement("div");
-    cardDiv.classList.add("card");
-    cardDiv.textContent = formatCard(card);
-    communityCardsDiv.appendChild(cardDiv);
+    communityCardsDiv.insertAdjacentHTML("beforeend", renderCardHtml(card));
   });
 }
 
@@ -1479,10 +1484,11 @@ initGame();
 // --- Mobile / viewport stage fit ---
 // Fixed design size wraps ALL seats (left overhang + right mothman+label).
 // Scale that stage into the viewport (minus banner / docked controls / pad).
-// Design tracks avatar size (~152 desktop / ~160 mobile) so phone scale stays
-// usable. Action buttons stay outside the transform at native size.
-const STAGE_DESIGN_WIDTH = 1180;
-const STAGE_DESIGN_HEIGHT = 820;
+// Design tracks NPC avatar size (~244 desktop / ~256 mobile, 1.6× human base)
+// so phone scale stays usable. Action buttons stay outside the transform at
+// native size. Viewport flex-end docks controls to the bottom.
+const STAGE_DESIGN_WIDTH = 1460;
+const STAGE_DESIGN_HEIGHT = 960;
 const STAGE_PAD_X = 8;
 const STAGE_PAD_Y = 4;
 
@@ -1498,7 +1504,7 @@ function fitGameStage() {
   stage.style.height = "";
   stage.style.maxWidth = "none";
 
-  // Read design size from computed CSS (desktop 1180×820; mobile 1220×860)
+  // Read design size from computed CSS (desktop 1460×960; mobile 1520×1000)
   const designW =
     Math.round(parseFloat(getComputedStyle(stage).width)) || STAGE_DESIGN_WIDTH;
   const designH =
@@ -1545,10 +1551,9 @@ function fitGameStage() {
   stage.style.transform = `scale(${s})`;
   const inv = s > 0.01 ? 1 / s : 1;
   // Counter-scaled pills keep ~design size on screen. Top seat grows upward
-  // (origin: center bottom); bottom grows down. Prior shell height only grew
-  // downward, which biased the centered stage toward the banner and clipped
-  // top NPC. Mirror the overflow as shell padding-top + bottom height, and
-  // add a few px under the banner — enough clearance, not a huge void.
+  // (origin: center bottom); bottom grows down. Mirror label overflow as shell
+  // padding-top + bottom height so top NPC is not clipped. Viewport uses
+  // justify-content:flex-end so spare height becomes empty space under the banner.
   const labelOverflowY = Math.ceil(LABEL_DESIGN_H * (1 - s));
   shell.style.boxSizing = "content-box";
   shell.style.paddingTop = `${labelOverflowY}px`;
@@ -1563,6 +1568,10 @@ function fitGameStage() {
 
   document.documentElement.style.setProperty("--stage-scale", String(s));
   document.documentElement.style.setProperty("--inv-stage-scale", String(inv));
+  // Soft floor so hole-card rank/suit stay readable when the stage shrinks
+  // (full 1/s would be huge). Target ~on-screen height ≈ 50–55px for hole cards.
+  const holeBoost = Math.min(2.1, Math.max(1, 0.5 / Math.max(s, 0.22)));
+  document.documentElement.style.setProperty("--hole-card-boost", String(holeBoost));
 }
 
 let stageFitRaf = 0;
