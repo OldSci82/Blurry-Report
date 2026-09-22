@@ -473,7 +473,7 @@ function handlePlayerAction(actionType, amount = 0) {
 // --- NPC Logic (Simplified) ---
 function npcTurn(npc) {
   const npcIndex = players.indexOf(npc);
-  const handStrength = calculateHandStrength(npc.hand, communityCards);
+  const handStrength = evaluateBestHand(npc.hand, communityCards).category;
   const chipsToCall = currentBet - npc.currentBetInRound;
   let actionMessage = "";
 
@@ -492,8 +492,8 @@ function npcTurn(npc) {
 
   // --- Basic NPC Strategy ---
   if (npc.name === "NPC 1") {
-    if (handStrength > 7 || (handStrength > 4 && chipsToCall < 20)) {
-      if (currentBet === 0 || (handStrength > 8 && Math.random() < 0.6)) {
+    if (handStrength >= 6 || (handStrength >= 2 && chipsToCall < 20)) {
+      if (currentBet === 0 || (handStrength >= 6 && Math.random() < 0.6)) {
         let betAmount = Math.min(npc.chips, Math.max(currentBet * 1.5, 20));
         performBet(npc, betAmount - npc.currentBetInRound, "raise");
         currentBet = npc.currentBetInRound;
@@ -513,7 +513,7 @@ function npcTurn(npc) {
       actionMessage = `${npc.name} folds.`;
     }
   } else if (npc.name === "NPC 2") {
-    if (handStrength > 6 || (handStrength > 3 && Math.random() < 0.4)) {
+    if (handStrength >= 4 || (handStrength >= 1 && Math.random() < 0.4)) {
       if (currentBet === 0 || Math.random() < 0.7) {
         let betAmount = Math.min(
           npc.chips,
@@ -552,39 +552,268 @@ function performBet(player, amount, action) {
   player.currentBetInRound += actualAmount;
 }
 
-// --- Very Basic Hand Strength (Placeholder - needs real poker logic) ---
-function calculateHandStrength(holeCards, community) {
-  const allCards = [...holeCards, ...community];
-  if (allCards.length < 2) return 0;
+// --- Texas Hold'em Hand Evaluation (best 5 of up to 7) ---
+const HAND_CATEGORY = {
+  HIGH_CARD: 0,
+  PAIR: 1,
+  TWO_PAIR: 2,
+  THREE_OF_A_KIND: 3,
+  STRAIGHT: 4,
+  FLUSH: 5,
+  FULL_HOUSE: 6,
+  FOUR_OF_A_KIND: 7,
+  STRAIGHT_FLUSH: 8,
+  ROYAL_FLUSH: 9,
+};
 
-  const ranksCount = {};
-  for (const card of allCards) {
-    ranksCount[card.rank] = (ranksCount[card.rank] || 0) + 1;
+const HAND_CATEGORY_NAME = [
+  "high card",
+  "pair",
+  "two pair",
+  "three of a kind",
+  "straight",
+  "flush",
+  "full house",
+  "four of a kind",
+  "straight flush",
+  "royal flush",
+];
+
+function rankValue(rank) {
+  return RANKS.indexOf(rank); // 0=2 ... 12=A
+}
+
+/** Score a exact 5-card hand. Returns { category, tiebreakers, name }. */
+function scoreFiveCardHand(cards) {
+  const values = cards.map((c) => rankValue(c.rank)).sort((a, b) => b - a);
+  const suits = cards.map((c) => c.suit);
+
+  const counts = {};
+  for (const v of values) counts[v] = (counts[v] || 0) + 1;
+
+  // Groups sorted by (count desc, rank desc)
+  const groups = Object.keys(counts)
+    .map((v) => ({ value: Number(v), count: counts[v] }))
+    .sort((a, b) => b.count - a.count || b.value - a.value);
+
+  const isFlush = suits.every((s) => s === suits[0]);
+
+  // Straight detection (incl. wheel A-2-3-4-5)
+  const unique = [...new Set(values)].sort((a, b) => b - a);
+  let straightHigh = -1;
+  if (unique.length === 5 && unique[0] - unique[4] === 4) {
+    straightHigh = unique[0];
+  } else if (
+    unique.length === 5 &&
+    unique[0] === 12 &&
+    unique[1] === 3 &&
+    unique[2] === 2 &&
+    unique[3] === 1 &&
+    unique[4] === 0
+  ) {
+    // A,5,4,3,2 -> wheel; high card for ranking is 5 (value 3)
+    straightHigh = 3;
   }
 
-  let pairs = 0;
-  let threeOfAKind = 0;
-  let fourOfAKind = 0;
+  const isStraight = straightHigh >= 0;
 
-  for (const rank in ranksCount) {
-    if (ranksCount[rank] === 2) pairs++;
-    if (ranksCount[rank] === 3) threeOfAKind++;
-    if (ranksCount[rank] === 4) fourOfAKind++;
+  if (isStraight && isFlush) {
+    if (straightHigh === 12) {
+      return {
+        category: HAND_CATEGORY.ROYAL_FLUSH,
+        tiebreakers: [12],
+        name: HAND_CATEGORY_NAME[HAND_CATEGORY.ROYAL_FLUSH],
+      };
+    }
+    return {
+      category: HAND_CATEGORY.STRAIGHT_FLUSH,
+      tiebreakers: [straightHigh],
+      name: HAND_CATEGORY_NAME[HAND_CATEGORY.STRAIGHT_FLUSH],
+    };
   }
 
-  if (fourOfAKind) return 10;
-  if (threeOfAKind && pairs) return 9;
-  if (threeOfAKind) return 7;
-  if (pairs >= 2) return 5;
-  if (pairs === 1) return 3;
+  if (groups[0].count === 4) {
+    const kicker = groups[1].value;
+    return {
+      category: HAND_CATEGORY.FOUR_OF_A_KIND,
+      tiebreakers: [groups[0].value, kicker],
+      name: HAND_CATEGORY_NAME[HAND_CATEGORY.FOUR_OF_A_KIND],
+    };
+  }
 
-  const highestRank = Math.max(
-    ...holeCards.map((card) => RANKS.indexOf(card.rank))
-  );
-  if (highestRank >= RANKS.indexOf("J")) return 2;
-  if (highestRank >= RANKS.indexOf("T")) return 1;
+  if (groups[0].count === 3 && groups[1] && groups[1].count === 2) {
+    return {
+      category: HAND_CATEGORY.FULL_HOUSE,
+      tiebreakers: [groups[0].value, groups[1].value],
+      name: HAND_CATEGORY_NAME[HAND_CATEGORY.FULL_HOUSE],
+    };
+  }
 
+  if (isFlush) {
+    return {
+      category: HAND_CATEGORY.FLUSH,
+      tiebreakers: values,
+      name: HAND_CATEGORY_NAME[HAND_CATEGORY.FLUSH],
+    };
+  }
+
+  if (isStraight) {
+    return {
+      category: HAND_CATEGORY.STRAIGHT,
+      tiebreakers: [straightHigh],
+      name: HAND_CATEGORY_NAME[HAND_CATEGORY.STRAIGHT],
+    };
+  }
+
+  if (groups[0].count === 3) {
+    const kickers = groups.slice(1).map((g) => g.value);
+    return {
+      category: HAND_CATEGORY.THREE_OF_A_KIND,
+      tiebreakers: [groups[0].value, ...kickers],
+      name: HAND_CATEGORY_NAME[HAND_CATEGORY.THREE_OF_A_KIND],
+    };
+  }
+
+  if (groups[0].count === 2 && groups[1] && groups[1].count === 2) {
+    const highPair = Math.max(groups[0].value, groups[1].value);
+    const lowPair = Math.min(groups[0].value, groups[1].value);
+    const kicker = groups[2] ? groups[2].value : -1;
+    return {
+      category: HAND_CATEGORY.TWO_PAIR,
+      tiebreakers: [highPair, lowPair, kicker],
+      name: HAND_CATEGORY_NAME[HAND_CATEGORY.TWO_PAIR],
+    };
+  }
+
+  if (groups[0].count === 2) {
+    const kickers = groups.slice(1).map((g) => g.value);
+    return {
+      category: HAND_CATEGORY.PAIR,
+      tiebreakers: [groups[0].value, ...kickers],
+      name: HAND_CATEGORY_NAME[HAND_CATEGORY.PAIR],
+    };
+  }
+
+  return {
+    category: HAND_CATEGORY.HIGH_CARD,
+    tiebreakers: values,
+    name: HAND_CATEGORY_NAME[HAND_CATEGORY.HIGH_CARD],
+  };
+}
+
+function combinations(arr, k) {
+  const result = [];
+  function helper(start, combo) {
+    if (combo.length === k) {
+      result.push(combo.slice());
+      return;
+    }
+    for (let i = start; i < arr.length; i++) {
+      combo.push(arr[i]);
+      helper(i + 1, combo);
+      combo.pop();
+    }
+  }
+  helper(0, []);
+  return result;
+}
+
+/** Compare two evaluated hands: >0 if a better, <0 if b better, 0 if tie. */
+function compareEvaluatedHands(a, b) {
+  if (a.category !== b.category) return a.category - b.category;
+  const len = Math.max(a.tiebreakers.length, b.tiebreakers.length);
+  for (let i = 0; i < len; i++) {
+    const av = a.tiebreakers[i] ?? -1;
+    const bv = b.tiebreakers[i] ?? -1;
+    if (av !== bv) return av - bv;
+  }
   return 0;
+}
+
+/**
+ * Best 5-card hand from hole + community (2–7 cards).
+ * With fewer than 5 cards, scores whatever is available (preflop/early).
+ */
+function evaluateBestHand(holeCards, community) {
+  const allCards = [...holeCards, ...community];
+  if (allCards.length === 0) {
+    return {
+      category: -1,
+      tiebreakers: [],
+      name: "no cards",
+    };
+  }
+
+  if (allCards.length <= 5) {
+    // Pad conceptually: score with what we have using the 5-card scorer
+    // by only using available cards — for NPC preflop we need pair/high detection.
+    return scorePartialHand(allCards);
+  }
+
+  let best = null;
+  for (const five of combinations(allCards, 5)) {
+    const scored = scoreFiveCardHand(five);
+    if (!best || compareEvaluatedHands(scored, best) > 0) best = scored;
+  }
+  return best;
+}
+
+/** Score <5 cards for NPC decisions (pair / trips / high card only). */
+function scorePartialHand(cards) {
+  const values = cards.map((c) => rankValue(c.rank)).sort((a, b) => b - a);
+  const counts = {};
+  for (const v of values) counts[v] = (counts[v] || 0) + 1;
+  const groups = Object.keys(counts)
+    .map((v) => ({ value: Number(v), count: counts[v] }))
+    .sort((a, b) => b.count - a.count || b.value - a.value);
+
+  if (groups[0] && groups[0].count === 4) {
+    return {
+      category: HAND_CATEGORY.FOUR_OF_A_KIND,
+      tiebreakers: [groups[0].value],
+      name: HAND_CATEGORY_NAME[HAND_CATEGORY.FOUR_OF_A_KIND],
+    };
+  }
+  if (groups[0] && groups[0].count === 3 && groups[1] && groups[1].count >= 2) {
+    return {
+      category: HAND_CATEGORY.FULL_HOUSE,
+      tiebreakers: [groups[0].value, groups[1].value],
+      name: HAND_CATEGORY_NAME[HAND_CATEGORY.FULL_HOUSE],
+    };
+  }
+  if (groups[0] && groups[0].count === 3) {
+    return {
+      category: HAND_CATEGORY.THREE_OF_A_KIND,
+      tiebreakers: [groups[0].value, ...values.filter((v) => v !== groups[0].value)],
+      name: HAND_CATEGORY_NAME[HAND_CATEGORY.THREE_OF_A_KIND],
+    };
+  }
+  const pairGroups = groups.filter((g) => g.count === 2);
+  if (pairGroups.length >= 2) {
+    const highPair = Math.max(pairGroups[0].value, pairGroups[1].value);
+    const lowPair = Math.min(pairGroups[0].value, pairGroups[1].value);
+    const kicker = groups.find((g) => g.count === 1);
+    return {
+      category: HAND_CATEGORY.TWO_PAIR,
+      tiebreakers: [highPair, lowPair, kicker ? kicker.value : -1],
+      name: HAND_CATEGORY_NAME[HAND_CATEGORY.TWO_PAIR],
+    };
+  }
+  if (pairGroups.length === 1) {
+    return {
+      category: HAND_CATEGORY.PAIR,
+      tiebreakers: [
+        pairGroups[0].value,
+        ...values.filter((v) => v !== pairGroups[0].value),
+      ],
+      name: HAND_CATEGORY_NAME[HAND_CATEGORY.PAIR],
+    };
+  }
+  return {
+    category: HAND_CATEGORY.HIGH_CARD,
+    tiebreakers: values,
+    name: HAND_CATEGORY_NAME[HAND_CATEGORY.HIGH_CARD],
+  };
 }
 
 // --- Showdown & Winner Determination ---
@@ -614,7 +843,7 @@ function showdown() {
     return;
   }
 
-  let bestStrength = -1;
+  let bestHand = null;
   let winners = [];
 
   activePlayers.forEach((p) => {
@@ -623,13 +852,13 @@ function showdown() {
       .map((card) => `<div class="card">${formatCard(card)}</div>`)
       .join("");
 
-    const strength = calculateHandStrength(p.hand, communityCards);
-    displayMessage(`${p.name} hand strength: ${strength}`);
+    const evaluated = evaluateBestHand(p.hand, communityCards);
+    p._lastShowdownHand = evaluated;
 
-    if (strength > bestStrength) {
-      bestStrength = strength;
+    if (!bestHand || compareEvaluatedHands(evaluated, bestHand) > 0) {
+      bestHand = evaluated;
       winners = [p];
-    } else if (strength === bestStrength) {
+    } else if (compareEvaluatedHands(evaluated, bestHand) === 0) {
       winners.push(p);
     }
   });
@@ -637,16 +866,18 @@ function showdown() {
   if (winners.length === 1) {
     const winner = winners[0];
     winner.chips += pot;
+    const handName = bestHand ? bestHand.name : "their hand";
     displayMessage(
-      `${potWinPhrase(winner.name)} the pot of $${pot} with a hand strength of ${bestStrength}!`
+      `${potWinPhrase(winner.name)} the pot of $${pot} with a ${handName}!`
     );
   } else {
     const share = Math.floor(pot / winners.length);
     winners.forEach((w) => {
       w.chips += share;
     });
+    const handName = bestHand ? bestHand.name : "the same hand";
     displayMessage(
-      `It's a tie! ${winners
+      `It's a tie (${handName})! ${winners
         .map((w) => w.name)
         .join(", ")} split the pot of $${pot}. Each gets $${share}.`
     );
