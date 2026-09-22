@@ -12,6 +12,11 @@ let currentBet = 0; // The highest bet placed in the current betting round
 let bettingRound = "pre-flop"; // pre-flop, flop, turn, river, showdown
 let roundMessage = ""; // Message to display for the current round
 
+// Act-tracking: a street ends only when every still-in, non-all-in player
+// has acted since the last bet/raise AND matched currentBet.
+let playersActedThisRound = new Set(); // player indices who have acted since last aggression
+let pendingTimer = null; // single scheduled turn/advance timer (cleared on Next Round)
+
 // --- DOM Elements ---
 const gameMessagesDiv = document.getElementById("game-messages");
 const playerOptionsDiv = document.getElementById("player-options");
@@ -24,6 +29,34 @@ const checkCallBtn = document.getElementById("check-call-btn");
 const betRaiseBtn = document.getElementById("bet-raise-btn");
 const potDisplay = document.getElementById("pot-display");
 const communityCardsDiv = document.getElementById("community-cards");
+
+function clearPendingTimer() {
+  if (pendingTimer !== null) {
+    clearTimeout(pendingTimer);
+    pendingTimer = null;
+  }
+}
+
+function scheduleAction(fn, ms) {
+  clearPendingTimer();
+  pendingTimer = setTimeout(() => {
+    pendingTimer = null;
+    fn();
+  }, ms);
+}
+
+/** Next seat clockwise that still has chips (eligible to be dealt in). */
+function nextLiveSeat(fromIndex) {
+  for (let step = 1; step <= players.length; step++) {
+    const i = (fromIndex + step) % players.length;
+    if (players[i].chips > 0) return i;
+  }
+  return fromIndex;
+}
+
+function liveSeatIndices() {
+  return players.map((p, i) => i).filter((i) => players[i].chips > 0);
+}
 
 // --- Game Initialization ---
 function initGame() {
@@ -93,6 +126,22 @@ function startGame() {
 }
 
 function startNewRound() {
+  clearPendingTimer();
+  playerOptionsDiv.classList.add("hidden");
+  nextRoundBtn.classList.add("hidden");
+
+  const live = liveSeatIndices();
+  if (live.length < 2) {
+    const survivor = live.length === 1 ? players[live[0]] : null;
+    displayMessage(
+      survivor
+        ? `${survivor.name} wins the table — not enough players left with chips.`
+        : "Game over — no players left with chips."
+    );
+    startGameBtn.classList.remove("hidden");
+    return;
+  }
+
   displayMessage("New round starting!");
   createDeck();
   shuffleDeck();
@@ -100,37 +149,47 @@ function startNewRound() {
   pot = 0;
   currentBet = 0;
   bettingRound = "pre-flop";
+  playersActedThisRound = new Set();
 
-  // Reset player states
+  // Reset player states; busted (0 chips) stay out of this hand
   players.forEach((p) => {
     p.hand = [];
-    p.folded = false;
+    p.folded = p.chips <= 0; // eliminate / skip broke seats
     p.currentBetInRound = 0;
     p.playerArea.classList.remove("active-player");
-    // Clear previous hand display
     p.playerArea.querySelector(".player-hand-display").innerHTML = "";
   });
 
-  // Rotate dealer button
-  dealerIndex = (dealerIndex + 1) % players.length;
+  // Rotate dealer among live seats
+  dealerIndex = nextLiveSeat(dealerIndex);
 
-  // Small blind and Big blind positions
-  const smallBlindIndex = (dealerIndex + 1) % players.length;
-  const bigBlindIndex = (dealerIndex + 2) % players.length;
-  const utgIndex = (dealerIndex + 3) % players.length; // Player after big blind starts pre-flop betting
+  let smallBlindIndex;
+  let bigBlindIndex;
+  let utgIndex;
 
-  // Post blinds
+  if (live.length === 2) {
+    // Heads-up: dealer is SB and acts first preflop; other seat is BB
+    smallBlindIndex = dealerIndex;
+    bigBlindIndex = nextLiveSeat(dealerIndex);
+    utgIndex = dealerIndex;
+  } else {
+    smallBlindIndex = nextLiveSeat(dealerIndex);
+    bigBlindIndex = nextLiveSeat(smallBlindIndex);
+    utgIndex = nextLiveSeat(bigBlindIndex);
+  }
+
   const smallBlindAmount = 5;
   const bigBlindAmount = 10;
 
   postBlind(players[smallBlindIndex], smallBlindAmount);
   postBlind(players[bigBlindIndex], bigBlindAmount);
-  currentBet = bigBlindAmount; // The current bet to match is the big blind
+  currentBet = bigBlindAmount;
+  // Blinds are forced bets, not voluntary actions — BB still gets option if all limp.
 
-  // Deal hole cards
+  // Deal hole cards only to players in this hand (not busted/folded out)
   for (let i = 0; i < 2; i++) {
     players.forEach((p) => {
-      p.hand.push(dealCard());
+      if (!p.folded) p.hand.push(dealCard());
     });
   }
 
@@ -138,12 +197,11 @@ function startNewRound() {
   updateCommunityCardsDisplay();
   updatePotDisplay();
 
-  // Set starting player for pre-flop (UTG)
   currentPlayerIndex = utgIndex;
   displayMessage(
     `It's ${players[currentPlayerIndex].name}'s turn. Starting pre-flop.`
   );
-  setTimeout(handleTurn, 1000); // Small delay before first turn
+  scheduleAction(handleTurn, 1000);
 }
 
 function postBlind(player, amount) {
@@ -157,8 +215,8 @@ function postBlind(player, amount) {
 function handleTurn() {
   const player = players[currentPlayerIndex];
 
-  // Skip folded players
-  if (player.folded) {
+  // Skip folded or all-in (no chips left to act with)
+  if (player.folded || player.chips === 0) {
     moveToNextPlayer();
     return;
   }
@@ -178,13 +236,12 @@ function handleTurn() {
   if (player.isHuman) {
     showPlayerOptions(player);
   } else {
-    setTimeout(() => npcTurn(player), 1500); // Give player time to read NPC actions
+    scheduleAction(() => npcTurn(player), 1500);
   }
 }
 
 function moveToNextPlayer() {
   currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-  // Check if betting round is over
   if (isBettingRoundOver()) {
     endBettingRound();
   } else {
@@ -193,46 +250,43 @@ function moveToNextPlayer() {
 }
 
 function isBettingRoundOver() {
-  let activePlayers = players.filter((p) => !p.folded);
-  if (activePlayers.length <= 1) return true; // Only one player left, round is over
+  const inHand = players.filter((p) => !p.folded);
+  if (inHand.length <= 1) return true;
 
-  // All active players must have contributed equally to the current bet
-  // OR have gone all-in (and contributed what they could up to currentBet)
-  // AND must have had a chance to act on the currentBet
-  let allPlayersActed = true;
-  for (const player of activePlayers) {
-    if (player.currentBetInRound < currentBet && player.chips > 0) {
-      // Player hasn't matched the current bet and isn't all-in
-      allPlayersActed = false;
-      break;
-    }
-    // Also check if they've acted since the last raise/bet
-    // This simplified version just checks currentBetInRound. A full game needs
-    // to track 'last action player' for the round.
-    // For now, if everyone has matched or folded/all-in, we assume it's over.
+  // Still-in players who can still put chips in must have acted since the
+  // last aggression and matched currentBet. All-in players are exempt.
+  for (let i = 0; i < players.length; i++) {
+    const p = players[i];
+    if (p.folded) continue;
+    if (p.chips === 0) continue; // all-in — no further action required
+    if (p.currentBetInRound < currentBet) return false;
+    if (!playersActedThisRound.has(i)) return false;
   }
-  return allPlayersActed;
+  return true;
+}
+
+function notePlayerActed(playerIndex) {
+  playersActedThisRound.add(playerIndex);
+}
+
+/** Bet or raise reopens action: only the aggressor has "acted" so far. */
+function noteAggression(playerIndex) {
+  playersActedThisRound = new Set([playerIndex]);
 }
 
 function endBettingRound() {
-  // Collect all bets into the pot
   players.forEach((p) => {
-    // In a real game, this is handled more granularly by the betting logic itself,
-    // but for this basic version, we just ensure currentBetInRound is cleared
-    // after being added to pot each time.
-    // For simplicity, we just assume pot is updated as actions happen.
-    p.currentBetInRound = 0; // Reset for next round
+    p.currentBetInRound = 0;
   });
+  playersActedThisRound = new Set();
 
   let activePlayersCount = players.filter((p) => !p.folded).length;
 
   if (activePlayersCount <= 1) {
-    // Everyone else folded, one winner
     showdown();
     return;
   }
 
-  // Advance the betting round
   switch (bettingRound) {
     case "pre-flop":
       bettingRound = "flop";
@@ -256,28 +310,41 @@ function endBettingRound() {
   }
 
   updateCommunityCardsDisplay();
-  currentBet = 0; // Reset current bet for the new round
+  currentBet = 0;
 
   if (bettingRound === "showdown") {
-    setTimeout(showdown, 2000);
+    scheduleAction(showdown, 2000);
   } else {
-    // Start next betting round with the player to the left of the dealer (who is still active)
+    // First to act postflop: first live-in-hand seat left of dealer
     let startingPlayerFound = false;
     let startIndex = (dealerIndex + 1) % players.length;
     for (let i = 0; i < players.length; i++) {
       const potentialPlayerIndex = (startIndex + i) % players.length;
-      if (!players[potentialPlayerIndex].folded) {
+      const p = players[potentialPlayerIndex];
+      if (!p.folded && p.chips > 0) {
         currentPlayerIndex = potentialPlayerIndex;
         startingPlayerFound = true;
         break;
       }
     }
     if (!startingPlayerFound) {
-      // This shouldn't happen if activePlayersCount > 1
-      showdown();
+      // Everyone remaining is all-in — run out the board
+      if (bettingRound === "flop") {
+        dealCommunityCards(1);
+        bettingRound = "turn";
+        dealCommunityCards(1);
+        bettingRound = "river";
+        updateCommunityCardsDisplay();
+      } else if (bettingRound === "turn") {
+        dealCommunityCards(1);
+        bettingRound = "river";
+        updateCommunityCardsDisplay();
+      }
+      bettingRound = "showdown";
+      scheduleAction(showdown, 1500);
       return;
     }
-    setTimeout(handleTurn, 1500);
+    scheduleAction(handleTurn, 1500);
   }
 }
 
@@ -291,20 +358,18 @@ function dealCommunityCards(count) {
 function showPlayerOptions(player) {
   playerOptionsDiv.classList.remove("hidden");
 
-  // Determine min/max for slider
-  let minBet = currentBet - player.currentBetInRound; // Amount needed to call
-  if (minBet < 0) minBet = 0; // If player already contributed more than currentBet
+  let minBet = currentBet - player.currentBetInRound;
+  if (minBet < 0) minBet = 0;
   const maxBet = player.chips;
 
   betSlider.min = minBet;
   betSlider.max = maxBet;
-  betSlider.value = minBet; // Default to calling amount
+  betSlider.value = minBet;
 
-  // Update button texts
   if (currentBet === 0 || player.currentBetInRound === currentBet) {
     checkCallBtn.textContent = "Check";
     betRaiseBtn.textContent = "Bet";
-    betSlider.min = 0; // Can bet from 0 if checking
+    betSlider.min = 0;
   } else {
     checkCallBtn.textContent = `Call ($${
       currentBet - player.currentBetInRound
@@ -313,71 +378,67 @@ function showPlayerOptions(player) {
   }
 
   if (player.chips === 0) {
-    // If player is all-in, disable actions except for maybe check/call if already matched
     betSlider.disabled = true;
     foldBtn.disabled = true;
     betRaiseBtn.disabled = true;
     if (player.currentBetInRound < currentBet) {
-      checkCallBtn.disabled = true; // Cannot call if not enough chips
+      checkCallBtn.disabled = true;
     } else {
-      checkCallBtn.disabled = false; // Can still check if matched
+      checkCallBtn.disabled = false;
     }
   } else {
     betSlider.disabled = false;
     foldBtn.disabled = false;
     betRaiseBtn.disabled = false;
-    checkCallBtn.disabled = false; // Enable initially
+    checkCallBtn.disabled = false;
   }
 
-  // Update bet amount display
   betAmountSpan.textContent = `$${betSlider.value}`;
   betSlider.oninput = () => {
     betAmountSpan.textContent = `$${betSlider.value}`;
-    // Disable bet/raise button if bet is too low
     if (
       betSlider.value < currentBet + 10 &&
       currentBet > 0 &&
       betSlider.value - player.currentBetInRound <
         currentBet - player.currentBetInRound + 10
     ) {
-      // This is a simplified minimum raise.
-      // A proper min raise is at least the previous raise amount (currentBet - previousBetInRound).
-      // For now, if currentBet > 0, require a raise of at least currentBet + 10
       betRaiseBtn.disabled = true;
     } else {
       betRaiseBtn.disabled = false;
     }
 
-    // If slider is less than currentBet, it can only be a fold or check/call
     if (betSlider.value < currentBet - player.currentBetInRound) {
-      betRaiseBtn.disabled = true; // Cannot bet/raise if not matching
+      betRaiseBtn.disabled = true;
     }
   };
 }
 
 function handlePlayerAction(actionType, amount = 0) {
   const player = players[currentPlayerIndex];
-  playerOptionsDiv.classList.add("hidden"); // Hide options after action
+  const playerIndex = currentPlayerIndex;
+  playerOptionsDiv.classList.add("hidden");
 
   let actualAmount = 0;
 
   switch (actionType) {
     case "fold":
       player.folded = true;
+      notePlayerActed(playerIndex);
       displayMessage(`You folded.`);
       break;
     case "check":
+      notePlayerActed(playerIndex);
       displayMessage(`You checked.`);
       break;
     case "call":
       actualAmount = currentBet - player.currentBetInRound;
       performBet(player, actualAmount, "call");
+      notePlayerActed(playerIndex);
       displayMessage(`You called $${actualAmount}.`);
       break;
     case "bet":
     case "raise":
       actualAmount = parseInt(betSlider.value);
-      // Ensure player can't bet more than they have
       actualAmount = Math.min(
         actualAmount,
         player.chips + player.currentBetInRound
@@ -386,13 +447,13 @@ function handlePlayerAction(actionType, amount = 0) {
         actualAmount < currentBet &&
         actualAmount < player.chips + player.currentBetInRound
       ) {
-        // Should be prevented by UI but as a fallback
         displayMessage("Invalid bet/raise amount.");
-        showPlayerOptions(player); // Re-show options
+        showPlayerOptions(player);
         return;
       }
       performBet(player, actualAmount - player.currentBetInRound, actionType);
-      currentBet = actualAmount; // Update current bet to player's new total contribution
+      currentBet = actualAmount;
+      noteAggression(playerIndex);
       displayMessage(
         `You ${actionType === "bet" ? "bet" : "raised"} to $${actualAmount}.`
       );
@@ -405,68 +466,69 @@ function handlePlayerAction(actionType, amount = 0) {
 
 // --- NPC Logic (Simplified) ---
 function npcTurn(npc) {
-  const handStrength = calculateHandStrength(npc.hand, communityCards); // Simplified strength
+  const npcIndex = players.indexOf(npc);
+  const handStrength = calculateHandStrength(npc.hand, communityCards);
   const chipsToCall = currentBet - npc.currentBetInRound;
-  const canAffordCall = npc.chips >= chipsToCall;
-  const isBigBlind =
-    players[(dealerIndex + 2) % players.length] === npc &&
-    bettingRound === "pre-flop";
-
   let actionMessage = "";
 
+  // Short all-in: never fold when you still have chips but can't cover the call
+  if (chipsToCall > 0 && npc.chips > 0 && npc.chips < chipsToCall) {
+    const pushed = npc.chips;
+    performBet(npc, pushed, "call");
+    notePlayerActed(npcIndex);
+    actionMessage = `${npc.name} goes all-in with $${pushed}!`;
+    displayMessage(actionMessage);
+    updatePlayerDisplays();
+    updatePotDisplay();
+    scheduleAction(moveToNextPlayer, 1500);
+    return;
+  }
+
   // --- Basic NPC Strategy ---
-  // NPC 1 (Conservative)
   if (npc.name === "NPC 1") {
-    if (chipsToCall > npc.chips) {
-      // Cannot afford to call (all-in situation)
-      actionMessage = `${npc.name} doesn't have enough to call and folds.`;
-      npc.folded = true;
-    } else if (handStrength > 7 || (handStrength > 4 && chipsToCall < 20)) {
-      // Strong hand or decent and cheap to call
+    if (handStrength > 7 || (handStrength > 4 && chipsToCall < 20)) {
       if (currentBet === 0 || (handStrength > 8 && Math.random() < 0.6)) {
-        // Check or bet/raise with strong hand
-        let betAmount = Math.min(npc.chips, Math.max(currentBet * 1.5, 20)); // Bet/raise a reasonable amount
+        let betAmount = Math.min(npc.chips, Math.max(currentBet * 1.5, 20));
         performBet(npc, betAmount - npc.currentBetInRound, "raise");
         currentBet = npc.currentBetInRound;
+        noteAggression(npcIndex);
         actionMessage = `${npc.name} raises to $${npc.currentBetInRound}!`;
       } else {
         performBet(npc, chipsToCall, "call");
+        notePlayerActed(npcIndex);
         actionMessage = `${npc.name} calls $${chipsToCall}.`;
       }
-    } else if (currentBet === 0 || (isBigBlind && chipsToCall === 0)) {
-      // Check if possible
+    } else if (currentBet === 0 || chipsToCall === 0) {
+      notePlayerActed(npcIndex);
       actionMessage = `${npc.name} checks.`;
     } else {
-      // Weak hand, or too expensive to call
+      npc.folded = true;
+      notePlayerActed(npcIndex);
       actionMessage = `${npc.name} folds.`;
-      npc.folded = true;
     }
-  }
-  // NPC 2 (Aggressive)
-  else if (npc.name === "NPC 2") {
-    if (chipsToCall > npc.chips) {
-      actionMessage = `${npc.name} doesn't have enough to call and folds.`;
-      npc.folded = true;
-    } else if (handStrength > 6 || (handStrength > 3 && Math.random() < 0.4)) {
-      // Decent hand or semi-bluff
+  } else if (npc.name === "NPC 2") {
+    if (handStrength > 6 || (handStrength > 3 && Math.random() < 0.4)) {
       if (currentBet === 0 || Math.random() < 0.7) {
-        // Bet/Raise more often
         let betAmount = Math.min(
           npc.chips,
           Math.max(currentBet * 2, 25 + Math.floor(Math.random() * 15))
         );
         performBet(npc, betAmount - npc.currentBetInRound, "raise");
         currentBet = npc.currentBetInRound;
+        noteAggression(npcIndex);
         actionMessage = `${npc.name} aggressively raises to $${npc.currentBetInRound}!`;
       } else {
         performBet(npc, chipsToCall, "call");
+        notePlayerActed(npcIndex);
         actionMessage = `${npc.name} calls $${chipsToCall}.`;
       }
-    } else if (currentBet === 0 || (isBigBlind && chipsToCall === 0)) {
+    } else if (currentBet === 0 || chipsToCall === 0) {
+      notePlayerActed(npcIndex);
       actionMessage = `${npc.name} checks.`;
     } else {
-      actionMessage = `${npc.name} folds.`;
       npc.folded = true;
+      notePlayerActed(npcIndex);
+      actionMessage = `${npc.name} folds.`;
     }
   }
 
@@ -474,8 +536,7 @@ function npcTurn(npc) {
   updatePlayerDisplays();
   updatePotDisplay();
 
-  // After a short delay, move to the next player
-  setTimeout(moveToNextPlayer, 1500);
+  scheduleAction(moveToNextPlayer, 1500);
 }
 
 function performBet(player, amount, action) {
@@ -483,23 +544,18 @@ function performBet(player, amount, action) {
   player.chips -= actualAmount;
   pot += actualAmount;
   player.currentBetInRound += actualAmount;
-  // For betting/raising, currentBet needs to be updated by the caller of this function
-  // For calling, currentBet is already set
 }
 
 // --- Very Basic Hand Strength (Placeholder - needs real poker logic) ---
-// This is a highly simplified heuristic. A real game needs a full hand evaluation algorithm.
 function calculateHandStrength(holeCards, community) {
   const allCards = [...holeCards, ...community];
-  if (allCards.length < 2) return 0; // Not enough cards yet
+  if (allCards.length < 2) return 0;
 
-  // Just check for pairs and high cards for now
   const ranksCount = {};
   for (const card of allCards) {
     ranksCount[card.rank] = (ranksCount[card.rank] || 0) + 1;
   }
 
-  let strength = 0;
   let pairs = 0;
   let threeOfAKind = 0;
   let fourOfAKind = 0;
@@ -510,26 +566,26 @@ function calculateHandStrength(holeCards, community) {
     if (ranksCount[rank] === 4) fourOfAKind++;
   }
 
-  if (fourOfAKind) return 10; // Quads
-  if (threeOfAKind && pairs) return 9; // Full House (simplified, might not be true from any three of a kind and a pair)
-  if (threeOfAKind) return 7; // Three of a kind
-  if (pairs >= 2) return 5; // Two pair
-  if (pairs === 1) return 3; // One pair
+  if (fourOfAKind) return 10;
+  if (threeOfAKind && pairs) return 9;
+  if (threeOfAKind) return 7;
+  if (pairs >= 2) return 5;
+  if (pairs === 1) return 3;
 
-  // Check for high card based on ranks in hand
   const highestRank = Math.max(
     ...holeCards.map((card) => RANKS.indexOf(card.rank))
   );
-  if (highestRank >= RANKS.indexOf("J")) return 2; // Jack or higher
-  if (highestRank >= RANKS.indexOf("T")) return 1; // Ten or higher
+  if (highestRank >= RANKS.indexOf("J")) return 2;
+  if (highestRank >= RANKS.indexOf("T")) return 1;
 
-  return 0; // No significant hand
+  return 0;
 }
 
 // --- Showdown & Winner Determination ---
 function showdown() {
+  clearPendingTimer();
   displayMessage("Showdown! Revealing hands...");
-  playerOptionsDiv.classList.add("hidden"); // Ensure player options are hidden
+  playerOptionsDiv.classList.add("hidden");
 
   let activePlayers = players.filter((p) => !p.folded);
 
@@ -537,7 +593,7 @@ function showdown() {
     displayMessage(
       "No active players left? (Error/edge case) Starting new round."
     );
-    setTimeout(startNewRound, 3000);
+    scheduleAction(startNewRound, 3000);
     return;
   }
 
@@ -552,21 +608,17 @@ function showdown() {
     return;
   }
 
-  // --- VERY SIMPLIFIED WINNER LOGIC ---
-  // In a real game, you need a full poker hand evaluator here (e.g., detect straight, flush, etc.)
-  // For this basic version, we'll just use our simplified hand strength and pick the best one.
   let bestStrength = -1;
   let winners = [];
 
   activePlayers.forEach((p) => {
-    // For actual showdown, display all hole cards
     const handDisplay = p.playerArea.querySelector(".player-hand-display");
     handDisplay.innerHTML = p.hand
       .map((card) => `<div class="card">${card.rank}${card.suit}</div>`)
       .join("");
 
     const strength = calculateHandStrength(p.hand, communityCards);
-    displayMessage(`${p.name} hand strength: ${strength}`); // For debugging/explanation
+    displayMessage(`${p.name} hand strength: ${strength}`);
 
     if (strength > bestStrength) {
       bestStrength = strength;
@@ -583,7 +635,6 @@ function showdown() {
       `${potWinPhrase(winner.name)} the pot of $${pot} with a hand strength of ${bestStrength}!`
     );
   } else {
-    // Handle ties (split pot) - simplified: just split equally
     const share = Math.floor(pot / winners.length);
     winners.forEach((w) => {
       w.chips += share;
@@ -607,21 +658,23 @@ function updatePlayerDisplays() {
     playerChipsSpan.textContent = `$${p.chips}`;
 
     const handDisplay = p.playerArea.querySelector(".player-hand-display");
-    if (p.isHuman) {
+    if (p.chips <= 0 && p.hand.length === 0) {
+      handDisplay.innerHTML = "";
+    } else if (p.isHuman) {
       handDisplay.innerHTML = p.hand
         .map((card) => `<div class="card">${card.rank}${card.suit}</div>`)
         .join("");
-    } else if (bettingRound === "showdown") {
-      // Show NPC cards only at showdown
+    } else if (bettingRound === "showdown" && !p.folded) {
       handDisplay.innerHTML = p.hand
         .map((card) => `<div class="card">${card.rank}${card.suit}</div>`)
         .join("");
-    } else {
+    } else if (p.hand.length > 0 && !p.folded) {
       handDisplay.innerHTML = `<div class="card hidden"></div><div class="card hidden"></div>`;
+    } else {
+      handDisplay.innerHTML = "";
     }
 
-    // Add 'folded' visual cue (optional)
-    if (p.folded) {
+    if (p.folded || p.chips <= 0) {
       p.playerArea.classList.add("folded");
     } else {
       p.playerArea.classList.remove("folded");
@@ -644,7 +697,6 @@ function updateCommunityCardsDisplay() {
 }
 
 function potWinPhrase(name) {
-  // "You win" vs "NPC 1 wins"
   return name === "You" ? "You win" : `${name} wins`;
 }
 
@@ -654,7 +706,10 @@ function displayMessage(message) {
 
 // --- Event Listeners ---
 startGameBtn.addEventListener("click", startGame);
-nextRoundBtn.addEventListener("click", startNewRound);
+nextRoundBtn.addEventListener("click", () => {
+  clearPendingTimer();
+  startNewRound();
+});
 
 foldBtn.addEventListener("click", () => handlePlayerAction("fold"));
 checkCallBtn.addEventListener("click", () => {
