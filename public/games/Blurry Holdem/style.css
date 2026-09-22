@@ -15,14 +15,14 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 20px;
-    /* Room for seats that sit outside the 700×500 felt */
-    padding: 80px 40px 40px;
+    /* Room for seats outside the 700×500 felt (dealer+pot above, sides out, human below) */
+    padding: 190px 180px 40px;
     box-sizing: border-box;
     margin: 0 auto;
 }
 
 #table {
-    width: 700px;  /* Matches table1.png */
+    width: 700px;  /* Matches table1.png — keep real px, not invalid vm */
     height: 500px;
     background-image: url('images/tables/table1.png');
     background-size: cover;
@@ -37,6 +37,8 @@ body {
     box-shadow: 0 0 0px rgba(0,0,0,0.7);
     padding: 0;
     margin: 0 auto;
+    /* Clear human seat + info hanging below the bottom rail before #action-area */
+    margin-bottom: 170px;
 }
 
 .player-area {
@@ -44,10 +46,15 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
     text-align: center;
     font-size: 0.9em;
     line-height: 1.2;
+    z-index: 2;
+}
+
+.player-info {
+    white-space: nowrap;
 }
 
 /* Styles for all player images (NPCs, Player, Dealer) */
@@ -59,6 +66,7 @@ body {
     object-fit: cover;
     box-shadow: 0 0 0px rgba(0,0,0,0.6);
     box-sizing: border-box;
+    transform-origin: center center;
 }
 
 /* Specific style for mothman.png (assuming it's NPC 2) */
@@ -69,37 +77,58 @@ body {
     object-fit: cover;
 }
 
-/* --- PLAYER PLACEMENT (around 700×500 felt; no full-area side rotates) --- */
+/* --- PLAYER PLACEMENT (around 700×500 felt; side portraits rotated ±90°) --- */
 
-/* NPC 1: left rail, vertically centered — upright, not rotated */
+/*
+ * NPC 1 (left rail): portrait rotated 90° CCW so they face the table;
+ * seat at left rail with upright text below (outside the green felt).
+ */
 .player-top-left {
-    left: -10px;
+    left: -75px;
     top: 50%;
     transform: translateY(-50%);
 }
+.player-top-left .player-image {
+    transform: rotate(-90deg);
+}
 
-/* NPC 2: right rail, vertically centered — upright, not rotated */
+/*
+ * NPC 2 (right rail): portrait rotated 90° CW; seat at right rail.
+ * Extra gap so mothman wings (after rotate) do not cover name/chips.
+ */
 .player-top-right {
-    right: -10px;
+    right: -155px;
     left: auto;
     top: 50%;
     transform: translateY(-50%);
+    gap: 18px;
+}
+.player-top-right .player-image {
+    transform: rotate(90deg);
 }
 
-/* Player: bottom center of the felt */
+/*
+ * Human (bottom rail): flush with the bottom edge of the felt;
+ * name/chips stay below the avatar (outside the table).
+ */
 .player-human-area {
     left: 50%;
-    top: 520px;
+    /* Mirror dealer: ~60px onto felt / rail, rest below — sits at bottom rail */
+    top: 435px;
     transform: translateX(-50%);
 }
 
-/* Dealer: top center of the felt */
+/*
+ * Dealer (top rail): character against the top edge;
+ * name/chips ABOVE the portrait via column-reverse so they clear the felt/rail.
+ */
 .dealer-area {
     left: 50%;
-    top: -70px;
+    top: -80px;
     transform: translateX(-50%);
+    flex-direction: column-reverse;
+    gap: 6px;
 }
-
 
 /* Active player highlight */
 .player-area.active-player .player-image {
@@ -122,6 +151,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     min-height: 80px;
+    z-index: 1;
 }
 
 .card {
@@ -145,9 +175,10 @@ body {
     color: transparent;
 }
 
+/* Pot sits ABOVE the dealer character + labels, off the felt */
 #pot-display {
     position: absolute;
-    top: 20px;
+    top: -175px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 1.2em;
@@ -155,6 +186,8 @@ body {
     background-color: rgba(0,0,0,0.5);
     padding: 5px 10px;
     border-radius: 5px;
+    z-index: 3;
+    white-space: nowrap;
 }
 
 #action-area {
@@ -166,6 +199,8 @@ body {
     text-align: center;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
     font-size: 1em;
+    position: relative;
+    z-index: 1;
 }
 
 #game-messages {
