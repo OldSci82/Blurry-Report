@@ -73,6 +73,14 @@ class TitleScene extends Phaser.Scene {
 
     // Footer
     this.add
+      .text(centerX, 520, "ARROWS/WASD MOVE · Z ATTACK · SPACE JUMP", {
+        fontSize: "14px",
+        fontFamily: "monospace",
+        color: "#88aadd",
+      })
+      .setOrigin(0.5);
+
+    this.add
       .text(centerX, 560, "INSERT COIN • 1 OR 2 PLAYERS", {
         fontSize: "16px",
         fontFamily: "monospace",
