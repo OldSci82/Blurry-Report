@@ -29,7 +29,7 @@ let playersActedThisRound = new Set(); // player indices who have acted since la
 let pendingTimer = null; // single scheduled turn/advance timer (cleared on Next Round)
 
 // --- DOM Elements ---
-const gameMessagesDiv = document.getElementById("game-messages");
+const statusBanner = document.getElementById("status-banner");
 const playerOptionsDiv = document.getElementById("player-options");
 const startGameBtn = document.getElementById("start-game-btn");
 const nextRoundBtn = document.getElementById("next-round-btn");
@@ -75,6 +75,7 @@ function liveSeatIndices() {
 
 // --- Game Initialization ---
 function initGame() {
+  // Seating clockwise: You (bottom) → NPC1 (left) → Goliath (top) → NPC2 (right)
   players = [
     {
       name: "You",
@@ -84,7 +85,7 @@ function initGame() {
       folded: false,
       currentBetInRound: 0,
       totalContribution: 0, // chips put into pots this hand (for side pots)
-      playerArea: document.querySelector(".player-bottom-left"),
+      playerArea: document.querySelector(".player-human-area"),
     },
     {
       name: "NPC 1",
@@ -94,7 +95,17 @@ function initGame() {
       folded: false,
       currentBetInRound: 0,
       totalContribution: 0,
-      playerArea: document.querySelector(".player-top-left"),
+      playerArea: document.querySelector(".player-left"),
+    },
+    {
+      name: "Goliath",
+      chips: 100,
+      hand: [],
+      isHuman: false,
+      folded: false,
+      currentBetInRound: 0,
+      totalContribution: 0,
+      playerArea: document.querySelector(".player-top"),
     },
     {
       name: "NPC 2",
@@ -104,10 +115,10 @@ function initGame() {
       folded: false,
       currentBetInRound: 0,
       totalContribution: 0,
-      playerArea: document.querySelector(".player-top-right"),
+      playerArea: document.querySelector(".player-right"),
     },
   ];
-  dealerIndex = 0; // Start with 'You' as dealer, rotates later
+  dealerIndex = 0; // Start with 'You' as dealer, rotates among all live seats
   updatePlayerDisplays();
   displayMessage("Welcome to Texas Hold'em! Click 'Start Game' to begin.");
   startGameBtn.classList.remove("hidden");
@@ -217,9 +228,14 @@ function startNewRound() {
   updatePotDisplay();
 
   currentPlayerIndex = utgIndex;
-  displayMessage(
-    `It's ${players[currentPlayerIndex].name}'s turn. Starting pre-flop.`
-  );
+  {
+    const starter = players[currentPlayerIndex];
+    displayMessage(
+      starter.isHuman
+        ? "It's your turn. Starting pre-flop."
+        : `It's ${starter.name}'s turn. Starting pre-flop.`
+    );
+  }
   scheduleAction(handleTurn, 1000);
 }
 
@@ -250,7 +266,11 @@ function handleTurn() {
     }
   });
 
-  roundMessage = `It's ${player.name}'s turn. Current bet to match: $${currentBet}. Your current contribution: $${player.currentBetInRound}`;
+  if (player.isHuman) {
+    roundMessage = `It's your turn. Bet to match: $${currentBet}. Your contribution: $${player.currentBetInRound}`;
+  } else {
+    roundMessage = `It's ${player.name}'s turn. Bet to match: $${currentBet}.`;
+  }
   displayMessage(roundMessage);
 
   if (player.isHuman) {
@@ -679,6 +699,49 @@ function npcTurn(npc) {
     } else if (currentBet === 0 || chipsToCall === 0) {
       notePlayerActed(npcIndex);
       actionMessage = `${npc.name} checks.`;
+    } else {
+      npc.folded = true;
+      notePlayerActed(npcIndex);
+      actionMessage = `${npc.name} folds.`;
+    }
+  } else {
+    // Goliath (top seat) and any other NPC: tight-aggressive king energy
+    if (handStrength >= 5 || (handStrength >= 2 && chipsToCall <= 15)) {
+      if (currentBet === 0 || (handStrength >= 5 && Math.random() < 0.55)) {
+        const target = Math.max(
+          currentBet === 0 ? BIG_BLIND : currentBet + minRaiseSize,
+          Math.floor(currentBet * 1.75),
+          20 + Math.floor(Math.random() * 10)
+        );
+        if (npcBetOrRaiseTo(npc, target)) {
+          noteAggression(npcIndex);
+          actionMessage =
+            npc.chips === 0
+              ? `${npc.name} goes all-in — $${npc.currentBetInRound} total this round!`
+              : `${npc.name} raises to $${npc.currentBetInRound} total this round!`;
+        } else if (chipsToCall > 0) {
+          performBet(npc, chipsToCall, "call");
+          notePlayerActed(npcIndex);
+          actionMessage = `${npc.name} calls $${chipsToCall}.`;
+        } else {
+          notePlayerActed(npcIndex);
+          actionMessage = `${npc.name} checks.`;
+        }
+      } else if (chipsToCall > 0) {
+        performBet(npc, chipsToCall, "call");
+        notePlayerActed(npcIndex);
+        actionMessage = `${npc.name} calls $${chipsToCall}.`;
+      } else {
+        notePlayerActed(npcIndex);
+        actionMessage = `${npc.name} checks.`;
+      }
+    } else if (currentBet === 0 || chipsToCall === 0) {
+      notePlayerActed(npcIndex);
+      actionMessage = `${npc.name} checks.`;
+    } else if (chipsToCall <= 10 && Math.random() < 0.35) {
+      performBet(npc, chipsToCall, "call");
+      notePlayerActed(npcIndex);
+      actionMessage = `${npc.name} calls $${chipsToCall}.`;
     } else {
       npc.folded = true;
       notePlayerActed(npcIndex);
@@ -1146,7 +1209,7 @@ function showdown() {
 
 // --- UI Update Functions ---
 function updateDealerButton() {
-  // Flavor top "Dealer" NPC is not a seat — mark the rotating dealerIndex seat.
+  // Dealer button (D) rotates among all live seats, including top (Goliath).
   players.forEach((p, i) => {
     let btn = p.playerArea.querySelector(".dealer-button");
     if (i === dealerIndex) {
@@ -1214,7 +1277,7 @@ function potWinPhrase(name) {
 }
 
 function displayMessage(message) {
-  gameMessagesDiv.textContent = message;
+  statusBanner.textContent = message;
 }
 
 // --- Event Listeners ---

@@ -1,13 +1,35 @@
 body {
     font-family: Arial, sans-serif;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
     min-height: 100vh;
     background-color: #333;
     color: #eee;
     margin: 0;
-    overflow: auto; /* Allow seating ring to show without clipping */
+    overflow: auto;
+}
+
+/* Compact status line at top of screen (not inside a growing panel) */
+#status-banner {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 8px 16px;
+    font-size: 0.95em;
+    font-style: italic;
+    color: #ddd;
+    background: rgba(20, 20, 20, 0.92);
+    border-bottom: 1px solid #444;
+    line-height: 1.35;
+    min-height: 1.35em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #game-container {
@@ -15,14 +37,14 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    /* Room for seats outside the 700×500 felt (dealer+pot above, sides out, human below) */
-    padding: 205px 280px 16px;
+    /* Room for top NPC above felt; sides; compact controls below human */
+    padding: 130px 280px 8px;
     box-sizing: border-box;
     margin: 0 auto;
 }
 
 #table {
-    width: 700px;  /* Matches table1.png — keep real px, not invalid vm */
+    width: 700px;
     height: 500px;
     background-image: url('images/tables/table1.png');
     background-size: cover;
@@ -30,16 +52,15 @@ body {
     background-repeat: no-repeat;
     border-radius: 0px;
     border: 0px solid #555;
-    position: relative; /* Absolute seating relative to felt */
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     box-shadow: 0 0 0px rgba(0,0,0,0.7);
     padding: 0;
     margin: 0 auto;
-    /* Clear human avatar + name/chips hanging below the bottom rail before #action-area
-       (hole cards sit on the felt above the avatar, so they no longer need this space) */
-    margin-bottom: 88px;
+    /* Clear human avatar + name/chips hanging below the bottom rail */
+    margin-bottom: 92px;
 }
 
 .player-area {
@@ -58,19 +79,17 @@ body {
     white-space: nowrap;
 }
 
-/* Styles for all player images (NPCs, Player, Dealer) */
 .player-image {
     width: 100px;
     height: 100px;
     border-radius: 0%;
-    border: 2px solid transparent; /* Visible when .active-player sets color */
+    border: 2px solid transparent;
     object-fit: cover;
     box-shadow: 0 0 0px rgba(0,0,0,0.6);
     box-sizing: border-box;
     transform-origin: center center;
 }
 
-/* Specific style for mothman.png (assuming it's NPC 2) */
 .npc-mothman {
     width: 200px;
     height: 100px;
@@ -78,66 +97,47 @@ body {
     object-fit: cover;
 }
 
-/* --- PLAYER PLACEMENT (around 700×500 felt; side portraits rotated ±90°) --- */
+/* --- PLAYER PLACEMENT (around 700×500 felt) --- */
 
-/*
- * NPC 1 (left rail): portrait rotated 90° CCW so they face the table;
- * seat at left rail with upright text below (outside the green felt).
- */
-.player-top-left {
+/* NPC 1 — left rail */
+.player-left {
     left: -75px;
-    /* Portrait center on horizontal midline; text hangs below outside felt */
     top: calc(50% - 50px);
     transform: none;
 }
-.player-top-left .player-image {
+.player-left .player-image {
     transform: rotate(-90deg);
 }
 
-/*
- * NPC 2 (right rail): portrait rotated 90° CW; seat at right rail.
- * Extra gap so mothman wings (after rotate) do not cover name/chips.
- */
-.player-top-right {
-    /* Nudge left so rotated mothman base sits flush on purple rail
-       (mirrors left seat ~25px onto table; was 655→642, now 642→625). */
+/* NPC 2 — right rail */
+.player-right {
     left: 625px;
     right: auto;
-    /* Portrait center on horizontal midline */
     top: calc(50% - 50px);
     transform: none;
-    /* Name/chips to the RIGHT of mothman so they clear wings/felt */
     flex-direction: row;
     align-items: center;
     gap: 14px;
 }
-.player-top-right .player-image {
+.player-right .player-image {
     transform: rotate(90deg);
 }
-.player-top-right .player-info {
+.player-right .player-info {
     text-align: left;
 }
 
-/*
- * Human (bottom rail): avatar flush with the bottom edge of the felt;
- * name/chips stay below the avatar (outside the table).
- * Hole cards are absolutely placed ON the felt above the avatar (see below),
- * so they never spill into #action-area.
- */
+/* You — bottom rail */
 .player-human-area {
     left: 50%;
-    /* Mirror dealer: ~60px onto felt / rail, rest below — sits at bottom rail */
     top: 435px;
     transform: translateX(-50%);
 }
 
-/* Human hole cards: on the green felt in front of You (above rail / action panel) */
+/* Human hole cards on the felt above the avatar */
 .player-human-area .player-hand-display {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    /* Lift above avatar/hands onto lower felt; clears purple bumper + action panel.
-       Community board is centered (~y 215–285); this lands ~y 325–395 — no overlap. */
     bottom: calc(100% + 42px);
     margin: 0;
     min-height: 0;
@@ -147,33 +147,40 @@ body {
     min-height: 70px;
 }
 
-/*
- * Dealer (top rail): character against the top edge;
- * name/chips ABOVE the portrait via column-reverse so they clear the felt/rail.
- */
-.dealer-area {
+/* Goliath / NPC 3 — top rail (full player seat) */
+.player-top {
     left: 50%;
-    /* info(~35)+gap(6)+img(100)≈141; nudge down ~15px to close gap to purple bumper */
     top: -116px;
     transform: translateX(-50%);
     flex-direction: column-reverse;
     gap: 6px;
 }
 
-/* Active player highlight */
+/* Top seat hole cards on the felt below the avatar (clears pot at ~128px) */
+.player-top .player-hand-display {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: calc(100% + 2px);
+    margin: 0;
+    min-height: 0;
+    z-index: 2;
+}
+.player-top .player-hand-display:not(:empty) {
+    min-height: 70px;
+}
+
 .player-area.active-player .player-image {
     border-color: yellow;
     box-shadow: 0 0 15px rgba(255,255,0,0.8);
 }
 
-/* Folded player visual */
 .player-area.folded .player-image {
     opacity: 0.5;
     filter: grayscale(100%);
 }
 
-
-/* Community / board: classic center of the felt (above human hole cards) */
+/* Community board — center of felt */
 #community-cards {
     display: flex;
     gap: 10px;
@@ -207,40 +214,36 @@ body {
     color: transparent;
 }
 
-/* Pot sits ABOVE the dealer character + labels, off the felt */
+/* Pot on the felt — top-center, under top seat / above board */
 #pot-display {
     position: absolute;
-    top: -190px;
+    /* Below top-seat hole cards, above centered community board */
+    top: 128px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 1.2em;
+    font-size: 1.15em;
     font-weight: bold;
-    background-color: rgba(0,0,0,0.5);
-    padding: 5px 10px;
+    background-color: rgba(0,0,0,0.55);
+    padding: 5px 12px;
     border-radius: 5px;
     z-index: 3;
     white-space: nowrap;
+    pointer-events: none;
 }
 
+/* Compact action strip under You — no dark full-width growing box */
 #action-area {
-    width: 600px;
-    background-color: #222;
-    border: 1px solid #444;
-    padding: 20px;
-    border-radius: 10px;
+    width: auto;
+    max-width: 520px;
+    background-color: transparent;
+    border: none;
+    padding: 4px 8px 10px;
+    border-radius: 0;
     text-align: center;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    font-size: 1em;
+    box-shadow: none;
+    font-size: 0.95em;
     position: relative;
     z-index: 1;
-}
-
-#game-messages {
-    min-height: 40px;
-    margin-bottom: 15px;
-    font-style: italic;
-    color: #bbb;
-    line-height: 1.4;
 }
 
 #player-options {
@@ -248,21 +251,21 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
 }
 
 #bet-slider {
-    width: 200px;
+    width: 180px;
 }
 
 button {
-    padding: 10px 15px;
+    padding: 8px 14px;
     background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1em;
+    font-size: 0.95em;
     transition: background-color 0.2s;
     white-space: nowrap;
 }
@@ -285,7 +288,6 @@ button:disabled {
     display: none !important;
 }
 
-/* Specific styling for player hand display */
 .player-hand-display {
     display: flex;
     gap: 5px;
@@ -297,21 +299,20 @@ button:disabled {
     min-height: 70px;
 }
 
-/* Bet slider clarity (raise-to = total contribution this street) */
 #bet-live-info {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 12px 18px;
+    gap: 8px 12px;
     width: 100%;
-    margin-bottom: 8px;
-    font-size: 0.95em;
+    margin-bottom: 2px;
+    font-size: 0.85em;
     color: #ddd;
 }
 
 #bet-live-info span:not(.hidden) {
-    background-color: rgba(0, 0, 0, 0.35);
-    padding: 4px 10px;
+    background-color: rgba(0, 0, 0, 0.45);
+    padding: 3px 8px;
     border-radius: 4px;
 }
 
@@ -325,14 +326,14 @@ button:disabled {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 4px;
 }
 
 #bet-slider-label {
     width: 100%;
-    font-size: 0.85em;
+    font-size: 0.8em;
     color: #aaa;
 }
 
@@ -341,10 +342,10 @@ button:disabled {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
-/* Dealer button (D) — marks current dealerIndex seat, not the flavor top NPC */
+/* Dealer button (D) — rotates among all four seats */
 .dealer-button {
     position: absolute;
     top: -6px;
@@ -363,14 +364,13 @@ button:disabled {
     z-index: 5;
     pointer-events: none;
 }
-.player-top-left .dealer-button {
-    /* Keep off the rotated portrait / toward outside of table */
+.player-left .dealer-button {
     top: auto;
     bottom: -4px;
     left: auto;
     right: -4px;
 }
-.player-top-right .dealer-button {
+.player-right .dealer-button {
     top: -4px;
     left: -4px;
 }
@@ -378,43 +378,44 @@ button:disabled {
     top: -4px;
     left: calc(50% - 50px - 6px);
 }
+.player-top .dealer-button {
+    top: auto;
+    bottom: -4px;
+    left: auto;
+    right: -4px;
+}
 
-/* --- Light mobile / narrow pass --- */
 @media (max-width: 1100px) {
     #game-container {
-        padding: 160px 120px 12px;
+        padding: 110px 120px 8px;
         transform: scale(0.85);
         transform-origin: top center;
     }
-    #action-area {
-        width: min(600px, 92vw);
-        box-sizing: border-box;
-        padding: 14px;
+    #status-banner {
+        font-size: 0.9em;
+        padding: 6px 12px;
+        white-space: normal;
     }
 }
 
 @media (max-width: 780px) {
     #game-container {
-        padding: 120px 40px 8px;
+        padding: 90px 40px 6px;
         transform: scale(0.62);
         transform-origin: top center;
     }
-    #action-area {
-        width: min(600px, 96vw);
-        font-size: 0.95em;
-        padding: 12px 10px;
+    #status-banner {
+        font-size: 0.85em;
+        white-space: normal;
     }
     .action-buttons {
-        gap: 8px;
+        gap: 6px;
     }
     .action-buttons button {
-        padding: 8px 12px;
-        font-size: 0.95em;
+        padding: 7px 11px;
+        font-size: 0.9em;
     }
     #bet-slider {
-        width: min(200px, 55vw);
-    }
-    .bet-slider-row {
-        gap: 8px;
+        width: min(180px, 55vw);
     }
 }
