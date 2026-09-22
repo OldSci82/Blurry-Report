@@ -1,5 +1,6 @@
 async function displayNews() {
   const container = document.getElementById("news-container");
+  if (!container) return;
 
   try {
     container.innerHTML = "<p>Loading...</p>";
