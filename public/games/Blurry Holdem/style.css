@@ -14,9 +14,9 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 4px;
     /* Room for seats outside the 700×500 felt (dealer+pot above, sides out, human below) */
-    padding: 190px 180px 40px;
+    padding: 205px 280px 16px;
     box-sizing: border-box;
     margin: 0 auto;
 }
@@ -38,7 +38,7 @@ body {
     padding: 0;
     margin: 0 auto;
     /* Clear human seat + info hanging below the bottom rail before #action-area */
-    margin-bottom: 170px;
+    margin-bottom: 88px;
 }
 
 .player-area {
@@ -85,8 +85,9 @@ body {
  */
 .player-top-left {
     left: -75px;
-    top: 50%;
-    transform: translateY(-50%);
+    /* Portrait center on horizontal midline; text hangs below outside felt */
+    top: calc(50% - 50px);
+    transform: none;
 }
 .player-top-left .player-image {
     transform: rotate(-90deg);
@@ -97,14 +98,21 @@ body {
  * Extra gap so mothman wings (after rotate) do not cover name/chips.
  */
 .player-top-right {
-    right: -155px;
-    left: auto;
-    top: 50%;
-    transform: translateY(-50%);
-    gap: 18px;
+    left: 655px;
+    right: auto;
+    /* Portrait center on horizontal midline */
+    top: calc(50% - 50px);
+    transform: none;
+    /* Name/chips to the RIGHT of mothman so they clear wings/felt */
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
 }
 .player-top-right .player-image {
     transform: rotate(90deg);
+}
+.player-top-right .player-info {
+    text-align: left;
 }
 
 /*
@@ -124,7 +132,8 @@ body {
  */
 .dealer-area {
     left: 50%;
-    top: -80px;
+    /* info(~35)+gap(6)+img(100)≈141; seats opaque base flush on outer top rail */
+    top: -131px;
     transform: translateX(-50%);
     flex-direction: column-reverse;
     gap: 6px;
@@ -178,7 +187,7 @@ body {
 /* Pot sits ABOVE the dealer character + labels, off the felt */
 #pot-display {
     position: absolute;
-    top: -175px;
+    top: -190px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 1.2em;
@@ -259,5 +268,8 @@ button:disabled {
     gap: 5px;
     justify-content: center;
     margin-top: 5px;
+    min-height: 0;
+}
+.player-hand-display:not(:empty) {
     min-height: 70px;
 }
