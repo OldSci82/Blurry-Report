@@ -37,9 +37,13 @@ function shuffleCopy(arr) {
   return a;
 }
 
-/** Apply NPC art + display name to a seat DOM node. */
+/** Apply NPC art + display name to a seat DOM node.
+ *  Toggles seat-mothman on the seat container so wide-seat CSS applies
+ *  only when this seat is actually Mothman (not every right/left seat). */
 function applyNpcArt(playerArea, npcDef) {
   if (!playerArea || !npcDef) return;
+  const isMothman = npcDef.id === "mothman";
+  playerArea.classList.toggle("seat-mothman", isMothman);
   const img = playerArea.querySelector(".player-image");
   if (img) {
     img.src = npcDef.src;
@@ -1473,13 +1477,12 @@ betRaiseBtn.addEventListener("click", () => {
 initGame();
 
 // --- Mobile / viewport stage fit ---
-// Fixed design size wraps ALL seats (left overhang + right mothman/label).
+// Fixed design size wraps ALL seats (left overhang + right mothman+label).
 // Scale that stage into the viewport (minus banner / docked controls / pad).
-// Design is intentionally tight (~1040×730) so phone scale is ~0.3–0.4 and
-// the table+seats actually shrink into view instead of letterboxing a padded
-// 1260-wide box. Action buttons stay outside the transform at native size.
-const STAGE_DESIGN_WIDTH = 1040;
-const STAGE_DESIGN_HEIGHT = 730;
+// Design tracks avatar size (~152 desktop / ~160 mobile) so phone scale stays
+// usable. Action buttons stay outside the transform at native size.
+const STAGE_DESIGN_WIDTH = 1180;
+const STAGE_DESIGN_HEIGHT = 820;
 const STAGE_PAD_X = 8;
 const STAGE_PAD_Y = 4;
 
@@ -1495,7 +1498,7 @@ function fitGameStage() {
   stage.style.height = "";
   stage.style.maxWidth = "none";
 
-  // Read design size from computed CSS (desktop 1040×730; mobile 1080×770)
+  // Read design size from computed CSS (desktop 1180×820; mobile 1220×860)
   const designW =
     Math.round(parseFloat(getComputedStyle(stage).width)) || STAGE_DESIGN_WIDTH;
   const designH =

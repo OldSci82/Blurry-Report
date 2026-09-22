@@ -77,9 +77,9 @@ body {
 }
 
 #game-stage {
-    /* DESIGN: 700 felt + left overhang pad + right overhang (mothman+info) */
-    width: 1040px;
-    height: 730px;
+    /* DESIGN: 700 felt + left overhang (mothman) + right overhang (mothman+info) */
+    width: 1180px;
+    height: 820px;
     transform-origin: top left;
     will-change: transform;
     /* Fixed design size — do not stretch to viewport before measuring */
@@ -92,9 +92,9 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    /* Asymmetric side pads: left seat ~75px, right mothman+label ~220px */
-    width: 1040px;
-    padding: 130px 230px 16px 110px;
+    /* Side pads clear mothman wings when seat-mothman; regular seats sit flush */
+    width: 1180px;
+    padding: 168px 280px 16px 200px;
     box-sizing: border-box;
     margin: 0;
 }
@@ -116,7 +116,7 @@ body {
     padding: 0;
     margin: 0 auto;
     /* Clear human avatar + name/chips hanging below the bottom rail */
-    margin-bottom: 92px;
+    margin-bottom: 130px;
     flex-shrink: 0;
 }
 
@@ -181,8 +181,8 @@ body {
 }
 
 .player-image {
-    width: 100px;
-    height: 100px;
+    width: 152px;
+    height: 152px;
     border-radius: 0%;
     border: 2px solid transparent;
     object-fit: cover;
@@ -192,29 +192,42 @@ body {
 }
 
 .npc-wide {
-    width: 200px;
-    height: 100px;
+    width: 304px;
+    height: 152px;
     border-radius: 0px;
     object-fit: cover;
 }
 
 /* --- PLAYER PLACEMENT (around 700×500 felt) --- */
 
-/* Left NPC seat */
+/* Left NPC seat — flush to purple rail (same stomach inset as top/bottom).
+ * Wide mothman offsets live under .seat-mothman only. */
 .player-left {
-    left: -75px;
-    top: calc(50% - 50px);
+    /* S=152: center at -S/4 so body sits just outside felt like top/bottom */
+    left: -114px;
+    top: calc(50% - 76px);
     transform: none;
 }
 .player-left .player-image {
     transform: rotate(-90deg);
+    transform-origin: center center;
+}
+/* Mothman left: box is 2× wide; shift outward so body center matches regular */
+.player-left.seat-mothman {
+    left: -190px; /* -S/4 - W/2 = -38 - 152 */
+}
+.player-left.seat-mothman .player-image {
+    /* Keep rotate around sprite center so wings span the rail, not the felt */
+    transform: rotate(-90deg);
+    transform-origin: center center;
 }
 
-/* Right NPC seat */
+/* Right NPC seat — default flush for regular NPCs (NOT mothman-tuned). */
 .player-right {
-    left: 625px;
+    /* S=152: center at 700+S/4 → left = 700 - S/4 */
+    left: 662px;
     right: auto;
-    top: calc(50% - 50px);
+    top: calc(50% - 76px);
     transform: none;
     flex-direction: row;
     align-items: center;
@@ -222,16 +235,25 @@ body {
 }
 .player-right .player-image {
     transform: rotate(90deg);
+    transform-origin: center center;
 }
 .player-right .player-info {
     text-align: left;
     /* transform-origin / align set with seat-label rules above */
 }
+/* Mothman right: same body-center as regular; wide box needs outward shift */
+.player-right.seat-mothman {
+    left: 586px; /* 700 + S/4 - W/2 = 738 - 152 */
+}
+.player-right.seat-mothman .player-image {
+    transform: rotate(90deg);
+    transform-origin: center center;
+}
 
 /* You — bottom rail */
 .player-human-area {
     left: 50%;
-    top: 435px;
+    top: 410px;
     transform: translateX(-50%);
 }
 
@@ -252,7 +274,7 @@ body {
 /* Top NPC seat */
 .player-top {
     left: 50%;
-    top: -116px;
+    top: -168px;
     transform: translateX(-50%);
     flex-direction: column-reverse;
     gap: 6px;
@@ -555,7 +577,7 @@ button:disabled {
 }
 .player-human-area .dealer-button {
     top: -4px;
-    left: calc(50% - 50px - 6px);
+    left: calc(50% - 76px - 6px);
 }
 .player-top .dealer-button {
     top: auto;
@@ -591,17 +613,11 @@ button:disabled {
         flex-direction: column;
         align-items: center;
         gap: 6px;
-        /* Pull slightly left so the grown pill stays inside the stage */
-        left: 610px;
     }
     .player-right .player-info {
         transform-origin: center top;
         align-items: center;
         text-align: center;
-    }
-    .player-left {
-        /* Keep label under avatar; slight inset from far-left clip */
-        left: -60px;
     }
     .player-left .player-info {
         margin-top: 2px;
@@ -614,47 +630,54 @@ button:disabled {
     }
     #pot-display {
         /* Sit a touch lower so grown pot badge clears top-seat cards */
-        top: 148px;
+        top: 160px;
     }
     /* Grow design box so larger seat overhang still fits after scale */
     #game-stage {
-        width: 1080px;
-        height: 770px;
+        width: 1220px;
+        height: 860px;
     }
-    /* Larger avatars — user has unused space under the scaled stage */
+    /* Larger avatars (~160 regular / 320 wide) */
     .player-image {
-        width: 128px;
-        height: 128px;
+        width: 160px;
+        height: 160px;
     }
     .npc-wide {
-        width: 256px;
-        height: 128px;
+        width: 320px;
+        height: 160px;
     }
+    /* S=160 flush: left=-3S/4, right=700-S/4 */
     .player-left {
-        left: -68px;
-        top: calc(50% - 64px);
+        left: -120px;
+        top: calc(50% - 80px);
     }
     .player-right {
-        left: 598px;
-        top: calc(50% - 64px);
+        left: 660px;
+        top: calc(50% - 80px);
+    }
+    /* Mothman-only outward (W=320): keep body center = regular center */
+    .player-left.seat-mothman {
+        left: -200px; /* -S/4 - W/2 = -40 - 160 */
+    }
+    .player-right.seat-mothman {
+        left: 580px; /* 700 + S/4 - W/2 = 740 - 160 */
     }
     .player-top {
-        top: -140px;
+        top: -176px;
         gap: 4px;
     }
     .player-human-area {
-        top: 422px;
+        top: 404px;
     }
     .player-human-area .dealer-button {
-        left: calc(50% - 64px - 6px);
+        left: calc(50% - 80px - 6px);
     }
-    /* Slightly less empty letterbox under table on phones */
     #table {
-        margin-bottom: 78px;
+        margin-bottom: 120px;
     }
     #game-container {
-        width: 1080px;
-        padding: 148px 250px 12px 120px;
+        width: 1220px;
+        padding: 184px 300px 12px 210px;
     }
     .skin-btn img {
         width: 56px;
