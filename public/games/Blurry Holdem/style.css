@@ -98,7 +98,7 @@ body {
  * Extra gap so mothman wings (after rotate) do not cover name/chips.
  */
 .player-top-right {
-    left: 655px;
+    left: 642px;
     right: auto;
     /* Portrait center on horizontal midline */
     top: calc(50% - 50px);
@@ -132,8 +132,8 @@ body {
  */
 .dealer-area {
     left: 50%;
-    /* info(~35)+gap(6)+img(100)≈141; seats opaque base flush on outer top rail */
-    top: -131px;
+    /* info(~35)+gap(6)+img(100)≈141; nudge down ~15px to close gap to purple bumper */
+    top: -116px;
     transform: translateX(-50%);
     flex-direction: column-reverse;
     gap: 6px;
