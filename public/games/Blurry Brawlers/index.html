@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Blurry Brawlers</title>
+        <link rel="stylesheet" href="css/style.css">
+        <style>
+            body { 
+                margin: 0; 
+                background: #000; 
+                display: flex; 
+                justify-content: center; 
+                align-items: center; 
+                height: 100vh; 
+            }
+        </style>
+    </head>
+    <body>
+        <div id="game-container"></div>
+
+        <!-- Load Phaser FIRST --><!-- Core Libraries -->
+        <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+        <script src="js/config.js"></script>
+        <script src="js/DebugManager.js"></script>
+
+        <!-- Game Classes -->
+        <script src="js/entities/Player.js"></script>
+        <script src="js/entities/Enemy.js"></script>
+        <script src="js/entities/BarnacleBoss.js"></script>
+
+        <!-- Scenes -->
+         <script src="js/scenes/PreloadScene.js"></script>
+        <script src="js/scenes/TitleScene.js"></script>
+        <script src="js/scenes/BoardwalkScene1.js"></script>
+        <script src="js/scenes/BoardwalkScene2.js"></script>
+        <script src="js/scenes/BoardwalkScene3.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>
