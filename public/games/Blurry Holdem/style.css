@@ -80,7 +80,7 @@ body {
 #game-stage {
     /* DESIGN: 700 felt + left overhang (mothman@1.6×) + right overhang (mothman+info) */
     width: 1460px;
-    height: 960px;
+    height: 1080px;
     transform-origin: top left;
     will-change: transform;
     /* Fixed design size — do not stretch to viewport before measuring */
@@ -95,7 +95,8 @@ body {
     gap: 4px;
     /* Side pads clear mothman wings when seat-mothman; regular seats sit flush */
     width: 1460px;
-    padding: 300px 440px 16px 320px;
+    /* Extra top pad: pot badge sits above top seat + counter-scaled name */
+    padding: 420px 440px 16px 320px;
     box-sizing: border-box;
     margin: 0;
 }
@@ -201,7 +202,12 @@ body {
     height: 244px;
 }
 
-.npc-wide {
+.npc-wide,
+.player-top .player-image.npc-wide,
+.player-left .player-image.npc-wide,
+.player-right .player-image.npc-wide {
+    /* Must beat .player-* .player-image (0,2,0) or mothman stays square and
+     * seat-mothman offsets (written for W=2S) shove the body off the rail. */
     width: 488px;
     height: 244px;
     border-radius: 0px;
@@ -222,13 +228,15 @@ body {
     transform: rotate(-90deg);
     transform-origin: center center;
 }
-/* Mothman left: box is 2× wide; shift outward so body center matches regular */
+/* Mothman left: W=488 upright. Inset so torso meets rail; wings stay on-stage. */
 .player-left.seat-mothman {
-    left: -305px; /* -S/4 - W/2 = -61 - 244 */
+    left: -177px; /* (-S/4 - W/2) + 128 = -305 + 128 */
+    top: calc(50% - 122px); /* H/2 of 244 wide box */
 }
 .player-left.seat-mothman .player-image {
-    /* Keep rotate around sprite center so wings span the rail, not the felt */
-    transform: rotate(-90deg);
+    /* Keep mothman upright (wings L/R). Rotating a wide sprite makes wings
+     * vertical and shoves the head into the viewport edge. */
+    transform: none;
     transform-origin: center center;
 }
 
@@ -251,12 +259,13 @@ body {
     text-align: left;
     /* transform-origin / align set with seat-label rules above */
 }
-/* Mothman right: same body-center as regular; wide box needs outward shift */
+/* Mothman right: mirror of left — torso to rail */
 .player-right.seat-mothman {
-    left: 517px; /* 700 + S/4 - W/2 = 761 - 244 */
+    left: 389px; /* (700 + S/4 - W/2) - 128 = 517 - 128 */
+    top: calc(50% - 122px);
 }
 .player-right.seat-mothman .player-image {
-    transform: rotate(90deg);
+    transform: none;
     transform-origin: center center;
 }
 
@@ -285,7 +294,8 @@ body {
 /* Top NPC seat — overhang matches taller 244px NPC avatar */
 .player-top {
     left: 50%;
-    top: -292px;
+    /* S=244: torso flush — hands overlap rail/felt */
+    top: -190px;
     transform: translateX(-50%);
     flex-direction: column-reverse;
     gap: 6px;
@@ -428,14 +438,14 @@ body {
     visibility: hidden;
 }
 
-/* Pot on the felt — top-center; counter-scaled with seat labels */
+/* Pot badge — above the top seat (not on felt / board cards) */
 #pot-display {
     position: absolute;
-    /* Below larger top-seat hole cards, above centered community board */
-    top: 175px;
+    /* Above top-seat name pill (counter-scaled); not on felt/board */
+    top: -370px;
     left: 50%;
     transform: translateX(-50%) scale(var(--inv-stage-scale, 1));
-    transform-origin: center center;
+    transform-origin: center bottom;
     font-size: 14px;
     font-weight: 700;
     color: #fff;
@@ -445,7 +455,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.14);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
-    z-index: 6;
+    z-index: 7;
     white-space: nowrap;
     pointer-events: none;
 }
@@ -696,13 +706,14 @@ button:disabled {
         margin-top: 4px;
     }
     #pot-display {
-        /* Sit lower so grown pot badge clears boosted top-seat hole cards */
-        top: 210px;
+        /* Above flushed top seat + name; origin bottom grows toward banner */
+        top: -455px;
     }
     /* Grow design box so larger NPC (1.6×) overhang still fits after scale */
     #game-stage {
-        width: 1520px;
-        height: 1000px;
+        /* Wider + taller: mothman wing pad + pot above top seat */
+        width: 1560px;
+        height: 1140px;
     }
     /* Human mild bump; NPC 1.6× of mobile human base (160→256 / wide 512) */
     .player-image {
@@ -715,10 +726,7 @@ button:disabled {
         width: 256px;
         height: 256px;
     }
-    .npc-wide {
-        width: 512px;
-        height: 256px;
-    }
+    /* npc-wide size for phones set with seat-mothman offsets below */
     /* S=256 flush: left=-3S/4, right=700-S/4 */
     .player-left {
         left: -192px;
@@ -728,15 +736,26 @@ button:disabled {
         left: 636px;
         top: calc(50% - 128px);
     }
-    /* Mothman-only outward (W=512): keep body center = regular center */
+    /* Mothman upright W=420 H=210 — smaller so wings clear phone edges */
+    .player-left .player-image.npc-wide,
+    .player-right .player-image.npc-wide,
+    .player-top .player-image.npc-wide,
+    .npc-wide {
+        width: 420px;
+        height: 210px;
+    }
     .player-left.seat-mothman {
-        left: -320px; /* -S/4 - W/2 = -64 - 256 */
+        /* center ~+80 into table so bright torso sits on rail (wings overlay felt) */
+        left: -130px; /* 80 - 210 */
+        top: calc(50% - 105px);
     }
     .player-right.seat-mothman {
-        left: 508px; /* 700 + S/4 - W/2 = 764 - 256 */
+        left: 410px; /* (700 - 80) - 210 */
+        top: calc(50% - 105px);
     }
     .player-top {
-        top: -308px;
+        /* Hands dig into rail so torso sits flush (was -308) */
+        top: -200px;
         gap: 4px;
     }
     .player-human-area {
@@ -749,8 +768,9 @@ button:disabled {
         margin-bottom: 120px;
     }
     #game-container {
-        width: 1520px;
-        padding: 320px 460px 12px 340px;
+        width: 1560px;
+        /* More side/top pad: mothman wings + pot above top seat */
+        padding: 450px 480px 12px 380px;
     }
     /* Extra hole-card size so stage scale on phones doesn't crush rank/suit */
     .player-hand-display .card {

@@ -1486,9 +1486,10 @@ initGame();
 // Scale that stage into the viewport (minus banner / docked controls / pad).
 // Design tracks NPC avatar size (~244 desktop / ~256 mobile, 1.6× human base)
 // so phone scale stays usable. Action buttons stay outside the transform at
-// native size. Viewport flex-end docks controls to the bottom.
+// native size. Viewport flex-end docks stage+controls to the bottom (spare
+// space stays under the status banner).
 const STAGE_DESIGN_WIDTH = 1460;
-const STAGE_DESIGN_HEIGHT = 960;
+const STAGE_DESIGN_HEIGHT = 1080;
 const STAGE_PAD_X = 8;
 const STAGE_PAD_Y = 4;
 
@@ -1534,13 +1535,15 @@ function fitGameStage() {
   availW = Math.max(0, availW);
   availH = Math.max(0, availH);
 
-  // Seat/pot pills counter-scale to ~design size on screen; reserve slack so
-  // the shell can grow by that overflow without eating the action dock.
-  // On phones, trim reserve a bit — unused bottom space → larger scale.
+  // Seat + pot pills counter-scale to ~design size on screen; reserve slack so
+  // the shell can grow by that overflow (pot sits above top seat) without
+  // eating the action dock. On phones, trim reserve a bit for larger scale.
   const LABEL_DESIGN_H = 46;
+  // Pot badge shares the same counter-scale above the top name pill.
+  const POT_DESIGN_H = 32;
   const labelReserve = isNarrow
-    ? Math.min(22, Math.max(0, availH * 0.05))
-    : Math.min(36, Math.max(0, availH * 0.08));
+    ? Math.min(28, Math.max(0, availH * 0.06))
+    : Math.min(42, Math.max(0, availH * 0.09));
   const fitH = Math.max(0, availH - labelReserve);
 
   let s = Math.min(availW / designW, fitH / designH);
@@ -1554,13 +1557,18 @@ function fitGameStage() {
   // (origin: center bottom); bottom grows down. Mirror label overflow as shell
   // padding-top + bottom height so top NPC is not clipped. Viewport uses
   // justify-content:flex-end so spare height becomes empty space under the banner.
-  const labelOverflowY = Math.ceil(LABEL_DESIGN_H * (1 - s));
+  // Top name grows up (origin: bottom); pot above it also grows up.
+  const labelOverflowY = Math.ceil((LABEL_DESIGN_H + POT_DESIGN_H) * (1 - s));
   shell.style.boxSizing = "content-box";
   shell.style.paddingTop = `${labelOverflowY}px`;
   shell.style.width = `${Math.round(designW * s)}px`;
   shell.style.height = `${Math.round(designH * s) + labelOverflowY}px`;
   if (viewport) {
-    const bannerGap = labelOverflowY > 0 ? Math.min(10, Math.max(4, Math.round(labelOverflowY * 0.3))) : 0;
+    // Keep a little air under the status banner so counter-scaled pot/name
+    // never kiss the banner after flex-end docks the stage to the bottom.
+    const bannerGap = labelOverflowY > 0
+      ? Math.min(isNarrow ? 14 : 28, Math.max(isNarrow ? 6 : 18, Math.round(labelOverflowY * (isNarrow ? 0.25 : 0.4))))
+      : 0;
     viewport.style.paddingTop = `${bannerGap}px`;
     viewport.style.boxSizing = "border-box";
     viewport.style.gap = `${gap}px`;
