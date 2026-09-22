@@ -545,7 +545,7 @@ function showdown() {
     const winner = activePlayers[0];
     winner.chips += pot;
     displayMessage(
-      `${winner.name} wins the pot of $${pot} because everyone else folded!`
+      `${potWinPhrase(winner.name)} the pot of $${pot} because everyone else folded!`
     );
     updatePlayerDisplays();
     nextRoundBtn.classList.remove("hidden");
@@ -580,7 +580,7 @@ function showdown() {
     const winner = winners[0];
     winner.chips += pot;
     displayMessage(
-      `${winner.name} wins the pot of $${pot} with a hand strength of ${bestStrength}!`
+      `${potWinPhrase(winner.name)} the pot of $${pot} with a hand strength of ${bestStrength}!`
     );
   } else {
     // Handle ties (split pot) - simplified: just split equally
@@ -641,6 +641,11 @@ function updateCommunityCardsDisplay() {
     cardDiv.textContent = `${card.rank}${card.suit}`;
     communityCardsDiv.appendChild(cardDiv);
   });
+}
+
+function potWinPhrase(name) {
+  // "You win" vs "NPC 1 wins"
+  return name === "You" ? "You win" : `${name} wins`;
 }
 
 function displayMessage(message) {

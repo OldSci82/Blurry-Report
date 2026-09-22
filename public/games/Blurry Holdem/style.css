@@ -37,7 +37,8 @@ body {
     box-shadow: 0 0 0px rgba(0,0,0,0.7);
     padding: 0;
     margin: 0 auto;
-    /* Clear human seat + info hanging below the bottom rail before #action-area */
+    /* Clear human avatar + name/chips hanging below the bottom rail before #action-area
+       (hole cards sit on the felt above the avatar, so they no longer need this space) */
     margin-bottom: 88px;
 }
 
@@ -116,14 +117,32 @@ body {
 }
 
 /*
- * Human (bottom rail): flush with the bottom edge of the felt;
+ * Human (bottom rail): avatar flush with the bottom edge of the felt;
  * name/chips stay below the avatar (outside the table).
+ * Hole cards are absolutely placed ON the felt above the avatar (see below),
+ * so they never spill into #action-area.
  */
 .player-human-area {
     left: 50%;
     /* Mirror dealer: ~60px onto felt / rail, rest below — sits at bottom rail */
     top: 435px;
     transform: translateX(-50%);
+}
+
+/* Human hole cards: on the green felt in front of You (above rail / action panel) */
+.player-human-area .player-hand-display {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    /* Lift above avatar/hands onto lower felt; clears purple bumper + action panel.
+       Community board is centered (~y 215–285); this lands ~y 325–395 — no overlap. */
+    bottom: calc(100% + 42px);
+    margin: 0;
+    min-height: 0;
+    z-index: 2;
+}
+.player-human-area .player-hand-display:not(:empty) {
+    min-height: 70px;
 }
 
 /*
@@ -152,6 +171,7 @@ body {
 }
 
 
+/* Community / board: classic center of the felt (above human hole cards) */
 #community-cards {
     display: flex;
     gap: 10px;
@@ -161,6 +181,7 @@ body {
     transform: translate(-50%, -50%);
     min-height: 80px;
     z-index: 1;
+    pointer-events: none;
 }
 
 .card {
