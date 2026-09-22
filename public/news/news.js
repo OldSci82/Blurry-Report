@@ -3,6 +3,11 @@
 // Source of truth on the box: /workspace/blurry-report/published/
 
 const FALLBACK_MSG = "No chatter yet — keep it blurry";
+/** Posts newer than this show a "New" badge (client-side age check). */
+const NEW_DAYS = 3;
+/** Keep roughly one week of chatter on the page (client-side safety net). */
+const WEEK_DAYS = 7;
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 function escapeHtml(str) {
   return String(str)
@@ -10,6 +15,23 @@ function escapeHtml(str) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+function postedAtMs(post) {
+  const iso = post?.published_at;
+  if (!iso) return NaN;
+  const t = new Date(iso).getTime();
+  return Number.isNaN(t) ? NaN : t;
+}
+
+function isWithinDays(post, days, nowMs = Date.now()) {
+  const t = postedAtMs(post);
+  if (Number.isNaN(t)) return false;
+  return nowMs - t < days * MS_PER_DAY && t <= nowMs + MS_PER_DAY;
+}
+
+function isNew(post, nowMs = Date.now()) {
+  return isWithinDays(post, NEW_DAYS, nowMs);
 }
 
 function formatPublishedAt(iso) {
@@ -33,15 +55,19 @@ function displayText(post) {
   // Drop Source: / hashtag trailer for the card body
   let body = raw.split(/\n\nSource:/i)[0].trim();
   body = body.replace(/\n{3,}/g, "\n\n");
-  if (body.length > 320) body = body.slice(0, 317).trimEnd() + "...";
+  // Compact postcard: shorter snippet
+  if (body.length > 160) body = body.slice(0, 157).trimEnd() + "...";
   return body;
 }
 
 function displayHeadline(post) {
-  if (post.headline && post.headline.trim()) return post.headline.trim();
+  if (post.headline && post.headline.trim()) {
+    const h = post.headline.trim();
+    return h.length > 90 ? h.slice(0, 87).trimEnd() + "..." : h;
+  }
   const body = displayText(post);
   const first = body.split(/\n/)[0] || body;
-  return first.length > 140 ? first.slice(0, 137).trimEnd() + "..." : first;
+  return first.length > 90 ? first.slice(0, 87).trimEnd() + "..." : first;
 }
 
 async function fetchChatter() {
@@ -63,10 +89,17 @@ function displayChatter(data) {
   const container = document.getElementById("news-container");
   container.innerHTML = "";
 
-  const posts = Array.isArray(data?.posts) ? [...data.posts] : [];
-  posts.sort(
-    (a, b) => new Date(b.published_at || 0) - new Date(a.published_at || 0)
-  );
+  const nowMs = Date.now();
+  let posts = Array.isArray(data?.posts) ? [...data.posts] : [];
+
+  // Client-side week window (refresh script also prunes to 7 days)
+  posts = posts.filter((p) => {
+    const t = postedAtMs(p);
+    if (Number.isNaN(t)) return true; // keep undated scout drops
+    return nowMs - t < WEEK_DAYS * MS_PER_DAY;
+  });
+
+  posts.sort((a, b) => postedAtMs(b) - postedAtMs(a) || 0);
 
   if (posts.length === 0) {
     container.innerHTML = `<p class="empty-chatter text-center">${escapeHtml(FALLBACK_MSG)}</p>`;
@@ -75,12 +108,17 @@ function displayChatter(data) {
 
   const counterDiv = document.createElement("div");
   counterDiv.classList.add("article-counter");
-  counterDiv.innerHTML = `<p>@TheBlurryReport · ${posts.length} recent post${posts.length === 1 ? "" : "s"}</p>`;
+  counterDiv.innerHTML = `<p>@TheBlurryReport · ${posts.length} recent post${posts.length === 1 ? "" : "s"} · last ${WEEK_DAYS} days</p>`;
   container.appendChild(counterDiv);
 
+  const grid = document.createElement("div");
+  grid.classList.add("chatter-grid");
+  container.appendChild(grid);
+
   posts.forEach((post) => {
-    const articleDiv = document.createElement("div");
-    articleDiv.classList.add("news-item", "chatter-item");
+    const articleDiv = document.createElement("article");
+    articleDiv.classList.add("news-item", "chatter-item", "chatter-card");
+    if (isNew(post, nowMs)) articleDiv.classList.add("is-new");
 
     const link = document.createElement("a");
     link.href = post.url || "https://x.com/TheBlurryReport";
@@ -92,15 +130,25 @@ function displayChatter(data) {
     const headline = escapeHtml(displayHeadline(post));
     const body = escapeHtml(displayText(post));
     const kind = post.kind ? escapeHtml(String(post.kind)) : "post";
+    const newBadge = isNew(post, nowMs)
+      ? `<span class="chatter-new" title="Posted within the last ${NEW_DAYS} days">New</span>`
+      : "";
 
     link.innerHTML = `
-      <h3>${headline}</h3>
+      <div class="chatter-card-top">
+        ${newBadge}
+        <span class="chatter-kind">${kind}</span>
+      </div>
+      <h3 class="chatter-title">${headline}</h3>
       <p class="chatter-body">${body}</p>
-      <p class="chatter-meta"><span class="chatter-kind">${kind}</span>${when ? ` · <time datetime="${escapeHtml(post.published_at || "")}">${escapeHtml(when)}</time>` : ""} · view on X</p>
+      <p class="chatter-meta">
+        ${when ? `<time datetime="${escapeHtml(post.published_at || "")}">${escapeHtml(when)}</time>` : `<span>time unknown</span>`}
+        · view on X
+      </p>
     `;
 
     articleDiv.appendChild(link);
-    container.appendChild(articleDiv);
+    grid.appendChild(articleDiv);
   });
 }
 

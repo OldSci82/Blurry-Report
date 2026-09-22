@@ -1,8 +1,10 @@
 {
-  "updated_at": "2026-09-22T17:40:16.515Z",
+  "updated_at": "2026-09-22T17:48:46.209Z",
   "source": "scout-published",
   "account": "https://x.com/TheBlurryReport",
   "published_dir": "/workspace/blurry-report/published",
+  "window_days": 7,
+  "new_badge_days": 3,
   "posts": [
     {
       "id": "2102452654941012215",

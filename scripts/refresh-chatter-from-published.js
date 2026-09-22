@@ -16,7 +16,7 @@
  *
  * Usage (from repo root):
  *   node scripts/refresh-chatter-from-published.js
- *   node scripts/refresh-chatter-from-published.js --days 2
+ *   node scripts/refresh-chatter-from-published.js --days 7
  *   PUBLISHED_DIR=/other/path node scripts/refresh-chatter-from-published.js
  *
  * GitHub Pages cannot read the box path at runtime — run this on the box
@@ -34,11 +34,15 @@ const OUT_PATH = path.join(REPO_ROOT, "public", "news", "chatter.json");
 const DEFAULT_PUBLISHED =
   process.env.PUBLISHED_DIR || "/workspace/blurry-report/published";
 
+/** Keep about one week of chatter (50–100 posts is ample). */
+const DEFAULT_DAYS = 7;
+const MAX_POSTS = 100;
+
 function parseArgs(argv) {
-  let days = 2;
+  let days = DEFAULT_DAYS;
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === "--days" && argv[i + 1]) {
-      days = Number(argv[++i]) || 2;
+      days = Number(argv[++i]) || DEFAULT_DAYS;
     }
   }
   return { days };
@@ -178,8 +182,8 @@ async function main() {
       new Date(a.published_at || 0).getTime()
   );
 
-  // Cap feed size for the homepage chatter page
-  posts = posts.slice(0, 40);
+  // Cap feed size — design range ~50–100 links for a week of posts
+  posts = posts.slice(0, MAX_POSTS);
 
   const out = {
     updated_at: new Date().toISOString(),
@@ -191,6 +195,8 @@ async function main() {
           : "empty",
     account: "https://x.com/TheBlurryReport",
     published_dir: publishedDir,
+    window_days: days,
+    new_badge_days: 3,
     posts,
   };
 
