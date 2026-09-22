@@ -1355,16 +1355,25 @@ function fitGameStage() {
   availW = Math.max(0, availW);
   availH = Math.max(0, availH);
 
-  let s = Math.min(availW / STAGE_DESIGN_WIDTH, availH / STAGE_DESIGN_HEIGHT);
+  // Seat/pot pills counter-scale to ~design size on screen; reserve slack so
+  // the shell can grow by that overflow without eating the action dock.
+  const LABEL_DESIGN_H = 46;
+  const labelReserve = Math.min(36, Math.max(0, availH * 0.08));
+  const fitH = Math.max(0, availH - labelReserve);
+
+  let s = Math.min(availW / STAGE_DESIGN_WIDTH, fitH / STAGE_DESIGN_HEIGHT);
   if (!Number.isFinite(s) || s <= 0) s = 0.25;
   // Never upscale past the desktop design size; allow well below 1 on phones
   s = Math.min(s, 1);
 
   stage.style.transform = `scale(${s})`;
+  const inv = s > 0.01 ? 1 / s : 1;
+  const labelOverflowY = Math.ceil(LABEL_DESIGN_H * (1 - s));
   shell.style.width = `${Math.round(STAGE_DESIGN_WIDTH * s)}px`;
-  shell.style.height = `${Math.round(STAGE_DESIGN_HEIGHT * s)}px`;
+  shell.style.height = `${Math.round(STAGE_DESIGN_HEIGHT * s) + labelOverflowY}px`;
 
   document.documentElement.style.setProperty("--stage-scale", String(s));
+  document.documentElement.style.setProperty("--inv-stage-scale", String(inv));
 }
 
 let stageFitRaf = 0;

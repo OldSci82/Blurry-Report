@@ -1,3 +1,8 @@
+:root {
+    --stage-scale: 1;
+    --inv-stage-scale: 1;
+}
+
 html, body {
     height: 100%;
     width: 100%;
@@ -64,7 +69,8 @@ body {
 
 #game-stage-shell {
     flex: 0 0 auto;
-    overflow: hidden;
+    /* visible: counter-scaled seat/pot labels may extend past design box */
+    overflow: visible;
     margin: 0;
     position: relative;
     /* JS sets width/height to design * scale — never width:100% */
@@ -126,8 +132,52 @@ body {
     z-index: 2;
 }
 
+/* Seat name+chips: dark pill; counter-scaled via --inv-stage-scale so text
+ * stays ~13px on screen after the stage shrinks on phones. */
 .player-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
     white-space: nowrap;
+    background: rgba(12, 12, 12, 0.82);
+    color: #fff;
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    /* Cancel stage scale(s): on-screen size ≈ design size */
+    transform: scale(var(--inv-stage-scale, 1));
+    transform-origin: center top;
+    position: relative;
+    z-index: 6;
+    pointer-events: none;
+}
+.player-info .player-name {
+    font-size: 1em;
+}
+.player-info .player-chips {
+    font-size: 0.92em;
+    font-weight: 600;
+    color: #f0f0f0;
+}
+.player-top .player-info {
+    transform-origin: center bottom;
+}
+.player-left .player-info {
+    transform-origin: center top;
+}
+.player-right .player-info {
+    transform-origin: left center;
+    align-items: flex-start;
+}
+.player-human-area .player-info {
+    transform-origin: center top;
 }
 
 .player-image {
@@ -175,6 +225,7 @@ body {
 }
 .player-right .player-info {
     text-align: left;
+    /* transform-origin / align set with seat-label rules above */
 }
 
 /* You — bottom rail */
@@ -231,6 +282,29 @@ body {
     filter: grayscale(100%);
 }
 
+
+/* Side-seat hole cards toward the felt so counter-scaled name pills
+ * (below / beside avatars) do not cover them. */
+.player-left .player-hand-display {
+    position: absolute;
+    left: calc(100% + 6px);
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+    min-height: 0;
+    z-index: 2;
+}
+.player-right .player-hand-display {
+    position: absolute;
+    right: calc(100% + 6px);
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+    min-height: 0;
+    z-index: 2;
+}
+
 /* Community board — center of felt */
 #community-cards {
     display: flex;
@@ -265,19 +339,24 @@ body {
     color: transparent;
 }
 
-/* Pot on the felt — top-center, under top seat / above board */
+/* Pot on the felt — top-center; counter-scaled with seat labels */
 #pot-display {
     position: absolute;
     /* Below top-seat hole cards, above centered community board */
     top: 128px;
     left: 50%;
-    transform: translateX(-50%);
-    font-size: 1.15em;
-    font-weight: bold;
-    background-color: rgba(0,0,0,0.55);
-    padding: 5px 12px;
-    border-radius: 5px;
-    z-index: 3;
+    transform: translateX(-50%) scale(var(--inv-stage-scale, 1));
+    transform-origin: center center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    background-color: rgba(12, 12, 12, 0.82);
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
+    z-index: 6;
     white-space: nowrap;
     pointer-events: none;
 }
@@ -460,5 +539,36 @@ button:disabled {
     }
     .action-buttons {
         gap: 10px;
+    }
+    /* Counter-scaled pills are large vs avatars — stack right seat + nudge so
+     * labels don't cover hole cards or each other / clip hard at the edges. */
+    .player-right {
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        /* Pull slightly left so the grown pill stays inside the stage */
+        left: 610px;
+    }
+    .player-right .player-info {
+        transform-origin: center top;
+        align-items: center;
+        text-align: center;
+    }
+    .player-left {
+        /* Keep label under avatar; slight inset from far-left clip */
+        left: -60px;
+    }
+    .player-left .player-info {
+        margin-top: 2px;
+    }
+    .player-top .player-info {
+        margin-bottom: 2px;
+    }
+    .player-human-area .player-info {
+        margin-top: 4px;
+    }
+    #pot-display {
+        /* Sit a touch lower so grown pot badge clears top-seat cards */
+        top: 140px;
     }
 }
