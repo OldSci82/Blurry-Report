@@ -1311,3 +1311,70 @@ betRaiseBtn.addEventListener("click", () => {
 
 // Initial setup
 initGame();
+
+// --- Mobile / viewport stage fit ---
+// Desktop table+seats layout is a fixed 1260×740 design. Scale that stage to
+// fit the viewport (minus status banner, docked controls, and padding) so
+// phones (~360–390px) see the full table with no horizontal scroll.
+// Action buttons stay outside the scaled stage at native size for touch.
+const STAGE_DESIGN_WIDTH = 1260;
+const STAGE_DESIGN_HEIGHT = 740;
+const STAGE_PAD_X = 8;
+const STAGE_PAD_Y = 4;
+
+function fitGameStage() {
+  const shell = document.getElementById("game-stage-shell");
+  const stage = document.getElementById("game-stage");
+  const action = document.getElementById("action-area");
+  if (!shell || !stage) return;
+
+  const bannerH = statusBanner ? statusBanner.offsetHeight : 0;
+  const actionH = action ? action.offsetHeight : 0;
+  const availW = Math.max(0, window.innerWidth - STAGE_PAD_X * 2);
+  const availH = Math.max(
+    0,
+    window.innerHeight - bannerH - actionH - STAGE_PAD_Y * 2
+  );
+
+  let s = Math.min(availW / STAGE_DESIGN_WIDTH, availH / STAGE_DESIGN_HEIGHT);
+  if (!Number.isFinite(s) || s <= 0) s = 1;
+  // Never upscale past the desktop design size
+  s = Math.min(s, 1);
+
+  stage.style.transform = `scale(${s})`;
+  shell.style.width = `${Math.round(STAGE_DESIGN_WIDTH * s)}px`;
+  shell.style.height = `${Math.round(STAGE_DESIGN_HEIGHT * s)}px`;
+
+  document.documentElement.style.setProperty("--stage-scale", String(s));
+}
+
+let stageFitRaf = 0;
+function scheduleFitGameStage() {
+  if (stageFitRaf) cancelAnimationFrame(stageFitRaf);
+  stageFitRaf = requestAnimationFrame(() => {
+    stageFitRaf = 0;
+    fitGameStage();
+  });
+}
+
+fitGameStage();
+window.addEventListener("resize", scheduleFitGameStage);
+window.addEventListener("orientationchange", () => {
+  // orientationchange often fires before layout settles
+  setTimeout(fitGameStage, 50);
+  setTimeout(fitGameStage, 250);
+});
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", scheduleFitGameStage);
+}
+
+// Re-fit when controls show/hide (height of the dock changes)
+const actionAreaEl = document.getElementById("action-area");
+if (actionAreaEl && typeof MutationObserver !== "undefined") {
+  new MutationObserver(scheduleFitGameStage).observe(actionAreaEl, {
+    attributes: true,
+    childList: true,
+    subtree: true,
+    attributeFilter: ["class", "style"],
+  });
+}

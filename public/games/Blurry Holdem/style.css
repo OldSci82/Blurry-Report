@@ -1,25 +1,35 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    overflow: hidden; /* no sideways scroll on phones */
+}
+
 body {
     font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    min-height: 100vh;
     background-color: #333;
     color: #eee;
-    margin: 0;
-    overflow: auto;
+    /* Safe areas for notched phones */
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-sizing: border-box;
 }
 
-/* Compact status line at top of screen (not inside a growing panel) */
+/* Compact status line at top of screen (not scaled with the stage) */
 #status-banner {
-    position: sticky;
-    top: 0;
+    position: relative;
     z-index: 20;
+    flex-shrink: 0;
     width: 100%;
     box-sizing: border-box;
     text-align: center;
     padding: 8px 16px;
+    padding-top: max(8px, env(safe-area-inset-top, 0px));
     font-size: 0.95em;
     font-style: italic;
     color: #ddd;
@@ -32,13 +42,44 @@ body {
     text-overflow: ellipsis;
 }
 
+/*
+ * Viewport centers the scaled stage between banner and docked controls.
+ * Stage shell = post-scale layout box (width/height set by JS).
+ * Stage = fixed desktop design size; JS applies transform: scale(s).
+ */
+#game-stage-viewport {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#game-stage-shell {
+    flex: 0 0 auto;
+    overflow: hidden;
+    margin: 0;
+    position: relative;
+    /* JS sets width/height to design * scale */
+}
+
+#game-stage {
+    width: 1260px;   /* DESIGN_WIDTH: 700 felt + 280px side padding each */
+    height: 740px;   /* DESIGN_HEIGHT: seats + felt (controls dock below stage) */
+    transform-origin: top left;
+    will-change: transform;
+}
+
 #game-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 4px;
     /* Room for top NPC above felt; sides; compact controls below human */
-    padding: 130px 280px 8px;
+    width: 1260px;
+    padding: 130px 280px 16px;
     box-sizing: border-box;
     margin: 0 auto;
 }
@@ -61,6 +102,7 @@ body {
     margin: 0 auto;
     /* Clear human avatar + name/chips hanging below the bottom rail */
     margin-bottom: 92px;
+    flex-shrink: 0;
 }
 
 .player-area {
@@ -231,19 +273,22 @@ body {
     pointer-events: none;
 }
 
-/* Compact action strip under You — no dark full-width growing box */
+/* Controls docked under scaled stage — native size for touch targets */
 #action-area {
-    width: auto;
+    flex-shrink: 0;
+    margin-top: auto;
+    width: 100%;
     max-width: 520px;
     background-color: transparent;
     border: none;
-    padding: 4px 8px 10px;
+    padding: 8px 12px calc(12px + env(safe-area-inset-bottom, 0px));
     border-radius: 0;
     text-align: center;
     box-shadow: none;
     font-size: 0.95em;
     position: relative;
     z-index: 1;
+    box-sizing: border-box;
 }
 
 #player-options {
@@ -268,6 +313,8 @@ button {
     font-size: 0.95em;
     transition: background-color 0.2s;
     white-space: nowrap;
+    min-height: 36px;
+    touch-action: manipulation;
 }
 
 button:hover:not([disabled]) {
@@ -385,37 +432,25 @@ button:disabled {
     right: -4px;
 }
 
-@media (max-width: 1100px) {
-    #game-container {
-        padding: 110px 120px 8px;
-        transform: scale(0.85);
-        transform-origin: top center;
-    }
-    #status-banner {
-        font-size: 0.9em;
-        padding: 6px 12px;
-        white-space: normal;
-    }
-}
-
-@media (max-width: 780px) {
-    #game-container {
-        padding: 90px 40px 6px;
-        transform: scale(0.62);
-        transform-origin: top center;
-    }
+/* Banner + touch targets on narrow phones (controls are outside the scaled stage) */
+@media (max-width: 480px) {
     #status-banner {
         font-size: 0.85em;
+        padding: 6px 10px;
+        padding-top: max(6px, env(safe-area-inset-top, 0px));
         white-space: normal;
     }
-    .action-buttons {
-        gap: 6px;
-    }
-    .action-buttons button {
-        padding: 7px 11px;
-        font-size: 0.9em;
+    button {
+        min-height: 44px;
+        min-width: 72px;
+        padding: 10px 16px;
+        font-size: 1em;
     }
     #bet-slider {
-        width: min(180px, 55vw);
+        width: min(280px, 70vw);
+        height: 28px;
+    }
+    .action-buttons {
+        gap: 10px;
     }
 }
