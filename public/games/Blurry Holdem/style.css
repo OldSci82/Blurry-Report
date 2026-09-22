@@ -181,6 +181,53 @@ body {
     transform-origin: center top;
 }
 
+/* Short NPC decision ("Called", "Raised", "Folded") just above the sprite. */
+.npc-action {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, -115%) scale(var(--inv-stage-scale, 1));
+    transform-origin: center bottom;
+    z-index: 9;
+    display: none;
+    pointer-events: none;
+    white-space: nowrap;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(12, 12, 12, 0.9);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    line-height: 1.2;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+}
+.npc-action:not(:empty) {
+    display: block;
+}
+.npc-action.action-folded {
+    color: #ffb4b4;
+}
+.npc-action.action-raised,
+.npc-action.action-bet {
+    color: #ffe08a;
+}
+.npc-action.action-allin {
+    color: #ffcc66;
+}
+/* Top seat's name is above the sprite and counter-scales upward.
+   Park the tag above that pill so the two don't stack on each other. */
+.player-top .npc-action {
+    top: calc(-46px * (var(--inv-stage-scale, 1) - 1));
+}
+/* Rotated Mothman extends above the layout box; keep the tag above the wings. */
+.player-left.seat-mothman .npc-action,
+.player-right.seat-mothman .npc-action {
+    top: -110px;
+}
+
 .player-image {
     /* Human ("You") base size — leave near current */
     width: 152px;
@@ -742,6 +789,13 @@ button:disabled {
     .player-right.seat-mothman .player-image {
         transform: rotate(90deg);
         transform-origin: center center;
+    }
+    .player-left.seat-mothman .npc-action,
+    .player-right.seat-mothman .npc-action {
+        top: -116px;
+    }
+    .player-top .npc-action {
+        top: calc(-48px * (var(--inv-stage-scale, 1) - 1));
     }
     .player-top {
         /* Same 20px drop as desktop (-265 → -245); mothman stays put */

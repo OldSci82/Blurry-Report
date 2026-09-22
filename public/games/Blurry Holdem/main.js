@@ -66,6 +66,51 @@ function applyNpcArt(playerArea, npcDef) {
   }
   const nameEl = playerArea.querySelector(".player-name");
   if (nameEl) nameEl.textContent = npcDef.name;
+  ensureNpcActionEl(playerArea);
+}
+
+function ensureNpcActionEl(playerArea) {
+  if (!playerArea) return null;
+  let el = playerArea.querySelector(".npc-action");
+  if (!el) {
+    el = document.createElement("div");
+    el.className = "npc-action";
+    el.setAttribute("aria-hidden", "true");
+    playerArea.appendChild(el);
+  }
+  return el;
+}
+
+function labelFromNpcMessage(message) {
+  const text = String(message || "").toLowerCase();
+  if (text.includes("all-in")) return "All-in";
+  if (text.includes("fold")) return "Folded";
+  if (text.includes("raise")) return "Raised";
+  if (text.includes("call")) return "Called";
+  if (text.includes("check")) return "Checked";
+  if (text.includes("bet")) return "Bet";
+  return "";
+}
+
+function showNpcAction(player, label) {
+  if (!player || player.isHuman || !player.playerArea || !label) return;
+  const el = ensureNpcActionEl(player.playerArea);
+  el.textContent = label;
+  el.className = "npc-action action-" + label.toLowerCase().replace("-", "");
+}
+
+function clearNpcActions(keepResolved) {
+  document.querySelectorAll(".npc-action").forEach((el) => {
+    if (
+      keepResolved &&
+      (el.classList.contains("action-folded") ||
+        el.classList.contains("action-allin"))
+    ) {
+      return;
+    }
+    el.textContent = "";
+    el.className = "npc-action";
+  });
 }
 
 function applyPlayerSkin(skinId) {
@@ -350,6 +395,7 @@ function startNewRound() {
   minRaiseSize = BIG_BLIND;
   bettingRound = "pre-flop";
   playersActedThisRound = new Set();
+  clearNpcActions(false);
 
   // Reset player states; busted (0 chips) stay out of this hand
   players.forEach((p) => {
@@ -489,6 +535,8 @@ function endBettingRound() {
     p.currentBetInRound = 0;
   });
   playersActedThisRound = new Set();
+  // Street is over: drop check/call/raise tags. Folded and all-in stay until the next hand.
+  clearNpcActions(true);
 
   let activePlayersCount = players.filter((p) => !p.folded).length;
 
@@ -800,10 +848,7 @@ function npcTurn(npc) {
     performBet(npc, pushed, "call");
     notePlayerActed(npcIndex);
     actionMessage = `${npc.name} goes all-in with $${pushed}!`;
-    displayMessage(actionMessage);
-    updatePlayerDisplays();
-    updatePotDisplay();
-    scheduleAction(moveToNextPlayer, 1500);
+    finishNpcTurn(npc, actionMessage);
     return;
   }
 
@@ -920,10 +965,14 @@ function npcTurn(npc) {
     }
   }
 
+  finishNpcTurn(npc, actionMessage);
+}
+
+function finishNpcTurn(npc, actionMessage) {
+  showNpcAction(npc, labelFromNpcMessage(actionMessage));
   displayMessage(actionMessage);
   updatePlayerDisplays();
   updatePotDisplay();
-
   scheduleAction(moveToNextPlayer, 1500);
 }
 
