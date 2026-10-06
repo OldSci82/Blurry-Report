@@ -1,11 +1,20 @@
 {
-  "updated_at": "2026-10-06T16:00:45.732Z",
+  "updated_at": "2026-10-06T16:14:24.555Z",
   "source": "scout-published",
   "account": "https://x.com/TheBlurryReport",
   "published_dir": "/workspace/blurry-report/published",
   "window_days": 7,
   "new_badge_days": 3,
   "posts": [
+    {
+      "id": "2107504484738084937",
+      "url": "https://x.com/TheBlurryReport/status/2107504484738084937",
+      "text": "Cryptid silhouette quiz: what is this?\n\nA) Michigan Dogman\nB) Ozark Howler\nC) Wampus Cat\nD) Snallygaster\n\nDrop your letter in the replies.",
+      "headline": "Cryptid silhouette quiz: what is this?",
+      "published_at": "2026-10-06T16:13:00.000Z",
+      "kind": "post",
+      "source": "@TheBlurryReport"
+    },
     {
       "id": "2107501051880386788",
       "url": "https://x.com/TheBlurryReport/status/2107501051880386788",
