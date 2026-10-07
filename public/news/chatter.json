@@ -1,11 +1,20 @@
 {
-  "updated_at": "2026-10-07T15:56:29.286Z",
+  "updated_at": "2026-10-07T16:19:59.876Z",
   "source": "scout-published",
   "account": "https://x.com/TheBlurryReport",
   "published_dir": "/workspace/blurry-report/published",
   "window_days": 7,
   "new_badge_days": 3,
   "posts": [
+    {
+      "id": "2107868351271776302",
+      "url": "https://x.com/TheBlurryReport/status/2107868351271776302",
+      "text": "Cryptid silhouette quiz: what is this?\n\nA) Ahool\nB) Thunderbird\nC) Mothman\nD) Kongamato\n\nDrop your letter in the replies.",
+      "headline": "Cryptid silhouette quiz: what is this?",
+      "published_at": "2026-10-07T16:19:32.000Z",
+      "kind": "post",
+      "source": "@TheBlurryReport"
+    },
     {
       "id": "2107862349801463944",
       "url": "https://x.com/TheBlurryReport/status/2107862349801463944",
@@ -534,15 +543,6 @@
       "text": "Answer: C) Hibagon\n\nThe Hibagon (or Hinagon) is Japan's ape-like cryptid, reported since the 1970s around Mount Hiba in Hiroshima Prefecture. Witnesses describe a roughly five-foot biped with dark bristly hair, a large nose, and deep glaring eyes, sometimes compared to a gorilla or chimpanzee. Footprints about ten inches long turned up in Boy Scout reports during the scare, and the creature entered local pop culture even as hard evidence stayed elusive.\n\nHow'd you do?",
       "headline": "Answer: C) Hibagon",
       "published_at": "2026-09-30T17:16:00.000Z",
-      "kind": "post",
-      "source": "@TheBlurryReport"
-    },
-    {
-      "id": "2105329801234157892",
-      "url": "https://x.com/TheBlurryReport/status/2105329801234157892",
-      "text": "Cryptid silhouette quiz: what is this?\n\nA) Yeti\nB) Orang Pendek\nC) Hibagon\nD) Almas\n\nDrop your letter in the replies.",
-      "headline": "Cryptid silhouette quiz: what is this?",
-      "published_at": "2026-09-30T16:13:40.000Z",
       "kind": "post",
       "source": "@TheBlurryReport"
     }
