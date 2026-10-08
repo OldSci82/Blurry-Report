@@ -1,0 +1,107 @@
+/* Blurry Report retro hit counter – pairs with public/js/hit-counter.js */
+.hit-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-family: 'VCR OSD Mono', 'Courier New', Courier, monospace;
+  color: #FFCC00;
+  text-shadow: 0 0 5px #B13BFF;
+  /* Amber LED (default). Swap via .hit-counter--green below. */
+  --hc-led: #FFB000;
+  --hc-led-glow: rgba(255, 176, 0, 0.75);
+  --hc-led-off: rgba(255, 176, 0, 0.12);
+}
+
+.hit-counter--green {
+  --hc-led: #39FF14;
+  --hc-led-glow: rgba(57, 255, 20, 0.7);
+  --hc-led-off: rgba(57, 255, 20, 0.12);
+}
+
+.hit-counter__label {
+  font-size: 0.85em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hit-counter__digits {
+  display: inline-flex;
+  gap: 3px;
+  padding: 4px;
+  background: #050505;
+  border: 2px solid #B13BFF;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(177, 59, 255, 0.6), inset 0 0 6px rgba(0, 0, 0, 0.9);
+}
+
+.hit-counter__digit {
+  position: relative;
+  display: inline-block;
+  width: 1.05em;
+  padding: 0.12em 0;
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 1.3em;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  color: var(--hc-led);
+  text-shadow: 0 0 4px var(--hc-led-glow), 0 0 10px var(--hc-led-glow);
+  background: linear-gradient(180deg, #1a1a1a 0%, #000 48%, #000 52%, #1a1a1a 100%);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+/* Odometer split line across each wheel */
+.hit-counter__digit::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Loading / offline: dim "unlit" segments */
+.hit-counter:not(.is-live) .hit-counter__digit {
+  color: var(--hc-led-off);
+  text-shadow: none;
+}
+.hit-counter.is-offline .hit-counter__digit {
+  color: var(--hc-led);
+  opacity: 0.45;
+}
+.hit-counter.is-offline .hit-counter__digits {
+  border-color: rgba(177, 59, 255, 0.45);
+}
+
+/* Little roll-in when the number arrives */
+.hit-counter__digits.is-rolling .hit-counter__digit {
+  animation: hc-roll 0.5s ease-out both;
+}
+@keyframes hc-roll {
+  0%   { transform: translateY(-70%); opacity: 0; }
+  70%  { transform: translateY(8%);   opacity: 1; }
+  100% { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hit-counter__digits.is-rolling .hit-counter__digit { animation: none; }
+}
+
+.hit-counter__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .hit-counter__digit { font-size: 1.35em; width: 1.1em; }
+}

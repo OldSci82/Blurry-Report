@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Blurry Report</title>
     <link rel="stylesheet" href="./public/styles/home.css">
+    <link rel="stylesheet" href="./public/styles/hit-counter.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   </head>
   <body>
@@ -43,6 +44,11 @@
       </main>
       <footer>
         <p class="copyright">Copyright © 2025 blurryreport.com</p>
+        <div class="hit-counter" data-hit-counter data-key="homepage" role="status">
+          <span class="hit-counter__label">Witnesses logged:</span>
+          <span class="hit-counter__digits" data-hit-counter-digits aria-hidden="true">-------</span>
+          <span class="hit-counter__sr">loading</span>
+        </div>
         <nav class="links" aria-label="Footer navigation">
           <a href="https://www.facebook.com/profile.php?id=61594529826160" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
           <i class="fab fa-facebook" style="color: burlywood;"></i></a>
@@ -54,5 +60,6 @@
       </footer>
     </div>
     <script src="./public/index.js"></script>
+    <script src="./public/js/hit-counter.js" defer></script>
   </body>
 </html>
