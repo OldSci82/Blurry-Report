@@ -5,14 +5,17 @@
  * (https://abacus.jasoncameron.dev): free, no account, no secrets, CORS-enabled.
  *
  * Markup (one or more per page):
- *   <div class="hit-counter" data-hit-counter data-key="homepage">
+ *   <div class="hit-counter" data-hit-counter data-key="site">
  *     <span class="hit-counter__label">Blurry Count</span>
  *     <span class="hit-counter__digits" data-hit-counter-digits></span>
  *   </div>
  *
  * Behaviour:
- *   - Counts once per browser session (sessionStorage). Later page views in the
- *     same tab session only READ the value (/get), they don't increment (/hit).
+ *   - One SITE-WIDE total (key "site"), counted once per browser session no
+ *     matter which page the visitor lands on. The sessionStorage flag is keyed
+ *     by namespace+key only (not by page), so it is shared across every page of
+ *     the site: home -> news -> about in one session = 1 count. Later page
+ *     views only READ the value (/get), they don't increment (/hit).
  *   - Only the real site (blurryreport.com) uses the production namespace.
  *     localhost / file:// / previews use the TEST namespace automatically,
  *     so local testing never inflates the real number.
@@ -31,7 +34,7 @@
   // Used everywhere else (localhost, 127.0.0.1, file://, forks, previews).
   var TEST_NAMESPACE = "blurryreport-com-test";
 
-  var DEFAULT_KEY = "homepage";
+  var DEFAULT_KEY = "site"; // shared site-wide total
   var MIN_DIGITS = 7;
   var TIMEOUT_MS = 5000;
   var PLACEHOLDER_CHAR = "-";

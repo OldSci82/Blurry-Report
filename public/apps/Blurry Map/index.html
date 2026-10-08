@@ -15,6 +15,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <!-- Leaflet Rotate Plugin for map rotation -->
     <script src="https://unpkg.com/@mapbox/leaflet-rotate@0.1.0/dist/leaflet-rotate.js"></script>
+    <link rel="stylesheet" href="../../styles/hit-counter.css">
 </head>
 <body>
     <header style="margin-bottom: 20px; display: flex; justify-content: center; font-size: xx-large;">
@@ -31,6 +32,11 @@
     </div>
     <footer>
         <p class="copyright">Copyright © 2025 blurryreport.com</p>
+        <div class="hit-counter" data-hit-counter data-key="site" role="status">
+          <span class="hit-counter__label">Blurry Count:</span>
+          <span class="hit-counter__digits" data-hit-counter-digits aria-hidden="true">-------</span>
+          <span class="hit-counter__sr">loading</span>
+        </div>
         <nav class="links" aria-label="Footer navigation">
           <a href="../../pages/about.html" class="link" style="color: burlywood;">About</a>
           <a href="../../pages/contact.html" class="link" style="color: burlywood;">Contact</a>
@@ -40,5 +46,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <script type="module" src="./main.js"></script>
+    <script src="../../js/hit-counter.js" defer></script>
 </body>
 </html>
