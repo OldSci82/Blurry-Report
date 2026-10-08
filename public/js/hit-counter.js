@@ -6,7 +6,7 @@
  *
  * Markup (one or more per page):
  *   <div class="hit-counter" data-hit-counter data-key="homepage">
- *     <span class="hit-counter__label">Witnesses logged</span>
+ *     <span class="hit-counter__label">Blurry Count</span>
  *     <span class="hit-counter__digits" data-hit-counter-digits></span>
  *   </div>
  *
@@ -101,7 +101,7 @@
         while (text.length < minDigits) text = "0" + text;
         render(digitsEl, text, true);
         el.classList.add("is-live");
-        el.setAttribute("title", value.toLocaleString() + " witnesses and counting");
+        el.setAttribute("title", value.toLocaleString() + " visitors and counting");
         var sr = el.querySelector(".hit-counter__sr");
         if (sr) sr.textContent = value.toLocaleString();
       })
