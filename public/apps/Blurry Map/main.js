@@ -46,7 +46,7 @@ loadingIndicator.style.cssText = `
   border-radius: 5px; z-index: 1000; display: none;
 `;
 loadingIndicator.textContent = "Loading sightings...";
-document.body.appendChild(loadingIndicator);
+(document.getElementById("map-wrap") || document.body).appendChild(loadingIndicator);
 
 function showLoading() {
   loadingIndicator.style.display = "block";
@@ -68,7 +68,12 @@ const unmappedUL = document.getElementById("unmapped-list");
 const toggleBtn = document.createElement("button");
 toggleBtn.textContent = "Hide Unmapped";
 toggleBtn.className = "toggle-btn";
-document.body.appendChild(toggleBtn);
+const mapControls = document.getElementById("map-controls");
+if (mapControls) {
+  mapControls.prepend(toggleBtn); // sits above the Dark Mode button
+} else {
+  document.body.appendChild(toggleBtn);
+}
 
 // Toggle logic for sidebar
 let isSidebarVisible = true;

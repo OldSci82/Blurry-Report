@@ -56,13 +56,20 @@ header h1 {
   filter: var(--map-tiles-filter);
 }
 
+/* Map wrapper: map, buttons and sidebar are positioned against this box,
+   not the whole page, so they never cover the header or footer. */
+.map-wrap {
+  position: relative;
+  display: block;
+}
+
 /* Sidebar (Unmapped Sightings) */
 #unmapped {
   position: absolute;
   top: 10px;
   right: 10px;
   width: 300px;
-  max-height: 90vh;
+  max-height: calc(100% - 20px);
   overflow-y: auto;
   background: rgba(9, 0, 64, 0.8);
   padding: 10px;
@@ -70,6 +77,18 @@ header h1 {
   z-index: 1000;
   border: 2px solid #FFCC00;
   border-radius: 10px;
+}
+
+/* Hide/Show + Dark Mode buttons, stacked to the left of the sidebar */
+.map-controls {
+  position: absolute;
+  top: 10px;
+  right: 330px;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
 }
 
 #unmapped h3 {
@@ -109,10 +128,6 @@ header h1 {
 
 /* Toggle Buttons */
 .toggle-btn {
-  position: absolute;
-  top: 10px;
-  right: 320px;
-  z-index: 1001;
   font-size: clamp(0.9rem, 2vw, 1rem);
   padding: 0.5rem 1rem;
   background: linear-gradient(45deg, #471396, #B13BFF);
@@ -139,10 +154,6 @@ header h1 {
 .toggle-btn:active {
   transform: scale(0.95); /* Slight scale-down on tap */
   box-shadow: 0 0 5px rgba(177, 59, 255, 0.3);
-}
-
-#dark-mode-toggle {
-  top: 50px; /* Below sidebar toggle */
 }
 
 /* Popup Styling for Dark Mode */
@@ -172,7 +183,8 @@ header h1 {
   50% { opacity: 0.8; }
 }
 
-/* Responsive design - Portrait */
+/* Responsive design - Portrait phones: everything in normal page flow
+   (map, then buttons, then a scrollable sidebar), so the footer is reachable. */
 @media (max-width: 600px) {
   #map {
     height: 50vh; /* Proportional to screen height */
@@ -180,27 +192,30 @@ header h1 {
     box-shadow: 0 0 15px rgba(177, 59, 255, 0.7);
   }
 
+  .map-controls {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 14px 12px;
+  }
+
   #unmapped {
-    width: 90%;
-    right: 5%;
-    top: calc(50vh + 20px); /* Below map with gap */
+    position: static;
+    width: auto;
+    margin: 0 12px 20px;
     max-height: 40vh;
   }
 
   .toggle-btn {
-    right: 5%;
-    top: calc(50vh - 80px); /* Above sidebar */
     font-size: clamp(0.8rem, 2vw, 0.9rem);
     padding: 0.5rem 1rem;
     min-width: 120px;
   }
-
-  #dark-mode-toggle {
-    top: calc(50vh - 40px); /* Above sidebar toggle */
-  }
 }
 
-/* Responsive design - Landscape */
+/* Responsive design - Landscape phones */
 @media (max-height: 500px) and (orientation: landscape) {
   #map {
     height: 80vh; /* Use most of the viewport height */
@@ -210,21 +225,14 @@ header h1 {
 
   #unmapped {
     width: 30%; /* Narrower for wider screen */
-    right: 10px;
-    top: 10px; /* Top-right corner */
-    max-height: 80vh;
+  }
+
+  .map-controls {
+    right: calc(30% + 20px);
   }
 
   .toggle-btn {
-    right: 10px;
-    top: calc(80vh + 10px); /* Below map */
     font-size: clamp(0.8rem, 2vw, 0.9rem);
-    padding: 0.5rem 1rem;
-    min-width: 120px;
-  }
-
-  #dark-mode-toggle {
-    top: calc(80vh + 50px); /* Below sidebar toggle */
   }
 }
 

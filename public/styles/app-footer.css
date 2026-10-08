@@ -1,0 +1,85 @@
+/*
+ * Shared site footer for the standalone apps (Blurry Map, To-Do List).
+ * Everything is scoped to .site-footer (plus the app header link) so the
+ * apps' own UI styles are untouched. Mirrors the main site footer look.
+ */
+.site-footer {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* copyright | counter (true centre) | links */
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba(9, 0, 64, 0.8);
+  box-shadow: 0 0 20px rgba(177, 59, 255, 0.35);
+  font-family: 'VCR OSD Mono', 'Courier New', Courier, monospace;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  line-height: 1.4;
+  color: #FFCC00;
+}
+
+.site-footer .copyright {
+  justify-self: start;
+  margin: 0;
+  color: #FFCC00;
+  text-shadow: 0 0 5px #B13BFF;
+}
+
+.site-footer .hit-counter { justify-self: center; }
+
+.site-footer .links {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.site-footer .link {
+  color: #FFCC00;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.site-footer .link:hover {
+  color: #B13BFF;
+  text-shadow: 0 0 5px #FFCC00;
+}
+
+.site-footer .links i { color: burlywood; }
+
+/* Optional full-width credit line under the three columns */
+.site-footer .footer-note {
+  grid-column: 1 / -1;
+  justify-self: center;
+  margin: 0;
+  font-size: 0.85em;
+  text-align: center;
+  color: #FFCC00;
+  text-shadow: 0 0 5px #B13BFF;
+}
+
+.site-footer .footer-note a { color: burlywood; }
+
+@media (max-width: 600px) {
+  .site-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+/* To-Do List: its body has 20px padding; let the footer run edge to edge
+   and sit a little below the app panel. */
+.todo-footer {
+  margin: 30px -20px -20px;
+}
+
+/* App header link: avoid the default blue underlined link look */
+.app-header .homeLink { text-decoration: none; }
+.app-header .homeLink h1 {
+  color: #FFCC00;
+  text-shadow: 0 0 10px #B13BFF, 0 0 20px #B13BFF;
+  text-align: center;
+  font-size: clamp(1.25rem, 7vw, 4rem); /* same size on desktop, fits phones */
+  overflow-wrap: anywhere;
+}

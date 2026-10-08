@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="../../images/BR_favicon.png" />
     <link
       href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
@@ -10,16 +11,18 @@
     <title>The Blurry To-Do List</title>
     <script type="module" crossorigin src="/public/apps/To-Do-List/assets/index-CDDIkpbf.js"></script>
     <link rel="stylesheet" crossorigin href="/public/apps/To-Do-List/assets/index-C5yisSXZ.css">
-      <link rel="stylesheet" href="../../styles/hit-counter.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../../styles/hit-counter.css">
+    <link rel="stylesheet" href="../../styles/app-footer.css">
   </head>
   <body>
-    <header style="margin-bottom: 20px; display: flex; justify-content: center; font-size: xx-large;">
+    <header class="app-header" style="margin-bottom: 20px; display: flex; justify-content: center; font-size: xx-large;">
         <a href="../../../index.html" class="homeLink" aria-label="The Blurry Report Home">
           <h1>THE BLURRY REPORT</h1>
         </a>
       </header>
     <div id="root"></div>
-    <footer>
+    <footer class="site-footer todo-footer">
         <p class="copyright">Copyright © 2025 blurryreport.com</p>
         <div class="hit-counter" data-hit-counter data-key="site" role="status">
           <span class="hit-counter__label">Blurry Count:</span>
@@ -27,8 +30,10 @@
           <span class="hit-counter__sr">loading</span>
         </div>
         <nav class="links" aria-label="Footer navigation">
-          <a href="../../pages/about.html" class="link" style="color: burlywood;">About</a>
-          <a href="../../pages/contact.html" class="link" style="color: burlywood;">Contact</a>
+          <a href="https://www.facebook.com/profile.php?id=61594529826160" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+          <a href="https://x.com/TheBlurryReport" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+          <a href="../../pages/about.html" class="link">About</a>
+          <a href="../../pages/contact.html" class="link">Contact</a>
         </nav>
       </footer>
       <script src="../../js/hit-counter.js" defer></script>

@@ -11,11 +11,9 @@
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-    <!-- Leaflet JavaScript -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Leaflet Rotate Plugin for map rotation -->
-    <script src="https://unpkg.com/@mapbox/leaflet-rotate@0.1.0/dist/leaflet-rotate.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="../../styles/hit-counter.css">
+    <link rel="stylesheet" href="../../styles/app-footer.css">
 </head>
 <body>
     <header style="margin-bottom: 20px; display: flex; justify-content: center; font-size: xx-large;">
@@ -23,14 +21,18 @@
           <h1>THE BLURRY REPORT</h1>
         </a>
       </header>
-    <!-- Container for the map -->
-    <div id="map"></div>
-    <button id="dark-mode-toggle" class="toggle-btn">Toggle Dark Mode</button>
-    <div id="unmapped">
-        <h3>Unmapped Sightings</h3>
-        <ul id="unmapped-list"></ul>
-    </div>
-    <footer>
+    <!-- Map + overlays share one positioned wrapper so they stay on the map -->
+    <main id="map-wrap" class="map-wrap">
+        <div id="map"></div>
+        <div id="map-controls" class="map-controls">
+            <button id="dark-mode-toggle" class="toggle-btn">Toggle Dark Mode</button>
+        </div>
+        <div id="unmapped">
+            <h3>Unmapped Sightings</h3>
+            <ul id="unmapped-list"></ul>
+        </div>
+    </main>
+    <footer class="site-footer">
         <p class="copyright">Copyright © 2025 blurryreport.com</p>
         <div class="hit-counter" data-hit-counter data-key="site" role="status">
           <span class="hit-counter__label">Blurry Count:</span>
@@ -38,10 +40,12 @@
           <span class="hit-counter__sr">loading</span>
         </div>
         <nav class="links" aria-label="Footer navigation">
-          <a href="../../pages/about.html" class="link" style="color: burlywood;">About</a>
-          <a href="../../pages/contact.html" class="link" style="color: burlywood;">Contact</a>
+          <a href="https://www.facebook.com/profile.php?id=61594529826160" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+          <a href="https://x.com/TheBlurryReport" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+          <a href="../../pages/about.html" class="link">About</a>
+          <a href="../../pages/contact.html" class="link">Contact</a>
         </nav>
-        <p class="copyright">Reports sourced from <a href="https://nuforc.org/" style="color: burlywood;">nuforc.org</a></p>
+        <p class="footer-note">Reports sourced from <a href="https://nuforc.org/" target="_blank" rel="noopener noreferrer">nuforc.org</a></p>
       </footer>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
