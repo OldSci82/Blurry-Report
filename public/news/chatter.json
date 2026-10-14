@@ -1,11 +1,20 @@
 {
-  "updated_at": "2026-10-14T15:57:30.402Z",
+  "updated_at": "2026-10-14T16:06:46.000Z",
   "source": "scout-published",
   "account": "https://x.com/TheBlurryReport",
   "published_dir": "/workspace/blurry-report/published",
   "window_days": 7,
   "new_badge_days": 3,
   "posts": [
+    {
+      "id": "2110401717137457551",
+      "url": "https://x.com/TheBlurryReport/status/2110401717137457551",
+      "text": "Cryptid silhouette quiz: what is this?\n\nA) Ninki Nanka\nB) Dingonek\nC) Lusca\nD) Lukwata\n\nDrop your letter in the replies.",
+      "headline": "Cryptid silhouette quiz: what is this?",
+      "published_at": "2026-10-14T16:05:53.000Z",
+      "kind": "post",
+      "source": "@TheBlurryReport"
+    },
     {
       "id": "2110399370755514460",
       "url": "https://x.com/TheBlurryReport/status/2110399370755514460",
