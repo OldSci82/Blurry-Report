@@ -1,11 +1,20 @@
 {
-  "updated_at": "2026-10-14T13:51:26.558Z",
+  "updated_at": "2026-10-14T14:50:37.938Z",
   "source": "scout-published",
   "account": "https://x.com/TheBlurryReport",
   "published_dir": "/workspace/blurry-report/published",
   "window_days": 7,
   "new_badge_days": 3,
   "posts": [
+    {
+      "id": "2110382479853178892",
+      "url": "https://x.com/TheBlurryReport/status/2110382479853178892",
+      "text": "Louisville, Kentucky. Waverly Hills Sanatorium, opened in 1910.\n\nIn the early 1900s tuberculosis, known as the White Plague, is ravaging Jefferson County, and Louisville has one of the highest TB death rates in the United States. Waverly Hills opens as a two-story wooden hospital for forty to fifty patients. On October 17, 1926, a massive five-story building opens on the hill, made to hold more than four hundred.\n\nPatients spend their treatments outdoors on long porches. A five-hundred-foot tunnel runs between the heating plant at the bottom of the hill and the main building, with a cable car to carry steam and supplies. According to a number of stories, for a time between the 1920s and 1940s the tunnel also carried something else: corpses, moved discreetly down to a waiting ambulance so the patients would not know someone had died.\n\nThe antibiotic streptomycin shrinks the need for the place, and the sanatorium closes in June 1961. It reopens as Woodhaven Geriatric Center, which closes in 1980 after reports of overcrowding and neglect. Plans for a prison, apartments, and even the world's tallest statue of Jesus on the roof all fall through. Today tours run inside the building, it is marketed as a haunted hospital, and Ghost Hunters, Ghost Adventures, and BuzzFeed Unsolved have all come to film there.\n\nSource: https://en.wikipedia.org/wiki/Waverly_Hills_Sanatorium",
+      "headline": "Louisville, Kentucky. Waverly Hills Sanatorium, opened in 1910.",
+      "published_at": "2026-10-14T14:49:26.000Z",
+      "kind": "post",
+      "source": "@TheBlurryReport"
+    },
     {
       "id": "2110367274540364077",
       "url": "https://x.com/TheBlurryReport/status/2110367274540364077",
@@ -544,15 +553,6 @@
       "headline": "Bladenboro, Bladen County, North Carolina. December 1953 to January 1954.",
       "published_at": "2026-10-07T14:57:00.000Z",
       "kind": "post",
-      "source": "@TheBlurryReport"
-    },
-    {
-      "id": "2107834209796530232",
-      "url": "https://x.com/TheBlurryReport/status/2107834209796530232",
-      "text": "Whaley House, San Diego Avenue, Old Town San Diego, California. Built 1857.\n\nIn 1852, a man named James \"Yankee Jim\" Robinson is convicted of attempted grand larceny for trying to steal a boat, and he's hanged from a gallows off the back of a wagon on this very lot. One of the people watching that day is a merchant named Thomas Whaley. A few years later, he buys the land anyway.\n\nWhaley designs a two-story brick Greek Revival house, the oldest brick structure in Southern California, and moves his family in on August 22, 1857. According to the San Diego Union, soon after they move in, heavy footsteps start moving through the house. Whaley says they sound like the boots of a large man, and he finally decides they belong to Yankee Jim.\n\nThe house sees plenty of grief. Baby Thomas Jr. dies of scarlet fever at 18 months. Daughter Violet, heartbroken after a disastrous marriage, dies by suicide in 1885 at just 22. Youngest daughter Lillian lives there until her death in 1953, convinced Yankee Jim never left.\n\nVisitors and staff still report glimpses of the Whaleys themselves: Thomas on the upper landing in a frock coat and pantaloons, his face turned away, and Anna in the downstairs rooms and the garden. In 1964, Regis Philbin, filming for a local San Diego morning show, says he noticed \"something filmy white\" on the wall. He flipped on his flashlight and found nothing but a portrait of Anna Whaley. Years later he still said, \"there was something going on in that house.\"\n\nTravel Channel's America's Most Haunted went further, calling it the most supernatural home in the United States.\n\nSource: https://en.wikipedia.org/wiki/Whaley_House_(San_Diego,_California)",
-      "headline": "Whaley House, San Diego Avenue, Old Town San Diego, California. Built 1857.",
-      "published_at": "2026-10-07T14:03:00.000Z",
-      "kind": "case",
       "source": "@TheBlurryReport"
     }
   ]
