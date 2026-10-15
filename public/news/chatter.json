@@ -1,11 +1,20 @@
 {
-  "updated_at": "2026-10-15T15:54:47.187Z",
+  "updated_at": "2026-10-15T16:12:16.705Z",
   "source": "scout-published",
   "account": "https://x.com/TheBlurryReport",
   "published_dir": "/workspace/blurry-report/published",
   "window_days": 7,
   "new_badge_days": 3,
   "posts": [
+    {
+      "id": "2110765518018003359",
+      "url": "https://x.com/TheBlurryReport/status/2110765518018003359",
+      "text": "Cryptid silhouette quiz: what is this?\n\nA) Gloucester Sea Serpent\nB) Lagarfljót Worm\nC) Storsjöodjuret\nD) Bessie\n\nDrop your letter in the replies.",
+      "headline": "Cryptid silhouette quiz: what is this?",
+      "published_at": "2026-10-15T16:11:55.000Z",
+      "kind": "post",
+      "source": "@TheBlurryReport"
+    },
     {
       "id": "2110761119447175515",
       "url": "https://x.com/TheBlurryReport/status/2110761119447175515",
