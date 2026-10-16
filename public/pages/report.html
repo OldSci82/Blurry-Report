@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Report a cryptid, UAP or paranormal sighting to The Blurry Report field desk">
+    <title>The Blurry Report - Report a Sighting</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="../images/BR_favicon.png" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="../styles/about.css">
+        <style>
+      .report { max-width: 44rem; margin: 0 auto; padding: 1.5rem 1rem 2.5rem; }
+      .report h2 { text-align:center; font-size: clamp(1.4rem,4.5vw,2rem); text-shadow:0 0 8px #B13BFF; letter-spacing:.06em; margin-bottom:.5rem; }
+      .report .lede { text-align:center; line-height:1.5; margin-bottom:1.25rem; }
+      .report a { color: burlywood; }
+      .case-file { background: rgba(9,0,64,.75); border:2px solid #B13BFF; box-shadow:0 0 18px rgba(177,59,255,.45); border-radius:6px; padding:1.25rem; }
+      .case-file label, .case-file legend { display:block; font-weight:bold; margin:.9rem 0 .35rem; font-size:1rem; float:none; }
+      .case-file .req { color:#ff5fa2; }
+      .case-file input[type=text], .case-file input[type=email], .case-file input[type=datetime-local], .case-file select, .case-file textarea {
+        width:100%; padding:.65rem .7rem; font-size:16px; font-family:inherit; color:#FFCC00; background:#120052; border:1px solid #7d3cff; border-radius:4px; }
+      .case-file textarea { min-height:8rem; resize:vertical; }
+      .case-file input:focus, .case-file select:focus, .case-file textarea:focus { outline:none; box-shadow:0 0 8px 2px #B13BFF; }
+      .case-file fieldset { border:0; padding:0; margin:0; }
+      .case-file .choice { display:flex; align-items:center; gap:.5rem; margin:.4rem 0; font-weight:normal; }
+      .case-file .choice input { width:1.2rem; height:1.2rem; accent-color:#B13BFF; }
+      .hp { position:absolute !important; left:-9999px !important; width:1px; height:1px; overflow:hidden; }
+      .submit-btn { display:block; width:100%; margin-top:1.4rem; padding:.85rem; font-family:inherit; font-size:1.15rem; font-weight:bold; letter-spacing:.08em; color:#090040; background:#FFCC00; border:0; border-radius:4px; box-shadow:0 0 14px #B13BFF; cursor:pointer; }
+      .submit-btn:disabled { opacity:.6; cursor:wait; }
+      .form-msg { margin-top:.9rem; min-height:1.2em; color:#ff5fa2; text-align:center; }
+      .fallback { text-align:center; margin-top:1rem; font-size:.95rem; }
+      .thanks { text-align:center; padding:2rem 1rem; }
+      .thanks h3 { font-size:clamp(1.3rem,4vw,1.8rem); text-shadow:0 0 10px #B13BFF; margin-bottom:.75rem; }
+      .reports { margin-top:2.5rem; }
+      .report-card { background:rgba(9,0,64,.6); border-left:4px solid #B13BFF; padding:.9rem 1rem; margin:.8rem 0; border-radius:4px; line-height:1.45; }
+      .report-card .meta { font-size:.85rem; color:burlywood; margin-bottom:.35rem; }
+      .empty { text-align:center; opacity:.8; font-style:italic; }
+    </style>
+    <link rel="stylesheet" href="../styles/hit-counter.css">
+<script data-goatcounter="https://blurryreport.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+    <header>
+        <a href="../../index.html" class="homeLink" aria-label="The Blurry Report Home">
+            <h1>THE BLURRY REPORT</h1>
+        </a>
+    </header>
+    <main class="report">
+        <h2>REPORT A SIGHTING</h2>
+        <p class="lede">Saw something blurry in the woods, the sky, or the back forty? File it with the field desk. All fields marked <span class="req">*</span> are required.</p>
+        <div class="case-file">
+          <form id="sighting-form" action="https://docs.google.com/forms/d/e/1FAIpQLSeTkJEUO1BRYoRkr1AmvXPoqlaBjrQzAD74aZ5dK41680vVZQ/formResponse" method="POST" target="hidden-submit" novalidate>
+            <div class="hp" aria-hidden="true">
+              <label for="hp-website">Leave this empty</label>
+              <input type="text" id="hp-website" name="hp_website" tabindex="-1" autocomplete="off">
+            </div>
+            <label for="f-name">Your name <span class="req">*</span></label>
+            <input type="text" id="f-name" data-q="name" required autocomplete="name">
+            <label for="f-state">State <span class="req">*</span></label>
+            <select id="f-state" data-q="state" required>
+                <option value="">-- Select a state --</option>
+                <option value="Alabama">Alabama</option>
+                <option value="Alaska">Alaska</option>
+                <option value="Arizona">Arizona</option>
+                <option value="Arkansas">Arkansas</option>
+                <option value="California">California</option>
+                <option value="Colorado">Colorado</option>
+                <option value="Connecticut">Connecticut</option>
+                <option value="Delaware">Delaware</option>
+                <option value="Florida">Florida</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Hawaii">Hawaii</option>
+                <option value="Idaho">Idaho</option>
+                <option value="Illinois">Illinois</option>
+                <option value="Indiana">Indiana</option>
+                <option value="Iowa">Iowa</option>
+                <option value="Kansas">Kansas</option>
+                <option value="Kentucky">Kentucky</option>
+                <option value="Louisiana">Louisiana</option>
+                <option value="Maine">Maine</option>
+                <option value="Maryland">Maryland</option>
+                <option value="Massachusetts">Massachusetts</option>
+                <option value="Michigan">Michigan</option>
+                <option value="Minnesota">Minnesota</option>
+                <option value="Mississippi">Mississippi</option>
+                <option value="Missouri">Missouri</option>
+                <option value="Montana">Montana</option>
+                <option value="Nebraska">Nebraska</option>
+                <option value="Nevada">Nevada</option>
+                <option value="New Hampshire">New Hampshire</option>
+                <option value="New Jersey">New Jersey</option>
+                <option value="New Mexico">New Mexico</option>
+                <option value="New York">New York</option>
+                <option value="North Carolina">North Carolina</option>
+                <option value="North Dakota">North Dakota</option>
+                <option value="Ohio">Ohio</option>
+                <option value="Oklahoma">Oklahoma</option>
+                <option value="Oregon">Oregon</option>
+                <option value="Pennsylvania">Pennsylvania</option>
+                <option value="Rhode Island">Rhode Island</option>
+                <option value="South Carolina">South Carolina</option>
+                <option value="South Dakota">South Dakota</option>
+                <option value="Tennessee">Tennessee</option>
+                <option value="Texas">Texas</option>
+                <option value="Utah">Utah</option>
+                <option value="Vermont">Vermont</option>
+                <option value="Virginia">Virginia</option>
+                <option value="Washington">Washington</option>
+                <option value="West Virginia">West Virginia</option>
+                <option value="Wisconsin">Wisconsin</option>
+                <option value="Wyoming">Wyoming</option>
+                <option value="District of Columbia">District of Columbia</option>
+            </select>
+            <label for="f-city">City or town <span class="req">*</span></label>
+            <input type="text" id="f-city" data-q="city" required autocomplete="address-level2">
+            <label for="f-when">Date and time of sighting <span class="req">*</span></label>
+            <input type="datetime-local" id="f-when" required>
+            <input type="hidden" data-q="date_year"><input type="hidden" data-q="date_month"><input type="hidden" data-q="date_day"><input type="hidden" data-q="date_hour"><input type="hidden" data-q="date_minute">
+            <label for="f-what">What did you see? <span class="req">*</span></label>
+            <textarea id="f-what" data-q="what" required placeholder="Shape, size, sounds, smells, how long it lasted..."></textarea>
+            <label for="f-email">Email for follow-up</label>
+            <input type="email" id="f-email" data-q="email" autocomplete="email">
+            <fieldset>
+              <legend>Can we share your report on blurryreport.com? <span class="req">*</span></legend>
+              <label class="choice"><input type="radio" data-q="share" name="share_tmp" value="Yes, share it" required> Yes, share it</label>
+              <label class="choice"><input type="radio" data-q="share" name="share_tmp" value="No, keep it private"> No, keep it private</label>
+            </fieldset>
+            <button type="submit" class="submit-btn">FILE REPORT</button>
+            <p class="form-msg" id="form-msg" role="alert"></p>
+          </form>
+          <div class="thanks" id="thanks" hidden tabindex="-1">
+            <h3>REPORT FILED WITH THE FIELD DESK</h3>
+            <p>Your sighting is in the case files. Keep your camera handy... and keep it blurry.</p>
+          </div>
+          <iframe name="hidden-submit" id="hidden-submit" title="Form submission" style="display:none"></iframe>
+          <p class="fallback">Trouble with this form? <a href="https://docs.google.com/forms/d/e/1FAIpQLSeTkJEUO1BRYoRkr1AmvXPoqlaBjrQzAD74aZ5dK41680vVZQ/viewform" target="_blank" rel="noopener noreferrer">File on Google Forms instead</a>.</p>
+        </div>
+        <section class="reports" aria-labelledby="recent-h">
+          <h2 id="recent-h">RECENT FIELD REPORTS</h2>
+          <div id="report-list"><p class="empty">Loading the case files...</p></div>
+        </section>
+    </main>
+    <footer>
+        <p class="copyright">Copyright © 2025 blurryreport.com</p>
+        <div class="hit-counter" data-hit-counter data-key="site" role="status">
+          <span class="hit-counter__label">Blurry Count:</span>
+          <span class="hit-counter__digits" data-hit-counter-digits aria-hidden="true">-------</span>
+          <span class="hit-counter__sr">loading</span>
+        </div>
+        <nav class="links" aria-label="Footer navigation">
+            <a href="https://www.facebook.com/profile.php?id=61594529826160" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook" style="color: burlywood;"></i></a>
+            <a href="https://x.com/TheBlurryReport" target="_blank" rel="noopener noreferrer" aria-label="X"><i class="fab fa-x-twitter" style="color: burlywood;"></i></a>
+            <a href="./about.html" class="link">About</a>
+            <a href="./contact.html" class="link">Contact</a>
+        </nav>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="../js/hit-counter.js" defer></script>
+    <script>
+    (function () {
+      // Google Form entry IDs. Update here if the form's questions change.
+      var FIELDS = {
+        name: "entry.NAME_ID", state: "entry.STATE_ID", city: "entry.CITY_ID",
+        date: "entry.DATE_ID", what: "entry.WHAT_ID", email: "entry.EMAIL_ID", share: "entry.SHARE_ID"
+      };
+      var form = document.getElementById('sighting-form'), msg = document.getElementById('form-msg');
+      var btn = form.querySelector('.submit-btn'), iframe = document.getElementById('hidden-submit');
+      var configured = !Object.keys(FIELDS).some(function (k) { return /_ID$/.test(FIELDS[k]); });
+      form.querySelectorAll('[data-q]').forEach(function (el) {
+        var q = el.getAttribute('data-q'), m = q.match(/^date_(\w+)$/);
+        el.name = m ? FIELDS.date + '_' + m[1] : FIELDS[q];
+      });
+      var submitted = false;
+      iframe.addEventListener('load', function () {
+        if (!submitted) return;
+        form.hidden = true; var t = document.getElementById('thanks'); t.hidden = false; t.focus();
+      });
+      form.addEventListener('submit', function (e) {
+        msg.textContent = '';
+        if (document.getElementById('hp-website').value) { e.preventDefault(); return; }
+        if (!configured) { e.preventDefault(); msg.textContent = 'The field desk is still wiring this form. Please use the Google Forms link below.'; return; }
+        if (!form.checkValidity()) { e.preventDefault(); form.reportValidity(); msg.textContent = 'Please fill in all required fields.'; return; }
+        var v = document.getElementById('f-when').value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+        if (!v) { e.preventDefault(); msg.textContent = 'Please enter the date and time.'; return; }
+        ['year','month','day','hour','minute'].forEach(function (p, i) {
+          form.querySelector('[data-q="date_' + p + '"]').value = String(parseInt(v[i + 1], 10));
+        });
+        submitted = true; btn.disabled = true; btn.textContent = 'TRANSMITTING...';
+      });
+      // Recent Field Reports
+      var list = document.getElementById('report-list');
+      function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+      fetch('../news/reports.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (data) {
+        var items = (Array.isArray(data) ? data : []).filter(function (r) { return r && r.approved !== false; });
+        if (!items.length) { list.innerHTML = '<p class="empty">No approved reports yet. Be the first.</p>'; return; }
+        list.innerHTML = items.map(function (r) {
+          var first = String(r.name || '').trim().split(/\s+/)[0] || 'Anonymous';
+          var where = [r.city, r.state].filter(Boolean).join(', ');
+          return '<article class="report-card"><div class="meta">' + esc(first) + (where ? ' &middot; ' + esc(where) : '') + (r.date ? ' &middot; ' + esc(r.date) : '') + '</div><p>' + esc(r.description) + '</p></article>';
+        }).join('');
+      }).catch(function () { list.innerHTML = '<p class="empty">No approved reports yet.</p>'; });
+    })();
+    </script>
+</body>
+</html>
