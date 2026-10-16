@@ -17,7 +17,7 @@
       .case-file { background: rgba(9,0,64,.75); border:2px solid #B13BFF; box-shadow:0 0 18px rgba(177,59,255,.45); border-radius:6px; padding:1.25rem; }
       .case-file label, .case-file legend { display:block; font-weight:bold; margin:.9rem 0 .35rem; font-size:1rem; float:none; }
       .case-file .req { color:#ff5fa2; }
-      .case-file input[type=text], .case-file input[type=email], .case-file input[type=date], .case-file input[type=time], .case-file select, .case-file textarea {
+      .case-file input[type=text], .case-file input[type=email], .case-file input[type=url], .case-file input[type=date], .case-file input[type=time], .case-file select, .case-file textarea {
         width:100%; padding:.65rem .7rem; font-size:16px; font-family:inherit; color:#FFCC00; background:#120052; border:1px solid #7d3cff; border-radius:4px; }
       .case-file textarea { min-height:8rem; resize:vertical; }
       .case-file input:focus, .case-file select:focus, .case-file textarea:focus { outline:none; box-shadow:0 0 8px 2px #B13BFF; }
@@ -43,6 +43,10 @@
       .case-file .dt-field span { display:block; margin-bottom:.25rem; letter-spacing:.05em; text-transform:uppercase; }
       .case-file .dt-field select { min-height:48px; cursor:pointer; }
       @media (max-width:420px) { .case-file .dt-date { grid-template-columns: 1fr 1fr; } .case-file .dt-date .dt-field:first-child { grid-column:1 / -1; } }
+      .report-card .media-link { display:inline-block; margin-top:.35rem; font-size:.9rem; }
+      .cta-btn { display:inline-block; padding:.8rem 1.6rem; font-weight:bold; letter-spacing:.08em; color:#090040 !important; background:#FFCC00; border-radius:4px; box-shadow:0 0 14px #B13BFF; text-decoration:none; font-size:1.1rem; }
+      .cta-wrap { text-align:center; margin:1rem 0 1.5rem; }
+      .see-all { text-align:center; margin-top:1rem; font-weight:bold; }
     </style>
     <link rel="stylesheet" href="../styles/hit-counter.css">
 <script data-goatcounter="https://blurryreport.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -140,6 +144,9 @@
             <input type="hidden" data-q="date_year" disabled><input type="hidden" data-q="date_month" disabled><input type="hidden" data-q="date_day" disabled><input type="hidden" data-q="time_hour" disabled><input type="hidden" data-q="time_minute" disabled>
             <label for="f-what">What did you see? <span class="req">*</span></label>
             <textarea id="f-what" data-q="what" required placeholder="Shape, size, sounds, smells, how long it lasted..."></textarea>
+            <label for="f-media">Photo or video link (optional)</label>
+            <input type="url" id="f-media" data-q="media" placeholder="YouTube, Imgur, Google Photos…" inputmode="url" autocomplete="off">
+            <p class="opt" style="margin:.35rem 0 0">Links only. Every report is reviewed before it's posted.</p>
             <label for="f-email">Email for follow-up (optional)</label>
             <input type="email" id="f-email" data-q="email" autocomplete="email">
             <fieldset>
@@ -160,6 +167,7 @@
         <section class="reports" aria-labelledby="recent-h">
           <h2 id="recent-h">RECENT FIELD REPORTS</h2>
           <div id="report-list"><p class="empty">Loading the case files...</p></div>
+          <p class="see-all"><a href="./field-reports.html">See all Field Reports &rarr;</a></p>
         </section>
     </main>
     <footer>
@@ -184,7 +192,8 @@
       var FIELDS = {
         name: "entry.1419029098", state: "entry.52026398", city: "entry.1387014173",
         date: "entry.868486628", time: "entry.1962005567", what: "entry.1712799879",
-        email: "entry.495829717", share: "entry.1878451153"
+        email: "entry.495829717", share: "entry.1878451153",
+        media: "entry.642572670"
       };
       var form = document.getElementById('sighting-form'), msg = document.getElementById('form-msg');
       var btn = form.querySelector('.submit-btn'), iframe = document.getElementById('hidden-submit');
@@ -225,8 +234,7 @@
         fill('time', ['hour','minute'], h24 !== null ? [null, String(h24), mi] : null);
         submitted = true; btn.disabled = true; btn.textContent = 'TRANSMITTING...';
       });
-      // Recent Field Reports
-      var list = document.getElementById('report-list');
+      // Field Reports teaser (latest 2)
       function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
       var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       function when(r) {
@@ -235,15 +243,26 @@
         if (tm) { var hh = parseInt(tm[1], 10); out += (out ? ' \u00b7 ' : '') + ((hh % 12) || 12) + ':' + tm[2] + ' ' + (hh < 12 ? 'AM' : 'PM'); } else if (r.time) out += (out ? ' \u00b7 ' : '') + r.time;
         return out;
       }
-      fetch('../news/reports.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (data) {
-        var items = (Array.isArray(data) ? data : []).filter(function (r) { return r && r.approved !== false; });
-        if (!items.length) { list.innerHTML = '<p class="empty">No approved reports yet. Be the first.</p>'; return; }
-        list.innerHTML = items.map(function (r) {
-          var first = String(r.name || '').trim().split(/\s+/)[0] || 'Anonymous';
-          var where = [r.city, r.state].filter(Boolean).join(', ');
-          return '<article class="report-card"><div class="meta">' + esc(first) + (where ? ' &middot; ' + esc(where) : '') + (when(r) ? ' &middot; ' + esc(when(r)) : '') + '</div><p>' + esc(r.description) + '</p></article>';
-        }).join('');
-      }).catch(function () { list.innerHTML = '<p class="empty">No approved reports yet.</p>'; });
+      function sortKey(r) { var t = String(r.time || '').match(/^(\d{1,2}):(\d{2})$/); return String(r.date || '') + 'T' + (t ? ('0' + t[1]).slice(-2) + ':' + t[2] : '00:00'); }
+      function safeUrl(u) { u = String(u || '').trim(); if (!/^https?:\/\//i.test(u)) return ''; try { var x = new URL(u); return (x.protocol === 'https:' || x.protocol === 'http:') ? x.href : ''; } catch (e) { return ''; } }
+      function card(r) {
+        var first = String(r.name || '').trim().split(/\s+/)[0] || 'Anonymous';
+        var where = [r.city, r.state].filter(Boolean).join(', ');
+        var m = safeUrl(r.media);
+        return '<article class="report-card"><div class="meta">' + esc(first) + (where ? ' &middot; ' + esc(where) : '') + (when(r) ? ' &middot; ' + esc(when(r)) : '') + '</div><p>' + esc(r.description) + '</p>' +
+          (m ? '<a class="media-link" href="' + esc(m) + '" target="_blank" rel="noopener nofollow ugc">View photo/video (external link)</a>' : '') + '</article>';
+      }
+      function load(limit, emptyMsg) {
+        var list = document.getElementById('report-list');
+        fetch('../news/reports.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (data) {
+          var items = (Array.isArray(data) ? data : []).filter(function (r) { return r && r.approved !== false; });
+          items.sort(function (a, b) { var ka = sortKey(a), kb = sortKey(b); return ka < kb ? 1 : ka > kb ? -1 : 0; });
+          if (limit) items = items.slice(0, limit);
+          if (!items.length) { list.innerHTML = '<p class="empty">' + emptyMsg + '</p>'; return; }
+          list.innerHTML = items.map(card).join('');
+        }).catch(function () { list.innerHTML = '<p class="empty">' + emptyMsg + '</p>'; });
+      }
+      load(2, 'No approved reports yet. Be the first.');
     })();
     </script>
 </body>
