@@ -17,7 +17,7 @@
       .case-file { background: rgba(9,0,64,.75); border:2px solid #B13BFF; box-shadow:0 0 18px rgba(177,59,255,.45); border-radius:6px; padding:1.25rem; }
       .case-file label, .case-file legend { display:block; font-weight:bold; margin:.9rem 0 .35rem; font-size:1rem; float:none; }
       .case-file .req { color:#ff5fa2; }
-      .case-file input[type=text], .case-file input[type=email], .case-file input[type=datetime-local], .case-file select, .case-file textarea {
+      .case-file input[type=text], .case-file input[type=email], .case-file input[type=date], .case-file input[type=time], .case-file select, .case-file textarea {
         width:100%; padding:.65rem .7rem; font-size:16px; font-family:inherit; color:#FFCC00; background:#120052; border:1px solid #7d3cff; border-radius:4px; }
       .case-file textarea { min-height:8rem; resize:vertical; }
       .case-file input:focus, .case-file select:focus, .case-file textarea:focus { outline:none; box-shadow:0 0 8px 2px #B13BFF; }
@@ -113,17 +113,19 @@
             </select>
             <label for="f-city">City or town <span class="req">*</span></label>
             <input type="text" id="f-city" data-q="city" required autocomplete="address-level2">
-            <label for="f-when">Date and time of sighting <span class="req">*</span></label>
-            <input type="datetime-local" id="f-when" required>
-            <input type="hidden" data-q="date_year"><input type="hidden" data-q="date_month"><input type="hidden" data-q="date_day"><input type="hidden" data-q="date_hour"><input type="hidden" data-q="date_minute">
+            <label for="f-date">Date of sighting</label>
+            <input type="date" id="f-date">
+            <label for="f-time">Time of sighting</label>
+            <input type="time" id="f-time">
+            <input type="hidden" data-q="date_year" disabled><input type="hidden" data-q="date_month" disabled><input type="hidden" data-q="date_day" disabled><input type="hidden" data-q="time_hour" disabled><input type="hidden" data-q="time_minute" disabled>
             <label for="f-what">What did you see? <span class="req">*</span></label>
             <textarea id="f-what" data-q="what" required placeholder="Shape, size, sounds, smells, how long it lasted..."></textarea>
             <label for="f-email">Email for follow-up</label>
             <input type="email" id="f-email" data-q="email" autocomplete="email">
             <fieldset>
               <legend>Can we share your report on blurryreport.com? <span class="req">*</span></legend>
-              <label class="choice"><input type="radio" data-q="share" name="share_tmp" value="Yes, share it" required> Yes, share it</label>
-              <label class="choice"><input type="radio" data-q="share" name="share_tmp" value="No, keep it private"> No, keep it private</label>
+              <label class="choice"><input type="radio" data-q="share" name="share_tmp" value="Yes" required> Yes, share it</label>
+              <label class="choice"><input type="radio" data-q="share" name="share_tmp" value="No"> No, keep it private</label>
             </fieldset>
             <button type="submit" class="submit-btn">FILE REPORT</button>
             <p class="form-msg" id="form-msg" role="alert"></p>
@@ -160,15 +162,15 @@
     (function () {
       // Google Form entry IDs. Update here if the form's questions change.
       var FIELDS = {
-        name: "entry.NAME_ID", state: "entry.STATE_ID", city: "entry.CITY_ID",
-        date: "entry.DATE_ID", what: "entry.WHAT_ID", email: "entry.EMAIL_ID", share: "entry.SHARE_ID"
+        name: "entry.1419029098", state: "entry.52026398", city: "entry.1387014173",
+        date: "entry.868486628", time: "entry.1962005567", what: "entry.1712799879",
+        email: "entry.495829717", share: "entry.1878451153"
       };
       var form = document.getElementById('sighting-form'), msg = document.getElementById('form-msg');
       var btn = form.querySelector('.submit-btn'), iframe = document.getElementById('hidden-submit');
-      var configured = !Object.keys(FIELDS).some(function (k) { return /_ID$/.test(FIELDS[k]); });
       form.querySelectorAll('[data-q]').forEach(function (el) {
-        var q = el.getAttribute('data-q'), m = q.match(/^date_(\w+)$/);
-        el.name = m ? FIELDS.date + '_' + m[1] : FIELDS[q];
+        var q = el.getAttribute('data-q'), m = q.match(/^(date|time)_(\w+)$/);
+        el.name = m ? FIELDS[m[1]] + '_' + m[2] : FIELDS[q];
       });
       var submitted = false;
       iframe.addEventListener('load', function () {
@@ -178,13 +180,16 @@
       form.addEventListener('submit', function (e) {
         msg.textContent = '';
         if (document.getElementById('hp-website').value) { e.preventDefault(); return; }
-        if (!configured) { e.preventDefault(); msg.textContent = 'The field desk is still wiring this form. Please use the Google Forms link below.'; return; }
         if (!form.checkValidity()) { e.preventDefault(); form.reportValidity(); msg.textContent = 'Please fill in all required fields.'; return; }
-        var v = document.getElementById('f-when').value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
-        if (!v) { e.preventDefault(); msg.textContent = 'Please enter the date and time.'; return; }
-        ['year','month','day','hour','minute'].forEach(function (p, i) {
-          form.querySelector('[data-q="date_' + p + '"]').value = String(parseInt(v[i + 1], 10));
-        });
+        // Date and time are optional: hidden parts stay disabled (not sent) when empty.
+        function fill(prefix, parts, match) {
+          parts.forEach(function (p, i) {
+            var el = form.querySelector('[data-q="' + prefix + '_' + p + '"]');
+            el.disabled = !match; el.value = match ? String(parseInt(match[i + 1], 10)) : '';
+          });
+        }
+        fill('date', ['year','month','day'], document.getElementById('f-date').value.match(/^(\d{4})-(\d{2})-(\d{2})$/));
+        fill('time', ['hour','minute'], document.getElementById('f-time').value.match(/^(\d{2}):(\d{2})/));
         submitted = true; btn.disabled = true; btn.textContent = 'TRANSMITTING...';
       });
       // Recent Field Reports
