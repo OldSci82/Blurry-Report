@@ -64,7 +64,8 @@
           <form id="sighting-form" action="https://docs.google.com/forms/d/e/1FAIpQLSeTkJEUO1BRYoRkr1AmvXPoqlaBjrQzAD74aZ5dK41680vVZQ/formResponse" method="POST" target="hidden-submit" novalidate>
             <div class="hp" aria-hidden="true">
               <label for="hp-website">Leave this empty</label>
-              <input type="text" id="hp-website" name="hp_website" tabindex="-1" autocomplete="off">
+              <input type="text" id="hp-website" tabindex="-1" autocomplete="off">
+              <input type="hidden" name="fvv" value="1"><input type="hidden" name="pageHistory" value="0">
             </div>
             <label for="f-name">Your name <span class="req">*</span></label>
             <input type="text" id="f-name" data-q="name" required autocomplete="name">
@@ -221,9 +222,15 @@
       countrySel.addEventListener('change', syncCountry); syncCountry();
       var yearSel = document.getElementById('f-year');
       for (var yy = new Date().getFullYear(); yy >= 1950; yy--) { var o = document.createElement('option'); o.value = o.textContent = yy; yearSel.appendChild(o); }
-      var submitted = false;
+      var submitted = false, failTimer = null;
+      function fail() {
+        submitted = false; btn.disabled = false; btn.textContent = btnLabel;
+        msg.textContent = 'Sorry, your report could not be sent. Please check your connection and try again.';
+      }
+      var btnLabel = btn.textContent;
       iframe.addEventListener('load', function () {
         if (!submitted) return;
+        submitted = false; clearTimeout(failTimer);
         form.hidden = true; var t = document.getElementById('thanks'); t.hidden = false; t.focus();
       });
       form.addEventListener('submit', function (e) {
@@ -252,6 +259,8 @@
         if (h) { h24 = parseInt(h, 10) % 12; if (ap === 'PM') h24 += 12; if (!mi) mi = '0'; }
         fill('time', ['hour','minute'], h24 !== null ? [null, String(h24), mi] : null);
         submitted = true; btn.disabled = true; btn.textContent = 'TRANSMITTING...';
+        clearTimeout(failTimer); failTimer = setTimeout(function () { if (submitted) fail(); }, 20000);
+        if (!navigator.onLine) { e.preventDefault(); fail(); }
       });
       // Field Reports teaser (latest 2)
       function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
