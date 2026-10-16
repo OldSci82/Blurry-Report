@@ -97,8 +97,10 @@
         var first = String(r.name || '').trim().split(/\s+/)[0] || 'Anonymous';
         var where = [r.city, r.state].filter(Boolean).join(', ');
         var m = safeUrl(r.media);
+        var v = /^https:\/\/(x|twitter)\.com\/TheBlurryReport\//i.test(r.video||'') ? safeUrl(r.video) : '';
         return '<article class="report-card"><div class="meta">' + esc(first) + (where ? ' &middot; ' + esc(where) : '') + (when(r) ? ' &middot; ' + esc(when(r)) : '') + '</div><p>' + esc(r.description) + '</p>' +
-          (m ? '<a class="media-link" href="' + esc(m) + '" target="_blank" rel="noopener nofollow ugc">View photo/video (external link)</a>' : '') + '</article>';
+          (m ? '<a class="media-link" href="' + esc(m) + '" target="_blank" rel="noopener nofollow ugc">View photo/video (external link)</a>' : '') +
+          (v ? '<a class="media-link" href="' + esc(v) + '" target="_blank" rel="noopener">Watch the Blurry Report video on X</a>' : '') + '</article>';
       }
       function load(limit, emptyMsg) {
         var list = document.getElementById('report-list');
