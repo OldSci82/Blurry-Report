@@ -1,0 +1,9 @@
+# The Blurry Report — https://blurryreport.com
+# All crawlers welcome. Keep it blurry.
+User-agent: *
+# Build/automation scripts, not pages
+Disallow: /scripts/
+Disallow: /package.json
+Disallow: /package-lock.json
+
+Sitemap: https://blurryreport.com/sitemap.xml
