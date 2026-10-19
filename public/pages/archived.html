@@ -25,16 +25,17 @@
     <main class="archived">
         <div class="content">
             <figure class="content-img-container">
-                <img
-                    src="../images/BFpi11.webp"
-                    srcset="../images/BFpi11-800.webp 800w, ../images/BFpi11.webp 1024w"
-                    sizes="(max-width: 800px) 100vw, 800px"
-                    width="1024"
-                    height="1024"
-                    fetchpriority="high"
-                    alt="Bigfoot silhouette — retired field desk"
-                    class="content-img"
-                />
+                <picture style="display:contents">
+                    <source type="image/webp" srcset="../images/BFpi11-800.webp 800w, ../images/BFpi11.webp 1024w" sizes="(max-width: 800px) 100vw, 800px">
+                    <img
+                        src="../images/BFpi11.png"
+                        width="1024"
+                        height="1024"
+                        fetchpriority="high"
+                        alt="Bigfoot silhouette — retired field desk"
+                        class="content-img"
+                    />
+                </picture>
                 <figcaption class="content-caption">
                     THIS DESK HAS BEEN RETIRED
                 </figcaption>

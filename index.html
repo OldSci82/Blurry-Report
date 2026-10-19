@@ -75,16 +75,17 @@
       </header>
       <main class="homePage">
         <figure class="homePic-container">
-          <img
-            class="homePic"
-            src="./public/images/BFbg1.webp"
-            srcset="./public/images/BFbg1-800.webp 800w, ./public/images/BFbg1.webp 1600w"
-            sizes="(max-width: 800px) 100vw, 800px"
-            width="1600"
-            height="914"
-            fetchpriority="high"
-            alt="Bigfoot silhouette walking past a sunset"
-          />
+          <picture style="display:contents">
+              <source type="image/webp" srcset="./public/images/BFbg1-800.webp 800w, ./public/images/BFbg1.webp 1600w" sizes="(max-width: 800px) 100vw, 800px">
+              <img
+                class="homePic"
+                src="./public/images/BFbg1.png"
+                width="1600"
+                height="914"
+                fetchpriority="high"
+                alt="Bigfoot silhouette walking past a sunset"
+              />
+          </picture>
           <figcaption class="tagLine">
             A sight that brings the blurry into focus...
           </figcaption>

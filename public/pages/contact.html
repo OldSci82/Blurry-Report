@@ -66,16 +66,17 @@
     <main class="contact">
         <div class="content">
             <figure class="content-img-container">
-                <img
-                    src="../images/BFpi17.webp"
-                    srcset="../images/BFpi17-800.webp 800w, ../images/BFpi17.webp 1024w"
-                    sizes="(max-width: 800px) 100vw, 800px"
-                    width="1024"
-                    height="1024"
-                    fetchpriority="high"
-                    alt="Bigfoot-themed art for the Contact page"
-                    class="content-img"
-                />
+                <picture style="display:contents">
+                    <source type="image/webp" srcset="../images/BFpi17-800.webp 800w, ../images/BFpi17.webp 1024w" sizes="(max-width: 800px) 100vw, 800px">
+                    <img
+                        src="../images/BFpi17.png"
+                        width="1024"
+                        height="1024"
+                        fetchpriority="high"
+                        alt="Bigfoot-themed art for the Contact page"
+                        class="content-img"
+                    />
+                </picture>
                 <figcaption class="content-caption">
                     FIELD LINE OPEN
                 </figcaption>

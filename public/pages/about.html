@@ -69,16 +69,17 @@
     <main class="about">
         <div class="content">
             <figure class="content-img-container">
-                <img
-                    src="../images/BFpi1.webp"
-                    srcset="../images/BFpi1-800.webp 800w, ../images/BFpi1.webp 1024w"
-                    sizes="(max-width: 800px) 100vw, 800px"
-                    width="1024"
-                    height="1024"
-                    fetchpriority="high"
-                    alt="Bigfoot-themed art for the About page"
-                    class="content-img"
-                />
+                <picture style="display:contents">
+                    <source type="image/webp" srcset="../images/BFpi1-800.webp 800w, ../images/BFpi1.webp 1024w" sizes="(max-width: 800px) 100vw, 800px">
+                    <img
+                        src="../images/BFpi1.png"
+                        width="1024"
+                        height="1024"
+                        fetchpriority="high"
+                        alt="Bigfoot-themed art for the About page"
+                        class="content-img"
+                    />
+                </picture>
                 <figcaption class="content-caption">
                     FAN-MADE. NON-CANON. KEEP IT BLURRY.
                 </figcaption>
