@@ -225,3 +225,47 @@ footer {
 .btn:focus {
   box-shadow: 0 0 8px 2px #B13BFF !important;
 }
+/* Game status badges */
+.game-badge {
+  margin: 0.5rem auto 0;
+  font-family: 'VCR OSD Mono', 'Courier New', Courier, monospace;
+  text-align: center;
+  line-height: 1.2;
+  max-width: 100%;
+}
+.game-badge--dev {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.35rem 0.7rem;
+  background: #090040;
+  border: 2px solid #FF3EA5;
+  box-shadow: 0 0 6px #FF3EA5, 3px 3px 0 #B13BFF;
+}
+.game-badge__label {
+  color: #FFCC00;
+  font-size: 0.95rem;
+  font-weight: bold;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: 0 0 4px #FF3EA5;
+  animation: game-badge-blink 1.4s steps(2, start) infinite;
+}
+.game-badge__note {
+  color: #ffffff;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+.game-badge--sound {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  color: #FFCC00;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  border: 1px dashed rgba(255, 204, 0, 0.6);
+  border-radius: 3px;
+  opacity: 0.85;
+}
+@keyframes game-badge-blink { to { opacity: 0.55; } }
+@media (prefers-reduced-motion: reduce) { .game-badge__label { animation: none; } }
