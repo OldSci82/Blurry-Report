@@ -1,0 +1,29 @@
+{
+  "updated": "2026-11-21",
+  "articles": [
+    {
+      "id": "2026-11-20",
+      "title": "They Asked If He Wanted Fighters",
+      "date": "2026-11-20",
+      "display_date": "Nov 20, 2026",
+      "week": "Nov 16 to 20, 2026",
+      "teaser": "This week the strongest files were almost all official. A Japan Air Lines captain over Alaska was asked if he wanted fighters scrambled, and he said no. A National Guard pilot over Fargo dove to keep a light from hitting him. Army radar on the Jersey Shore lost a target doing about 700 miles an hour, and 25 minutes later two Air Force pilots were diving after a silver disc.",
+      "cover": "../images/articles/2026-11-20.jpg",
+      "cover_alt": "A still from this week's Hudson Valley package: a V of white, red, and green lights hanging low over a misty reservoir at night, with the lights reflected in the water and dark wooded hills behind them.",
+      "article_url": "https://x.com/TheBlurryReport/article/2123938917237866998",
+      "share_url": "https://x.com/TheBlurryReport/status/2123939383963185517"
+    },
+    {
+      "id": "2026-11-13",
+      "title": "The Lights That Knew They Were Watching",
+      "date": "2026-11-13",
+      "display_date": "Nov 13, 2026",
+      "week": "Nov 9 to 13, 2026",
+      "teaser": "This week we went from a future president's signed UFO report to a dry creek bed in East Texas, with a vanished Air Force jet and a locked cell on Alcatraz in between. Some of these cases are only days old. Some have been sitting in official files for decades. All of them left somebody staring at the sky, or the trees, or a steel door, trying to decide what they had just seen.",
+      "cover": "../images/articles/2026-11-13.jpg",
+      "cover_alt": "A still from this week's Kirksville, Missouri package: a two-lane road under a star-filled sky, with a single farmhouse lit on the right.",
+      "article_url": "https://x.com/TheBlurryReport/article/2121393249721987103",
+      "share_url": ""
+    }
+  ]
+}

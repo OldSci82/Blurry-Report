@@ -1,0 +1,148 @@
+/* Case File Articles page: sits on top of about.css */
+
+.articles {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2.75rem;
+}
+
+.articles h2 {
+  text-align: center;
+  font-size: clamp(1.4rem, 4.5vw, 2rem);
+  text-shadow: 0 0 8px #B13BFF;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+
+.articles .lede {
+  text-align: center;
+  line-height: 1.5;
+  margin: 0 auto 1.6rem;
+  max-width: 36rem;
+  font-size: clamp(0.95rem, 2.4vw, 1.05rem);
+}
+
+.articles a {
+  color: burlywood;
+}
+
+.article-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+.article-card {
+  background: rgba(9, 0, 64, 0.75);
+  border: 2px solid #B13BFF;
+  box-shadow: 0 0 18px rgba(177, 59, 255, 0.45);
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.article-card .cover-wrap {
+  display: block;
+  aspect-ratio: 16 / 9;
+  background: #120052;
+  overflow: hidden;
+}
+
+.article-card .cover-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: contrast(1.08) brightness(0.95);
+}
+
+.article-card .body {
+  padding: 1rem 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.article-card .meta {
+  font-size: 0.85rem;
+  color: burlywood;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.article-card h3 {
+  font-size: clamp(1.15rem, 3.6vw, 1.45rem);
+  line-height: 1.25;
+  text-shadow: 0 0 8px #B13BFF;
+  letter-spacing: 0.03em;
+}
+
+.article-card h3 a {
+  color: #FFCC00;
+  text-decoration: none;
+}
+
+.article-card h3 a:hover,
+.article-card h3 a:focus {
+  color: #FFCC00;
+  text-shadow: 0 0 12px #B13BFF;
+}
+
+
+.article-card .teaser {
+  line-height: 1.5;
+  font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+  user-select: text;
+  cursor: text;
+}
+
+.article-card .cta {
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: 0.35rem;
+  padding: 0.75rem 1.3rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  color: #090040 !important;
+  background: #FFCC00;
+  border-radius: 4px;
+  box-shadow: 0 0 14px #B13BFF;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.article-card .cta:hover,
+.article-card .cta:focus {
+  color: #090040 !important;
+  box-shadow: 0 0 8px 2px #B13BFF;
+}
+
+.empty {
+  text-align: center;
+  opacity: 0.8;
+  font-style: italic;
+  padding: 1rem 0.5rem;
+}
+
+footer .links {
+  flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .articles {
+    padding: 1.1rem 0.75rem 2.2rem;
+  }
+
+  .article-card .body {
+    padding: 0.9rem 0.85rem 1.05rem;
+  }
+
+  .article-card .cta {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+}
