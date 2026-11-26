@@ -20,6 +20,15 @@
  *   PUBLISHED_DIR=/other/path node scripts/build-case-pages.js
  *
  * Exit code is non-zero only on a hard failure; a single bad folder is skipped with a warning.
+ *
+ * Approved-but-not-yet-posted items ("pending", written by tools/approve_pages.py at approval time):
+ *   scripts/pending-cases.json   [{slug,queue,type,title,location,published_at,post,media}] get a page BEFORE the X post,
+ *                                so caption links resolve. A published post with the same queue path (meta.queue) or the
+ *                                same slug on the same date supersedes the pending entry; if its slug differs, the pending
+ *                                slug becomes a redirect alias and locked aliases follow the published slug.
+ *   scripts/alias-locks.json     {alias: slug}, aliases already used in captions. They never change once locked.
+ *   node scripts/build-case-pages.js --plan items.json   read-only: print slug/alias that each queue item would get
+ *   node scripts/build-case-pages.js --prune             also tidy the two files above (drop superseded/stale entries)
  */
 import fs from "fs";
 import path from "path";
@@ -35,6 +44,19 @@ const OVERRIDES = JSON.parse(fs.readFileSync(path.join(__dirname, "case-aliases.
 const FONT_BOLD = process.env.CASE_FONT || "/usr/share/fonts/truetype/sand-box/google/Oswald/Oswald-VariableFont_wght.ttf";
 const FONT_BRAND = process.env.CASE_BRAND_FONT || "/usr/share/fonts/truetype/sand-box/google/Orbitron/Orbitron-VariableFont_wght.ttf";
 const IN_SCOPE = new Set(["case", "haunted"]);
+const ARGV = process.argv.slice(2);
+const PRUNE = ARGV.includes("--prune");
+const PLAN_FILE = ARGV.includes("--plan") ? ARGV[ARGV.indexOf("--plan") + 1] : null;
+const PENDING_PATH = path.join(__dirname, "pending-cases.json");
+const LOCKS_PATH = path.join(__dirname, "alias-locks.json");
+const readJson = (p, d) => { try { return JSON.parse(fs.readFileSync(p, "utf8")); } catch { return d; } };
+const normQ = (q) => String(q || "").replace(/^\/?workspace\/blurry-report\//, "").replace(/^\.\//, "").replace(/^\/+/, "");
+const queueDate = (q) => (normQ(q).match(/(\d{4}-\d{2}-\d{2})/) || [])[1] || "";
+const STALE_PENDING_MS = 3 * 86400_000;
+const LOCKS = readJson(LOCKS_PATH, {});
+const REMAP = {};       // pending slug -> published slug (the real post was recorded under another slug)
+const SUPERSEDED = [];  // pending entries replaced by published posts
+const STALE = [];       // pending entries that never got posted
 const FOLDER_RE = /^(\d{4}-\d{2}-\d{2})-(\d{6})-(.+)$/;
 
 const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -69,7 +91,7 @@ function describe(paras, max = 200) {
   return stop > 80 ? cut.slice(0, stop + 1) : cut.replace(/\s+\S*$/, "") + "…";
 }
 
-function loadCases() {
+function loadCases(extra = []) {
   const index = readJsonl(path.join(PUBLISHED, "index.jsonl"));
   const urlByDir = new Map();
   for (const r of index) {
@@ -100,6 +122,7 @@ function loadCases() {
         location: (meta.location || "").trim(),
         published_at: meta.published_at || `${fm[1]}T00:00:00-05:00`,
         x_url: meta.url || urlByDir.get(name) || urlByDir.get("slug:" + slug) || null,
+        queue: meta.queue || null,
         paras, sources, still, video,
       });
     } catch (e) {
@@ -113,6 +136,26 @@ function loadCases() {
     if (seen.has(s)) s = `${c.slug}-${c.folder.slice(0, 4)}`;
     if (seen.has(s)) s = `${c.slug}-${c.folder.slice(0, 10).replace(/-/g, "")}`;
     c.slug = s; seen.add(s);
+  }
+  // Pending (approved, not yet posted) items get a page now so caption links resolve before the post goes out.
+  for (const p of [...readJson(PENDING_PATH, []), ...extra]) {
+    if (!p || !p.slug || !p.queue || !IN_SCOPE.has(p.type)) continue;
+    const pub = cases.find((c) => !c.pending && ((c.queue && normQ(c.queue) === normQ(p.queue)) || (c.slug === p.slug && c.folder.slice(0, 10) === queueDate(p.queue))));
+    if (pub) { SUPERSEDED.push(p); if (pub.slug !== p.slug) REMAP[p.slug] = pub.slug; continue; }
+    if (!p.proposal && Date.now() - new Date(p.published_at).getTime() > STALE_PENDING_MS) { STALE.push(p); continue; }
+    let slug = slugify(p.slug);
+    if (seen.has(slug)) slug = `${slug}-${String(p.published_at).slice(0, 4)}`;
+    if (seen.has(slug)) slug = `${slug}-${String(p.published_at).slice(0, 10).replace(/-/g, "")}`;
+    if (slug !== p.slug) REMAP[p.slug] = slug;
+    seen.add(slug);
+    const { paras, sources } = parsePost(p.post || "");
+    const media = p.media && fs.existsSync(p.media) ? p.media : null;
+    cases.push({
+      slug, type: p.type, folder: `pending-${normQ(p.queue)}`, dir: media ? path.dirname(media) : null,
+      title: String(p.title || slug).trim(), location: String(p.location || "").trim(),
+      published_at: p.published_at, x_url: null, queue: p.queue, pending: true,
+      paras, sources, still: undefined, video: media ? path.basename(media) : undefined,
+    });
   }
   return cases;
 }
@@ -142,7 +185,8 @@ function buildAliases(cases) {
   const yearOf = (c) => (`${c.title} ${c.location}`.match(/\b(1[89]\d\d|20[0-2]\d)\b/) || c.slug.match(/\b(1[89]\d\d|20[0-2]\d)\b/) || [])[1] || null;
   const aliases = {};
   const taken = new Set(slugs);
-  const claim = (a, slug) => { if (!a || a === slug || taken.has(a)) return false; aliases[a] = slug; taken.add(a); return true; };
+  const lockOwner = (a) => (LOCKS[a] ? (REMAP[LOCKS[a]] || LOCKS[a]) : null);
+  const claim = (a, slug) => { if (!a || a === slug || taken.has(a)) return false; const o = lockOwner(a); if (o && o !== slug) return false; aliases[a] = slug; taken.add(a); return true; };
   const placeOf = (c, name) => [...words(c.location), ...words(c.slug)].find((t) => ok(t) && t !== name && !name.includes(t));
   const left = [];
   for (const c of cases) {
@@ -167,7 +211,9 @@ function buildAliases(cases) {
     if (w2 && y) claim(`${w2}-${y}`, c.slug);
   }
   for (const b of OVERRIDES.block || []) delete aliases[b];
-  for (const [a, s] of Object.entries(OVERRIDES.aliases || {})) if (slugs.has(s) && !slugs.has(a)) aliases[a] = s;
+  for (const [a, s0] of Object.entries(LOCKS)) { const s = REMAP[s0] || s0; if (slugs.has(s) && !slugs.has(a)) aliases[a] = s; }
+  for (const [a, s0] of Object.entries(OVERRIDES.aliases || {})) { const s = REMAP[s0] || s0; if (slugs.has(s) && !slugs.has(a)) aliases[a] = s; }
+  for (const [old, now] of Object.entries(REMAP)) if (slugs.has(now) && !slugs.has(old) && !aliases[old]) aliases[old] = now;
   return Object.fromEntries(Object.entries(aliases).sort());
 }
 
@@ -367,8 +413,50 @@ function updateSitemap(cases) {
   return writeIfChanged(p, xml);
 }
 
+function plan(file) {
+  const items = JSON.parse(fs.readFileSync(file, "utf8"));
+  const cases = loadCases(items.filter((i) => i && i.slug && i.queue).map((i) => ({ ...i, proposal: true })));
+  const aliases = buildAliases(cases);
+  const slugs = new Set(cases.map((c) => c.slug));
+  const out = {};
+  for (const it of items) {
+    const c = cases.find((x) => x.queue && normQ(x.queue) === normQ(it.queue));
+    if (!c) { out[it.key] = { status: "none", slug: null, alias: null, note: "not found" }; continue; }
+    const mine = Object.entries(aliases).filter(([, s]) => s === c.slug).map(([a]) => a).sort((a, b) => a.length - b.length || a.localeCompare(b));
+    let alias = mine[0] || null, note = "";
+    const hint = it.alias_hint && slugify(it.alias_hint);
+    if (hint) {
+      const owner = aliases[hint] || (LOCKS[hint] ? (REMAP[LOCKS[hint]] || LOCKS[hint]) : null);
+      if (!slugs.has(hint) && (!owner || owner === c.slug)) { alias = hint; note = "alias hint used"; } else note = `alias hint ${hint} unavailable`;
+    }
+    out[it.key] = { status: c.pending ? "pending" : "published", slug: c.slug, alias, aliases: mine, note };
+  }
+  process.stdout.write(JSON.stringify({ items: out, cases: cases.length, pending: cases.filter((c) => c.pending).length }, null, 1) + "\n");
+}
+
+function prune() {
+  const pend = readJson(PENDING_PATH, []);
+  const gone = new Set([...SUPERSEDED, ...STALE].map((p) => p.queue));
+  const keep = pend.filter((p) => !gone.has(p.queue));
+  if (keep.length !== pend.length) writeIfChanged(PENDING_PATH, JSON.stringify(keep, null, 1) + "\n");
+  let changed = false;
+  for (const [a, s] of Object.entries(LOCKS)) if (REMAP[s] && REMAP[s] !== s) { LOCKS[a] = REMAP[s]; changed = true; }
+  if (changed) writeIfChanged(LOCKS_PATH, JSON.stringify(LOCKS, null, 1) + "\n");
+  // a pending page whose real post got another slug: drop the orphan page + image (the old slug stays as a redirect alias)
+  let orphans = 0;
+  for (const sp of SUPERSEDED) {
+    const old = sp.slug, now = REMAP[old];
+    if (!now || old === now) continue;
+    const dir = path.join(REPO, "c", old), img = path.join(REPO, "public", "images", "c", `${old}.jpg`);
+    if (fs.existsSync(dir)) { fs.rmSync(dir, { recursive: true, force: true }); orphans++; }
+    if (fs.existsSync(img)) fs.rmSync(img, { force: true });
+  }
+  console.log(`prune: ${pend.length - keep.length} pending entr${pend.length - keep.length === 1 ? "y" : "ies"} dropped (${SUPERSEDED.length} superseded by posts, ${STALE.length} stale)${changed ? ", alias locks remapped" : ""}${orphans ? `, ${orphans} orphan page dir(s) removed` : ""}`);
+}
+
 function main() {
   if (!fs.existsSync(PUBLISHED)) { console.error(`published dir missing: ${PUBLISHED}`); process.exit(1); }
+  if (PLAN_FILE) { plan(PLAN_FILE); return; }
   const cases = loadCases();
   const aliases = buildAliases(cases);
   let pages = 0, images = 0, imgFail = 0;
@@ -382,7 +470,9 @@ function main() {
   const index = { cases: Object.fromEntries(cases.map((c) => [c.slug, { title: c.title, type: c.type, location: c.location, published_at: c.published_at }])), aliases };
   writeIfChanged(path.join(REPO, "c", "cases.json"), JSON.stringify(index, null, 1) + "\n");
   updateSitemap(cases);
-  console.log(`case pages: ${cases.length} in scope, ${pages} written, ${images} images made${imgFail ? `, ${imgFail} image failures (fallback image used)` : ""}, ${Object.keys(aliases).length} aliases`);
+  const npend = cases.filter((c) => c.pending).length;
+  console.log(`case pages: ${cases.length} in scope, ${pages} written, ${images} images made${imgFail ? `, ${imgFail} image failures (fallback image used)` : ""}, ${Object.keys(aliases).length} aliases${npend ? `, ${npend} pending (approved, not yet posted)` : ""}`);
+  if (PRUNE) prune();
 }
 
 main();
