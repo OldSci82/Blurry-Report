@@ -4,5 +4,9 @@
   "assets": {
     "directory": ".",
     "not_found_handling": "404-page"
-  }
+  },
+  "routes": [
+    { "pattern": "blurryreport.com", "custom_domain": true },
+    { "pattern": "www.blurryreport.com", "custom_domain": true }
+  ]
 }
