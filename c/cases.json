@@ -1331,6 +1331,12 @@
    "type": "case",
    "location": "Great Falls, Montana",
    "published_at": "2026-11-26T09:45:27-05:00"
+  },
+  "boise-id-the-gallows-room": {
+   "title": "The Gallows Room",
+   "type": "haunted",
+   "location": "Boise, ID",
+   "published_at": "2026-11-26T18:36:17-05:00"
   }
  },
  "aliases": {
@@ -1411,6 +1417,7 @@
   "franklin-cleveland": "franklin-castle",
   "freeport": "freeport-me-candy-shop-attic",
   "fresno": "fresno-nightcrawler",
+  "gallows": "boise-id-the-gallows-room",
   "galveston": "galveston-tx-the-bride-in-room-501",
   "garrettsville": "garrettsville-ohio-flap",
   "gary": "gary-tx-nawac-creek-bed",
