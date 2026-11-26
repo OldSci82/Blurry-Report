@@ -1,9 +1,8 @@
 {
-  "name": "blurryreport",
+  "name": "blurry-report",
   "compatibility_date": "2026-11-01",
   "assets": {
     "directory": ".",
-    "not_found_handling": "404-page",
-    "html_handling": "none"
+    "not_found_handling": "404-page"
   }
 }
