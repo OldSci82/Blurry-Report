@@ -1,0 +1,1558 @@
+{
+ "cases": {
+  "government-meadows": {
+   "title": "Government Meadows, WA",
+   "type": "case",
+   "location": "",
+   "published_at": "2026-09-21T08:30:00-04:00"
+  },
+  "prim-arkansas": {
+   "title": "Prim, AR",
+   "type": "case",
+   "location": "",
+   "published_at": "2026-09-21T08:45:00-04:00"
+  },
+  "sturgis-boulder-canyon": {
+   "title": "Boulder Canyon / Sturgis, SD",
+   "type": "case",
+   "location": "",
+   "published_at": "2026-09-21T09:00:00-04:00"
+  },
+  "point-pleasant-mothman": {
+   "title": "Point Pleasant, WV — Mothman",
+   "type": "case",
+   "location": "",
+   "published_at": "2026-09-21T10:00:00-04:00"
+  },
+  "bulwagga-bay-champ": {
+   "title": "Bulwagga Bay / Port Henry, NY — Champ",
+   "type": "case",
+   "location": "",
+   "published_at": "2026-09-21T10:15:00-04:00"
+  },
+  "reef-station-troy21": {
+   "title": "Reef Station / eastern California — TROY21",
+   "type": "case",
+   "location": "",
+   "published_at": "2026-09-21T11:00:00-04:00"
+  },
+  "branford-connecticut-uap": {
+   "title": "Branford, CT — silent silver oval",
+   "type": "case",
+   "location": "",
+   "published_at": "2026-09-21T11:30:00-04:00"
+  },
+  "wind-river-carson": {
+   "title": "Wind River Hwy / Carson, WA",
+   "type": "case",
+   "location": "",
+   "published_at": "2026-09-22T07:00:00-04:00"
+  },
+  "washburn-wi": {
+   "title": "Washburn, WI",
+   "type": "case",
+   "location": "",
+   "published_at": "2026-09-22T07:30:00-04:00"
+  },
+  "slumgullion-pass": {
+   "title": "Slumgullion Pass / Lake City, CO",
+   "type": "case",
+   "location": "",
+   "published_at": "2026-09-22T08:00:00-04:00"
+  },
+  "brookhaven-uap": {
+   "title": "Brookhaven, NY — cube/sphere UAP",
+   "type": "case",
+   "location": "",
+   "published_at": "2026-09-22T08:30:00-04:00"
+  },
+  "dover-demon": {
+   "title": "Dover, MA — Dover Demon",
+   "type": "case",
+   "location": "",
+   "published_at": "2026-09-22T09:00:00-04:00"
+  },
+  "fall-river-borden": {
+   "title": "Fall River, MA — Lizzie Borden House",
+   "type": "case",
+   "location": "",
+   "published_at": "2026-09-22T09:30:00-04:00"
+  },
+  "fresno-nightcrawler": {
+   "title": "Fresno, CA — Nightcrawler",
+   "type": "case",
+   "location": "",
+   "published_at": "2026-09-22T10:00:00-04:00"
+  },
+  "onondaga-pond-figure": {
+   "title": "Pond figure (humanoid)",
+   "type": "case",
+   "location": "Onondaga County NY",
+   "published_at": "2026-09-28T18:29:53-04:00"
+  },
+  "coeur-dalene-rectangle": {
+   "title": "Rectangular UAP",
+   "type": "case",
+   "location": "Coeur d'Alene ID",
+   "published_at": "2026-09-28T19:04:00-04:00"
+  },
+  "ancient-ram-inn-pram": {
+   "title": "Haunting (moving pram, CCTV)",
+   "type": "case",
+   "location": "Ancient Ram Inn, Wotton-under-Edge UK",
+   "published_at": "2026-09-28T19:19:00-04:00"
+  },
+  "lawndale-giant-birds": {
+   "title": "Giant birds (Lawndale thunderbird)",
+   "type": "case",
+   "location": "Lawndale IL (1977)",
+   "published_at": "2026-09-28T19:38:00-04:00"
+  },
+  "socorro-zamora": {
+   "title": "UFO landing (Lonnie Zamora)",
+   "type": "case",
+   "location": "Socorro NM (1964)",
+   "published_at": "2026-09-28T19:40:00-04:00"
+  },
+  "hunt-county-tx": {
+   "title": "Bigfoot",
+   "type": "case",
+   "location": "Hunt County, TX (near Greenville)",
+   "published_at": "2026-09-29T08:01:00-04:00"
+  },
+  "caribou-county-id": {
+   "title": "Triangular UAPs",
+   "type": "case",
+   "location": "Caribou County, ID (near Bench)",
+   "published_at": "2026-09-29T08:54:00-04:00"
+  },
+  "settle-north-yorkshire": {
+   "title": "Haunted flat",
+   "type": "case",
+   "location": "Settle, North Yorkshire, England",
+   "published_at": "2026-09-29T10:00:00-04:00"
+  },
+  "uintah-skinwalker-ranch": {
+   "title": "Skinwalker Ranch (Sherman years)",
+   "type": "case",
+   "location": "Uintah County, UT (near Fort Duchesne)",
+   "published_at": "2026-09-29T11:06:00-04:00"
+  },
+  "huffman-cash-landrum": {
+   "title": "Cash-Landrum incident",
+   "type": "case",
+   "location": "Huffman, TX (northeast of Houston)",
+   "published_at": "2026-09-29T12:21:00-04:00"
+  },
+  "lake-crescent-bigfoot": {
+   "title": "Bigfoot",
+   "type": "case",
+   "location": "Lake Crescent Lodge, Olympic National Park, Clallam County, WA",
+   "published_at": "2026-09-30T07:56:00-04:00"
+  },
+  "chazy-lake-orbs": {
+   "title": "Blue orbs / UAP",
+   "type": "case",
+   "location": "Chazy Lake / Dannemora, NY",
+   "published_at": "2026-09-30T08:55:00-04:00"
+  },
+  "red-lion-inn-poltergeist": {
+   "title": "Poltergeist (flying glass)",
+   "type": "case",
+   "location": "Red Lion Inn, Sturminster Marshall, Dorset, England",
+   "published_at": "2026-09-30T10:04:00-04:00"
+  },
+  "canovanas-chupacabra": {
+   "title": "Chupacabra",
+   "type": "case",
+   "location": "Canóvanas, Puerto Rico",
+   "published_at": "2026-09-30T10:57:00-04:00"
+  },
+  "travis-walton": {
+   "title": "Travis Walton UFO incident",
+   "type": "case",
+   "location": "Apache-Sitgreaves National Forests near Heber and Snowflake, Arizona",
+   "published_at": "2026-09-30T11:56:00-04:00"
+  },
+  "lost-valley-payette": {
+   "title": "Lost Valley Bigfoot",
+   "type": "case",
+   "location": "Lost Valley Reservoir / Payette National Forest, Adams County, ID",
+   "published_at": "2026-10-01T07:58:00-04:00"
+  },
+  "centralia-il-triangle": {
+   "title": "Centralia IL triangle lights",
+   "type": "case",
+   "location": "Centralia, IL / near Scott Air Force Base",
+   "published_at": "2026-10-01T08:55:00-04:00"
+  },
+  "pontefract-black-monk": {
+   "title": "30 East Drive Black Monk",
+   "type": "case",
+   "location": "Pontefract, West Yorkshire, England",
+   "published_at": "2026-10-01T09:54:00-04:00"
+  },
+  "beast-of-gevaudan": {
+   "title": "Beast of Gévaudan",
+   "type": "case",
+   "location": "Gévaudan / Lozère and Haute-Loire, France",
+   "published_at": "2026-10-01T10:58:00-04:00"
+  },
+  "rendlesham-forest": {
+   "title": "Rendlesham Forest incident",
+   "type": "case",
+   "location": "Rendlesham Forest, Suffolk, England / RAF Woodbridge",
+   "published_at": "2026-10-01T11:57:00-04:00"
+  },
+  "edge-of-the-world-sedona": {
+   "title": "Edge of the World / North of Sedona Bigfoot",
+   "type": "case",
+   "location": "Edge of the World trail area north of Sedona, Yavapai County, Arizona",
+   "published_at": "2026-10-02T07:49:00-04:00"
+  },
+  "cedar-mountain-cody": {
+   "title": "Cedar Mountain / Cody WY orbs",
+   "type": "case",
+   "location": "Cody, Wyoming / Cedar Mountain",
+   "published_at": "2026-10-02T08:52:00-04:00"
+  },
+  "chester-castle": {
+   "title": "Chester Castle hooded figure CCTV",
+   "type": "case",
+   "location": "Chester Castle, Cheshire, England",
+   "published_at": "2026-10-02T09:58:00-04:00"
+  },
+  "fletchertown-road-goatman": {
+   "title": "Fletchertown Road / Bowie MD Goatman",
+   "type": "case",
+   "location": "Fletchertown Road near Old Bowie, Prince George's County, Maryland",
+   "published_at": "2026-10-02T10:50:00-04:00"
+  },
+  "phoenix-lights": {
+   "title": "Phoenix Lights / Valley of the Sun",
+   "type": "case",
+   "location": "Phoenix and Valley of the Sun, Arizona (reports Nevada into southern Arizona)",
+   "published_at": "2026-10-02T11:58:00-04:00"
+  },
+  "washita-river-bigfoot": {
+   "title": "Washita River Bigfoot",
+   "type": "case",
+   "location": "Washita River near Silo / NW of Durant, Bryan County, Oklahoma",
+   "published_at": "2026-10-05T07:53:00-04:00"
+  },
+  "haywood-county-lights": {
+   "title": "Haywood County TN lights",
+   "type": "case",
+   "location": "Haywood County, Tennessee, north of Brownsville / toward Halls",
+   "published_at": "2026-10-05T09:16:00-04:00"
+  },
+  "enfield-poltergeist": {
+   "title": "Enfield poltergeist",
+   "type": "case",
+   "location": "284 Green Street, Brimsdown, Enfield, London, England",
+   "published_at": "2026-10-05T10:00:00-04:00"
+  },
+  "fouke-monster": {
+   "title": "Fouke Monster",
+   "type": "case",
+   "location": "Fouke, Miller County, Arkansas",
+   "published_at": "2026-10-05T10:54:00-04:00"
+  },
+  "roswell-incident": {
+   "title": "Roswell incident",
+   "type": "case",
+   "location": "Foster ranch near Corona / Roswell, New Mexico",
+   "published_at": "2026-10-05T11:56:00-04:00"
+  },
+  "skookumchuck-reservoir-bigfoot": {
+   "title": "Skookumchuck Reservoir Bigfoot",
+   "type": "case",
+   "location": "Tenino, Washington",
+   "published_at": "2026-10-06T07:55:57-04:00"
+  },
+  "new-jersey-ufo-sightings": {
+   "title": "New Jersey UFO sightings (NUFORC reports)",
+   "type": "case",
+   "location": "Pleasantville / Ewing / Winslow Twp, New Jersey",
+   "published_at": "2026-10-06T08:54:07-04:00"
+  },
+  "amityville-horror": {
+   "title": "Amityville Horror (112 Ocean Avenue)",
+   "type": "case",
+   "location": "Amityville, New York",
+   "published_at": "2026-10-06T10:01:07-04:00"
+  },
+  "beast-of-busco": {
+   "title": "Beast of Busco (Oscar the giant turtle)",
+   "type": "case",
+   "location": "Fulk Lake / Churubusco, Indiana",
+   "published_at": "2026-10-06T11:02:50-04:00"
+  },
+  "kecksburg-ufo": {
+   "title": "Kecksburg UFO incident",
+   "type": "case",
+   "location": "Kecksburg, Pennsylvania",
+   "published_at": "2026-10-06T11:59:40-04:00"
+  },
+  "lake-norfork-bigfoot-howls": {
+   "title": "Lake Norfork Bigfoot howls",
+   "type": "case",
+   "location": "Diamond Bay, Lake Norfork, Baxter County, Arkansas",
+   "published_at": "2026-10-07T07:47:00-04:00"
+  },
+  "lakewood-vanishing-ufo": {
+   "title": "Lakewood vanishing UFO",
+   "type": "case",
+   "location": "Lakewood, Colorado",
+   "published_at": "2026-10-07T09:01:08-04:00"
+  },
+  "whaley-house-haunting": {
+   "title": "Whaley House haunting",
+   "type": "case",
+   "location": "Old Town San Diego, California",
+   "published_at": "2026-10-07T10:03:00-04:00"
+  },
+  "bladenboro-beast": {
+   "title": "Bladenboro vampire beast",
+   "type": "case",
+   "location": "Bladenboro, Bladen County, North Carolina",
+   "published_at": "2026-10-07T10:57:00-04:00"
+  },
+  "exeter-incident": {
+   "title": "Exeter incident UFO",
+   "type": "case",
+   "location": "Kensington / Exeter, New Hampshire",
+   "published_at": "2026-10-07T11:55:00-04:00"
+  },
+  "patterson-gimlin-bluff-creek": {
+   "title": "Patterson-Gimlin film",
+   "type": "case",
+   "location": "Bluff Creek, Six Rivers NF, Northern CA",
+   "published_at": "2026-10-08T07:47:50-04:00"
+  },
+  "pantex-plant-ufo-amarillo": {
+   "title": "Pantex Plant UFO/drone incident",
+   "type": "case",
+   "location": "Pantex Plant, Amarillo, TX",
+   "published_at": "2026-10-08T08:55:33-04:00"
+  },
+  "stanley-hotel-estes-park": {
+   "title": "Stanley Hotel Room 217 haunting",
+   "type": "case",
+   "location": "Stanley Hotel, Estes Park, CO",
+   "published_at": "2026-10-08T09:59:39-04:00"
+  },
+  "chessie-kent-island": {
+   "title": "Chessie (Frew video)",
+   "type": "case",
+   "location": "Love Point, Kent Island, MD",
+   "published_at": "2026-10-08T14:27:00-04:00"
+  },
+  "cardiff-giant": {
+   "title": "Cardiff Giant hoax",
+   "type": "case",
+   "location": "Cardiff, NY",
+   "published_at": "2026-10-08T14:28:56-04:00"
+  },
+  "ape-canyon": {
+   "title": "Ape Canyon Bigfoot attack",
+   "type": "case",
+   "location": "Ape Canyon, Mount St. Helens, WA",
+   "published_at": "2026-10-09T06:45:45-04:00"
+  },
+  "godman-mantell": {
+   "title": "Mantell UFO incident",
+   "type": "case",
+   "location": "Godman Army Airfield, Fort Knox, KY",
+   "published_at": "2026-10-09T06:47:31-04:00"
+  },
+  "greenbrier-ghost": {
+   "title": "Greenbrier Ghost",
+   "type": "case",
+   "location": "Greenbrier County, WV",
+   "published_at": "2026-10-09T06:49:00-04:00"
+  },
+  "white-river-monster": {
+   "title": "White River Monster",
+   "type": "case",
+   "location": "White River, near Newport, AR",
+   "published_at": "2026-10-09T06:50:30-04:00"
+  },
+  "durupinar-formation": {
+   "title": "Durupinar Formation / Noah's Ark claim",
+   "type": "case",
+   "location": "Durupinar Formation, eastern Turkiye",
+   "published_at": "2026-10-09T06:52:00-04:00"
+  },
+  "minnesota-iceman": {
+   "title": "Minnesota Iceman",
+   "type": "case",
+   "location": "Near Winona, MN",
+   "published_at": "2026-10-12T07:53:08-04:00"
+  },
+  "colorado-leo-orb": {
+   "title": "Colorado LEO Orb",
+   "type": "case",
+   "location": "Colorado (town redacted)",
+   "published_at": "2026-10-12T09:01:13-04:00"
+  },
+  "winchester-mystery-house": {
+   "title": "Winchester Mystery House",
+   "type": "case",
+   "location": "San Jose, CA",
+   "published_at": "2026-10-12T10:11:48-04:00"
+  },
+  "altamaha-ha": {
+   "title": "Altamaha-ha",
+   "type": "case",
+   "location": "Darien / Altamaha River, GA",
+   "published_at": "2026-10-12T11:12:00-04:00"
+  },
+  "fatima-miracle-of-the-sun": {
+   "title": "Miracle of the Sun",
+   "type": "case",
+   "location": "Fatima, Portugal",
+   "published_at": "2026-10-12T12:11:42-04:00"
+  },
+  "ohare-airport-ufo": {
+   "title": "O'Hare Airport UFO",
+   "type": "case",
+   "location": "Chicago O'Hare International Airport, IL",
+   "published_at": "2026-10-13T07:52:00-04:00"
+  },
+  "bunny-man": {
+   "title": "Bunny Man",
+   "type": "case",
+   "location": "Burke, Fairfax County, Virginia",
+   "published_at": "2026-10-13T09:04:00-04:00"
+  },
+  "myrtles-plantation": {
+   "title": "Myrtles Plantation",
+   "type": "case",
+   "location": "St. Francisville, Louisiana",
+   "published_at": "2026-10-13T10:06:00-04:00"
+  },
+  "our-lady-of-guadalupe": {
+   "title": "Our Lady of Guadalupe",
+   "type": "case",
+   "location": "Tepeyac, Mexico City",
+   "published_at": "2026-10-13T00:00:00-05:00"
+  },
+  "marfa-lights": {
+   "title": "Marfa Lights",
+   "type": "case",
+   "location": "East of Marfa, Texas",
+   "published_at": "2026-10-13T12:00:45-04:00"
+  },
+  "monroe-county-mothman": {
+   "title": "Monroe County Mothman (coal miner red eyes)",
+   "type": "case",
+   "location": "Monroe County, Ohio",
+   "published_at": "2026-10-14T07:48:00-04:00"
+  },
+  "ste-genevieve-lights": {
+   "title": "Ste. Genevieve lights dogfighting (NUFORC)",
+   "type": "case",
+   "location": "Ste. Genevieve, Missouri",
+   "published_at": "2026-10-14T08:49:53-04:00"
+  },
+  "loretto-chapel-staircase": {
+   "title": "Loretto Chapel miraculous staircase",
+   "type": "case",
+   "location": "Santa Fe, New Mexico",
+   "published_at": "2026-10-14T09:49:01-04:00"
+  },
+  "waverly-hills-sanatorium": {
+   "title": "Waverly Hills Sanatorium",
+   "type": "case",
+   "location": "Louisville, Kentucky",
+   "published_at": "2026-10-14T10:49:26-04:00"
+  },
+  "flathead-lake-monster": {
+   "title": "Flathead Lake Monster (Flessie)",
+   "type": "case",
+   "location": "Flathead Lake, Montana",
+   "published_at": "2026-10-14T11:56:33-04:00"
+  },
+  "celo-nc-orange-lights": {
+   "title": "Celo NC orange lights UFO (disputed Starlink)",
+   "type": "case",
+   "location": "Celo, North Carolina",
+   "published_at": "2026-10-15T07:50:00-04:00"
+  },
+  "sister-lakes-monster": {
+   "title": "Sister Lakes / Dewey Lake Monster (1964)",
+   "type": "case",
+   "location": "Sister Lakes, near Dowagiac, Michigan",
+   "published_at": "2026-10-15T08:54:00-04:00"
+  },
+  "los-lunas-decalogue-stone": {
+   "title": "Los Lunas Decalogue Stone (Mystery Stone)",
+   "type": "case",
+   "location": "Hidden Mountain, Los Lunas, New Mexico",
+   "published_at": "2026-10-15T09:49:00-04:00"
+  },
+  "pepie-lake-pepin-bounty": {
+   "title": "Pepie, Lake Pepin monster $60K bounty (Goran Pesic)",
+   "type": "case",
+   "location": "Lake City, Minnesota",
+   "published_at": "2026-10-15T10:57:22-04:00"
+  },
+  "cedar-bluff-va-lights": {
+   "title": "Cedar Bluff VA star-like light plus 15-20 converging lights (NUFORC 201459)",
+   "type": "case",
+   "location": "Cedar Bluff, Virginia",
+   "published_at": "2026-10-15T11:55:00-04:00"
+  },
+  "villisca-axe-murder-house": {
+   "title": "Haunted: Villisca Axe Murder House (1912)",
+   "type": "haunted",
+   "location": "Villisca, Iowa",
+   "published_at": "2026-10-15T18:25:00-04:00"
+  },
+  "lemp-mansion": {
+   "title": "Haunted: Lemp Mansion (1890)",
+   "type": "haunted",
+   "location": "St. Louis, Missouri",
+   "published_at": "2026-10-15T19:16:00-04:00"
+  },
+  "sonora-ca-bigfoot-yayali": {
+   "title": "Sonora CA Bigfoot / Yayali (Stanislaus NF presentation)",
+   "type": "case",
+   "location": "Sonora, California",
+   "published_at": "2026-10-16T07:49:00-04:00"
+  },
+  "wrightsville-beach-nc-orbs": {
+   "title": "Wrightsville Beach NC orbs / Chris Bledsoe (Metabunk disputed)",
+   "type": "case",
+   "location": "Wrightsville Beach, North Carolina",
+   "published_at": "2026-10-16T08:52:00-04:00"
+  },
+  "independence-mo-paranormal-pursuit": {
+   "title": "Independence MO Paranormal Pursuit passport (Vaile Mansion)",
+   "type": "case",
+   "location": "Independence, Missouri",
+   "published_at": "2026-10-16T09:50:00-04:00"
+  },
+  "edmore-mi-michigan-relics": {
+   "title": "Michigan Relics / Scotford-Soper (Edmore 1890)",
+   "type": "case",
+   "location": "Edmore, Michigan",
+   "published_at": "2026-10-16T10:57:00-04:00"
+  },
+  "jackson-tn-triangle-lights": {
+   "title": "Jackson TN triangle of lights (UFOIndex #2430)",
+   "type": "case",
+   "location": "Jackson, Tennessee",
+   "published_at": "2026-10-16T11:54:34-04:00"
+  },
+  "lalaurie-mansion": {
+   "title": "Delphine LaLaurie mansion (1140 Royal Street, 1834 fire)",
+   "type": "haunted",
+   "location": "New Orleans, Louisiana",
+   "published_at": "2026-10-16T18:18:00-04:00"
+  },
+  "eastern-state-penitentiary": {
+   "title": "Eastern State Penitentiary (Philadelphia, opened 1829)",
+   "type": "haunted",
+   "location": "Philadelphia, Pennsylvania",
+   "published_at": "2026-10-16T19:25:00-04:00"
+  },
+  "california-mo-pulsing-lights": {
+   "title": "Multiple pulsing lights over tree line (wedding at The Factory at Potato Chip)",
+   "type": "case",
+   "location": "California, Missouri",
+   "published_at": "2026-10-19T07:52:00-04:00"
+  },
+  "monroe-la-watson-brake": {
+   "title": "Watson Brake mounds and the Nephilim question",
+   "type": "case",
+   "location": "Monroe, Louisiana",
+   "published_at": "2026-10-19T08:55:00-04:00"
+  },
+  "lakeland-fl-green-swamp": {
+   "title": "Green Swamp whistle / leapfrog vocalizations (NAWAC case)",
+   "type": "case",
+   "location": "Green Swamp near Lakeland, Florida",
+   "published_at": "2026-10-19T09:55:00-04:00"
+  },
+  "st-paul-mn-mounds-theatre": {
+   "title": "Mounds Theatre ghosts (Red, Mary and Jim)",
+   "type": "case",
+   "location": "St. Paul, Minnesota",
+   "published_at": "2026-10-19T10:52:00-04:00"
+  },
+  "broken-arrow-ok-orb-figure": {
+   "title": "Glowing orb and black figure (Nalusa Falaya?)",
+   "type": "case",
+   "location": "Broken Arrow, Oklahoma",
+   "published_at": "2026-10-19T12:07:00-04:00"
+  },
+  "coronado-ca-hotel-del-kate-morgan": {
+   "title": "Hotel del Coronado ghost (Kate Morgan, Room 502)",
+   "type": "haunted",
+   "location": "Coronado, California",
+   "published_at": "2026-10-19T18:24:30-04:00"
+  },
+  "eureka-springs-ar-crescent-hotel": {
+   "title": "Crescent Hotel ghosts (Norman Baker cancer hospital)",
+   "type": "haunted",
+   "location": "Eureka Springs, Arkansas",
+   "published_at": "2026-10-19T19:21:00-04:00"
+  },
+  "wisconsin-dells-wi-rocky-arbor-dogman": {
+   "title": "Dogman near Rocky Arbor State Park (yellow eyes)",
+   "type": "case",
+   "location": "Wisconsin Dells, Wisconsin",
+   "published_at": "2026-10-20T07:50:00-04:00"
+  },
+  "newell-sd-ellsworth-mario-woods": {
+   "title": "Ellsworth AFB missile-field UFO (Mario Woods, November-5)",
+   "type": "case",
+   "location": "Newell, South Dakota",
+   "published_at": "2026-10-20T08:51:50-04:00"
+  },
+  "newburgh-ny-haunted-brewery": {
+   "title": "Newburgh Brewing Company haunting (1867 Washington Iron Works boiler explosion)",
+   "type": "case",
+   "location": "Newburgh, New York",
+   "published_at": "2026-10-20T09:49:00-04:00"
+  },
+  "anaheim-ca-disneyland-1968-time-traveler": {
+   "title": "Disneyland 1968 \"time traveler\" in Tom Eubank's film (New Orleans Square)",
+   "type": "case",
+   "location": "Anaheim, California",
+   "published_at": "2026-10-20T10:50:15-04:00"
+  },
+  "keene-nd-black-triangle": {
+   "title": "Keene ND oil worker sees stacked lights then low humming black triangle (NUFORC)",
+   "type": "case",
+   "location": "Keene, North Dakota",
+   "published_at": "2026-10-20T11:52:00-04:00"
+  },
+  "savannah-ga-sorrel-weed-house-haunted": {
+   "title": "Sorrel-Weed House haunting (Savannah)",
+   "type": "haunted",
+   "location": "Savannah, Georgia",
+   "published_at": "2026-10-20T18:21:13-04:00"
+  },
+  "wilder-ky-bobby-mackeys-haunted": {
+   "title": "Bobby Mackey's Music World haunting (Wilder)",
+   "type": "haunted",
+   "location": "Wilder, Kentucky",
+   "published_at": "2026-10-20T19:20:58-04:00"
+  },
+  "st-anthony-id-dunes-orbs": {
+   "title": "St. Anthony Sand Dunes orb swarm (NUFORC 201418)",
+   "type": "case",
+   "location": "St. Anthony, Idaho",
+   "published_at": "2026-10-21T07:55:00-04:00"
+  },
+  "fort-washakie-wy-ghost-soldier": {
+   "title": "Fort Washakie ghost soldier and Wind River cop stories",
+   "type": "case",
+   "location": "Fort Washakie, Wyoming",
+   "published_at": "2026-10-21T08:51:00-04:00"
+  },
+  "forks-wa-bigfoot": {
+   "title": "Forks paralysis voice and gravel-pit Bigfoot sighting (Sol Duc River)",
+   "type": "case",
+   "location": "Forks, Washington",
+   "published_at": "2026-10-21T09:55:00-04:00"
+  },
+  "kingsport-tn-teardrop-ufo": {
+   "title": "Kingsport teardrop UFO with four escort craft (NUFORC)",
+   "type": "case",
+   "location": "Kingsport, Tennessee",
+   "published_at": "2026-10-21T10:48:00-04:00"
+  },
+  "franklin-ky-octagon-hall": {
+   "title": "Octagon Hall hauntings (Civil War field hospital house)",
+   "type": "case",
+   "location": "Franklin, Kentucky",
+   "published_at": "2026-10-21T11:55:00-04:00"
+  },
+  "lake-lanier-ga-lady-of-the-lake": {
+   "title": "Haunted: Lake Lanier, Lady of the Lake",
+   "type": "haunted",
+   "location": "Lake Lanier, Georgia",
+   "published_at": "2026-10-21T18:26:30-04:00"
+  },
+  "portland-or-nina-shanghai-tunnels": {
+   "title": "Haunted: Portland's Shanghai Tunnels, Nina",
+   "type": "haunted",
+   "location": "Portland, Oregon",
+   "published_at": "2026-10-21T19:18:00-04:00"
+  },
+  "chester-ny-triangle-ufo": {
+   "title": "UFO: Chester triangle over Craigville Road",
+   "type": "case",
+   "location": "Chester, New York",
+   "published_at": "2026-10-22T08:00:00-04:00"
+  },
+  "spokane-hillyard-masonic-temple": {
+   "title": "Haunted: Hillyard Masonic Temple, Spokane",
+   "type": "case",
+   "location": "Spokane, Washington",
+   "published_at": "2026-10-22T08:55:00-04:00"
+  },
+  "juarez-valley-creature": {
+   "title": "Cryptid: Juarez Valley Creature",
+   "type": "case",
+   "location": "Juarez Valley, Chihuahua, Mexico",
+   "published_at": "2026-10-22T09:56:00-04:00"
+  },
+  "bar-harbor-ufo-lights": {
+   "title": "UFO: Bar Harbor lights trailing planes",
+   "type": "case",
+   "location": "Bar Harbor, Maine",
+   "published_at": "2026-10-22T10:53:00-04:00"
+  },
+  "occoquan-ghost-tad": {
+   "title": "Haunting: Occoquan ghost boy Tad",
+   "type": "case",
+   "location": "Occoquan, Virginia",
+   "published_at": "2026-10-22T11:49:08-04:00"
+  },
+  "sloss-furnaces": {
+   "title": "Haunted: Sloss Furnaces",
+   "type": "haunted",
+   "location": "Birmingham, Alabama",
+   "published_at": "2026-10-22T18:18:00-04:00"
+  },
+  "franklin-castle": {
+   "title": "Haunted: Franklin Castle",
+   "type": "haunted",
+   "location": "Cleveland, Ohio",
+   "published_at": "2026-10-22T19:19:00-04:00"
+  },
+  "gresham-black-triangle": {
+   "title": "Gresham black triangle UFO",
+   "type": "case",
+   "location": "Gresham, Oregon",
+   "published_at": "2026-10-23T08:55:00-04:00"
+  },
+  "bradshaw-ranch-bigfoot": {
+   "title": "Bradshaw Ranch Bigfoot",
+   "type": "case",
+   "location": "Sedona, Arizona",
+   "published_at": "2026-10-23T09:57:00-04:00"
+  },
+  "adams-house": {
+   "title": "Haunted: Adams House",
+   "type": "case",
+   "location": "Deadwood, South Dakota",
+   "published_at": "2026-10-23T10:54:00-04:00"
+  },
+  "garrettsville-ohio-flap": {
+   "title": "Ohio Flap 2026 Bigfoot cluster",
+   "type": "case",
+   "location": "Garrettsville, Ohio",
+   "published_at": "2026-10-23T11:50:00-04:00"
+  },
+  "fort-mifflin": {
+   "title": "Haunted: Fort Mifflin",
+   "type": "haunted",
+   "location": "Philadelphia, Pennsylvania",
+   "published_at": "2026-10-23T18:17:39-04:00"
+  },
+  "reno-nv-silver-wing": {
+   "title": "Reno NV silver forward-swept wing",
+   "type": "case",
+   "location": "Reno, Nevada",
+   "published_at": "2026-10-27T07:49:00-04:00"
+  },
+  "piney-woods-tx-figure-deer": {
+   "title": "Piney Woods TX Bigfoot photo holding deer",
+   "type": "case",
+   "location": "Piney Woods, Southeast Texas",
+   "published_at": "2026-10-27T09:07:59-04:00"
+  },
+  "ashtabula-pendleton": {
+   "title": "Ashtabula haunted house",
+   "type": "case",
+   "location": "Pendleton, South Carolina",
+   "published_at": "2026-10-27T10:00:09-04:00"
+  },
+  "pursue-07-black-triangle": {
+   "title": "PURSUE Release 07 black triangle",
+   "type": "case",
+   "location": "Western United States",
+   "published_at": "2026-10-27T10:59:21-04:00"
+  },
+  "wv-penitentiary-moundsville": {
+   "title": "West Virginia Penitentiary (R.D. Walls)",
+   "type": "haunted",
+   "location": "Moundsville, West Virginia",
+   "published_at": "2026-10-27T18:29:13-04:00"
+  },
+  "seaside-or-lights": {
+   "title": "Seaside orange and white lights (NUFORC 201508/201509)",
+   "type": "case",
+   "location": "Seaside, Oregon",
+   "published_at": "2026-10-28T08:04:59-04:00"
+  },
+  "cameron-parish-wood-ape": {
+   "title": "Cameron Parish wood ape (NAWAC 25111401)",
+   "type": "case",
+   "location": "Cameron Parish, Louisiana",
+   "published_at": "2026-10-28T09:08:56-04:00"
+  },
+  "bregant-house-evp": {
+   "title": "Bregant House doll house EVP investigation",
+   "type": "case",
+   "location": "Council Bluffs, Iowa",
+   "published_at": "2026-10-28T10:10:35-04:00"
+  },
+  "westland-mi-pill-uap": {
+   "title": "Westland pill-shaped UAP",
+   "type": "case",
+   "location": "Westland, Michigan",
+   "published_at": "2026-10-28T11:06:34-04:00"
+  },
+  "st-augustine-lighthouse": {
+   "title": "St. Augustine Lighthouse (Pittee girls)",
+   "type": "haunted",
+   "location": "St. Augustine, Florida",
+   "published_at": "2026-10-28T18:38:50-04:00"
+  },
+  "goodrich-tx-shape-shifter-uap": {
+   "title": "Goodrich shape-shifting UAP (NUFORC 201433)",
+   "type": "case",
+   "location": "Goodrich, Texas",
+   "published_at": "2026-10-29T08:02:49-04:00"
+  },
+  "boxford-ma-crawling-figure": {
+   "title": "Boxford crawling figure (Topsfield Fair)",
+   "type": "case",
+   "location": "Boxford, Massachusetts",
+   "published_at": "2026-10-29T09:06:00-04:00"
+  },
+  "dublin-pa-craft-tavern-boy": {
+   "title": "Craft Tavern boy on the stairs",
+   "type": "case",
+   "location": "Dublin, Pennsylvania",
+   "published_at": "2026-10-29T10:03:12-04:00"
+  },
+  "us95-nv-gray-figures": {
+   "title": "Two tall gray figures on US 95",
+   "type": "case",
+   "location": "Fallon-Lovelock, Nevada",
+   "published_at": "2026-10-29T11:02:49-04:00"
+  },
+  "ohio-state-reformatory-mansfield-oh": {
+   "title": "Ohio State Reformatory",
+   "type": "haunted",
+   "location": "Mansfield, Ohio",
+   "published_at": "2026-10-29T18:36:29-04:00"
+  },
+  "louisville-ky-dark-disk-mud": {
+   "title": "Louisville dark disk with mud in the bed (NUFORC 201495)",
+   "type": "case",
+   "location": "Louisville, Kentucky",
+   "published_at": "2026-10-30T08:05:14-04:00"
+  },
+  "tarrytown-music-hall-shadow": {
+   "title": "Tarrytown Music Hall shadow figure",
+   "type": "case",
+   "location": "Tarrytown, New York",
+   "published_at": "2026-10-30T08:59:36-04:00"
+  },
+  "lake-galena-dam-four-lights": {
+   "title": "Lake Galena Dam four circling lights",
+   "type": "case",
+   "location": "Galena, Illinois",
+   "published_at": "2026-10-30T10:07:00-04:00"
+  },
+  "vassalboro-mill-captain": {
+   "title": "Vassalboro woolen mill ghost \"The Captain\"",
+   "type": "case",
+   "location": "Vassalboro, Maine",
+   "published_at": "2026-10-30T11:01:29-04:00"
+  },
+  "pennhurst-haunt": {
+   "title": "Pennhurst State School and Hospital",
+   "type": "haunted",
+   "location": "Spring City, Pennsylvania",
+   "published_at": "2026-10-30T18:34:51-04:00"
+  },
+  "troy-oh-cornfield-bigfoot": {
+   "title": "Troy cornfield Bigfoot mocks the dog (BFRO 79110)",
+   "type": "case",
+   "location": "Troy, Ohio",
+   "published_at": "2026-11-02T07:50:35-05:00"
+  },
+  "russell-ma-moses-scout-reservation": {
+   "title": "H.A. Moses Scout Reservation manor house haunting",
+   "type": "case",
+   "location": "Russell, Massachusetts",
+   "published_at": "2026-11-02T08:50:48-05:00"
+  },
+  "erie-co-black-chevron": {
+   "title": "Erie black chevron with lights (NUFORC 201316)",
+   "type": "case",
+   "location": "Erie, Colorado",
+   "published_at": "2026-11-02T09:50:09-05:00"
+  },
+  "hoh-river-wa-bigfoot": {
+   "title": "Hoh River Bigfoot across the river (BFRO 82613)",
+   "type": "case",
+   "location": "Hoh River near Forks, Washington",
+   "published_at": "2026-11-02T10:48:00-05:00"
+  },
+  "freeport-me-candy-shop-attic": {
+   "title": "What the Actual Fudge candy shop attic haunting (GHOST team)",
+   "type": "case",
+   "location": "Freeport, Maine",
+   "published_at": "2026-11-02T11:49:00-05:00"
+  },
+  "larimer-pa-bigfoot": {
+   "title": "Larimer PA 1973 Bigfoot road crossing (BFRO 82701)",
+   "type": "case",
+   "location": "Larimer, Pennsylvania",
+   "published_at": "2026-11-03T08:01:31-05:00"
+  },
+  "palatka-fl-antique-store-funeral-home": {
+   "title": "Elsie Bell's antique store / former Johnson Funeral Home haunting",
+   "type": "case",
+   "location": "Palatka, Florida",
+   "published_at": "2026-11-03T09:01:30-05:00"
+  },
+  "phoenix-ny-orange-orb-splits": {
+   "title": "Orange orb splits into four orbs (NUFORC 201554)",
+   "type": "case",
+   "location": "Phoenix, New York",
+   "published_at": "2026-11-03T09:58:27-05:00"
+  },
+  "valentine-ne-centennial-hall-schoolhouse": {
+   "title": "Centennial Hall old schoolhouse haunting",
+   "type": "case",
+   "location": "Valentine, Nebraska",
+   "published_at": "2026-11-03T11:02:56-05:00"
+  },
+  "atchison-ks-sallie-house": {
+   "title": "The Sallie House haunting",
+   "type": "haunted",
+   "location": "Atchison, Kansas",
+   "published_at": "2026-11-03T18:27:25-05:00"
+  },
+  "manitou-springs-barr-trail-bigfoot": {
+   "title": "Barr Trail Bigfoot sighting (BFRO 82711)",
+   "type": "case",
+   "location": "Manitou Springs, Colorado",
+   "published_at": "2026-11-04T07:59:33-05:00"
+  },
+  "rockville-state-sanatorium": {
+   "title": "Indiana State Sanatorium Shadow Hallway haunting",
+   "type": "case",
+   "location": "Rockville, Indiana",
+   "published_at": "2026-11-04T09:01:47-05:00"
+  },
+  "tiffin-oh-pilots-silver-pill": {
+   "title": "Pilots report seamless metallic pill at 43,000 ft",
+   "type": "case",
+   "location": "Tiffin, OH",
+   "published_at": "2026-11-04T10:03:07-05:00"
+  },
+  "chili-ny-orbs-follow-truck": {
+   "title": "White lights follow truck for six miles",
+   "type": "case",
+   "location": "Chili, NY",
+   "published_at": "2026-11-04T11:03:38-05:00"
+  },
+  "bachelors-grove": {
+   "title": "Bachelor's Grove Cemetery Madonna photo",
+   "type": "haunted",
+   "location": "Midlothian, IL",
+   "published_at": "2026-11-04T18:29:00-05:00"
+  },
+  "st-maries-id-benewah-knocks": {
+   "title": "Benewah County knocks, death smell, deep gibberish (BFRO 83680)",
+   "type": "case",
+   "location": "St. Maries, Idaho",
+   "published_at": "2026-11-05T08:06:39-05:00"
+  },
+  "tuscaloosa-al-jemison-mansion": {
+   "title": "Jemison-Van de Graaff Mansion staircase glow",
+   "type": "case",
+   "location": "Tuscaloosa, Alabama",
+   "published_at": "2026-11-05T08:58:32-05:00"
+  },
+  "san-diego-ca-silver-sphere-airport": {
+   "title": "San Diego International silver sphere (FAA/Black Vault)",
+   "type": "case",
+   "location": "San Diego, California",
+   "published_at": "2026-11-05T10:05:12-05:00"
+  },
+  "joplin-mo-morphing-metallic": {
+   "title": "Joplin morphing metallic object (NUFORC 201653)",
+   "type": "case",
+   "location": "Joplin, Missouri",
+   "published_at": "2026-11-05T11:07:00-05:00"
+  },
+  "colfax-st-ignatius-hospital": {
+   "title": "St. Ignatius Hospital (tours paused)",
+   "type": "haunted",
+   "location": "Colfax, Washington",
+   "published_at": "2026-11-05T18:28:14-05:00"
+  },
+  "johnstown-pa-singer-hill-white-fur": {
+   "title": "Johnstown Singer Hill white-fur Bigfoot knocks (BFRO 84713)",
+   "type": "case",
+   "location": "Johnstown, Pennsylvania",
+   "published_at": "2026-11-06T08:05:00-05:00"
+  },
+  "new-albany-in-sugar-shoppe-frederick": {
+   "title": "New Albany Sugar Shoppe / Frederick basement ghost vs. national tour listing",
+   "type": "case",
+   "location": "New Albany, Indiana",
+   "published_at": "2026-11-06T09:14:00-05:00"
+  },
+  "holly-mi-black-triangle": {
+   "title": "Holly MI dark purple-black triangle three white lights (NUFORC 201501)",
+   "type": "case",
+   "location": "Holly, Michigan",
+   "published_at": "2026-11-06T10:46:20-05:00"
+  },
+  "north-liberty-ia-capsule-rainbow": {
+   "title": "North Liberty IA capsule + rainbow square door (NUFORC 201648)",
+   "type": "case",
+   "location": "North Liberty, Iowa",
+   "published_at": "2026-11-06T11:11:06-05:00"
+  },
+  "denver-cheesman-park": {
+   "title": "Cheesman Park (former Denver City Cemetery)",
+   "type": "haunted",
+   "location": "Denver, Colorado",
+   "published_at": "2026-11-06T18:33:57-05:00"
+  },
+  "bass-river-nj-route-542-bigfoot": {
+   "title": "Bass River Route 542 wet black-fur Bigfoot (BFRO 82683)",
+   "type": "case",
+   "location": "Bass River, New Jersey",
+   "published_at": "2026-11-10T08:07:35-05:00"
+  },
+  "gillette-wy-rotating-lights": {
+   "title": "Gillette WY three rotating lights",
+   "type": "case",
+   "location": "Gillette, Wyoming",
+   "published_at": "2026-11-10T09:11:20-05:00"
+  },
+  "seymour-ct-hell-house": {
+   "title": "Seymour CT Hell House new owners, ball on the stairs, gas leak claim",
+   "type": "case",
+   "location": "Seymour, Connecticut",
+   "published_at": "2026-11-10T09:49:20-05:00"
+  },
+  "kirksville-mo-circling-lights": {
+   "title": "Kirksville MO circling pulsing lights (Oct 19 and 25, NUFORC)",
+   "type": "case",
+   "location": "Kirksville, Missouri",
+   "published_at": "2026-11-10T10:57:20-05:00"
+  },
+  "charleston-old-city-jail": {
+   "title": "Old Charleston Jail (Lavinia Fisher legend vs. record)",
+   "type": "haunted",
+   "location": "Charleston, South Carolina",
+   "published_at": "2026-11-10T18:24:50-05:00"
+  },
+  "anchorage-ak-jellyfish-jber": {
+   "title": "Anchorage AK jellyfish UAP over trees toward JBER (Jun 15, 2026)",
+   "type": "case",
+   "location": "Anchorage, Alaska",
+   "published_at": "2026-11-11T07:54:30-05:00"
+  },
+  "titusville-fl-merritt-island-bigfoot": {
+   "title": "Titusville FL slim black upright figure in Merritt Island NWR marsh, 8 mi north of Kennedy Space Center (summer 2023)",
+   "type": "case",
+   "location": "Titusville, Florida",
+   "published_at": "2026-11-11T08:58:43-05:00"
+  },
+  "anoka-mn-police-sphere": {
+   "title": "Anoka MN 3 police officers watched flashing sphere 90 min, filmed through binoculars, report to FBI (Feb 2025)",
+   "type": "case",
+   "location": "Anoka, Minnesota",
+   "published_at": "2026-11-11T09:55:19-05:00"
+  },
+  "savannah-ga-hampton-lillibridge-house": {
+   "title": "Hampton-Lillibridge House haunt",
+   "type": "haunted",
+   "location": "Savannah, GA",
+   "published_at": "2026-11-11T19:49:02-05:00"
+  },
+  "leary-ga-jimmy-carter-ufo": {
+   "title": "Leary GA Jimmy Carter signed UFO report (1969; forms at Carter Presidential Library)",
+   "type": "case",
+   "location": "Leary, Georgia",
+   "published_at": "2026-11-12T07:54:44-05:00"
+  },
+  "tuttle-ok-canadian-river-bigfoot": {
+   "title": "Tuttle OK former 82nd Airborne sergeant sees huge black biped wading the Canadian River (Aug 4, 2025)",
+   "type": "case",
+   "location": "Tuttle, Oklahoma",
+   "published_at": "2026-11-12T08:52:29-05:00"
+  },
+  "rock-springs-wy-jim-bridger": {
+   "title": "Rock Springs WY sheriff watches light formations over Jim Bridger Power Plant, calls it the new normal (late 2024–now)",
+   "type": "case",
+   "location": "Rock Springs, Wyoming",
+   "published_at": "2026-11-12T09:57:21-05:00"
+  },
+  "san-francisco-ca-alcatraz-cell-14d": {
+   "title": "Alcatraz Cell 14D haunt",
+   "type": "haunted",
+   "location": "San Francisco, CA",
+   "published_at": "2026-11-12T18:23:46-05:00"
+  },
+  "montgomery-al-chiles-whitted": {
+   "title": "Montgomery AL Chiles-Whitted wingless craft; Air Force Estimate of the Situation later burned (July 24, 1948)",
+   "type": "case",
+   "location": "Montgomery, Alabama",
+   "published_at": "2026-11-13T07:55:21-05:00"
+  },
+  "gary-tx-nawac-creek-bed": {
+   "title": "Gary TX NAWAC creek-bed hog hunters; bipedal something in dry creek (Oct 17, 2026)",
+   "type": "case",
+   "location": "Gary, Texas",
+   "published_at": "2026-11-13T08:57:19-05:00"
+  },
+  "red-bluff-ca-chp-red-light": {
+   "title": "Red Bluff CA CHP officers Carson and Scott; red-light object that seemed aware of them (August 13, 1960)",
+   "type": "case",
+   "location": "Red Bluff, California",
+   "published_at": "2026-11-13T09:48:59-05:00"
+  },
+  "point-lookout-lighthouse-md": {
+   "title": "Point Lookout Lighthouse haunt",
+   "type": "haunted",
+   "location": "Scotland, MD",
+   "published_at": "2026-11-13T18:24:51-05:00"
+  },
+  "syracuse-ny-blackout-fireballs": {
+   "title": "Syracuse NY 1965 blackout fireballs over power lines; flight instructor Weldon Ross and deputy aviation commissioner Robert Walsh (November 9, 1965)",
+   "type": "case",
+   "location": "Syracuse, New York",
+   "published_at": "2026-11-16T08:18:00-05:00"
+  },
+  "wilsonville-or-see-through-visitor": {
+   "title": "Wilsonville OR family home see-through silver object; 12-year-old's room flashed, NUFORC investigator Keith Bickford (August 25, 2026)",
+   "type": "case",
+   "location": "Wilsonville, Oregon",
+   "published_at": "2026-11-16T08:41:27-05:00"
+  },
+  "mount-mitchell-nc-help-us": {
+   "title": "Mount Mitchell NC trail hiker heard a woman shout HELP then HELP US; voice never got closer (November 6, 2026)",
+   "type": "case",
+   "location": "Mount Mitchell, North Carolina",
+   "published_at": "2026-11-16T09:43:24-05:00"
+  },
+  "burrillville-ri-conjuring-house": {
+   "title": "Conjuring House lawsuits",
+   "type": "haunted",
+   "location": "Burrillville, Rhode Island",
+   "published_at": "2026-11-16T18:37:00-05:00"
+  },
+  "florence-sc-airport-saucer": {
+   "title": "Florence SC 1952 airport saucer",
+   "type": "case",
+   "location": "Florence, South Carolina",
+   "published_at": "2026-11-17T07:38:00-05:00"
+  },
+  "osceola-wi-radar-f51": {
+   "title": "Osceola WI 1952 radar and F-51",
+   "type": "case",
+   "location": "Osceola, Wisconsin",
+   "published_at": "2026-11-17T08:38:00-05:00"
+  },
+  "newcomerstown-oh-window-face": {
+   "title": "Newcomerstown OH window face",
+   "type": "case",
+   "location": "Newcomerstown, Ohio",
+   "published_at": "2026-11-17T09:45:00-05:00"
+  },
+  "joshua-ward-house-salem": {
+   "title": "Joshua Ward House, Salem",
+   "type": "haunted",
+   "location": "Salem, MA",
+   "published_at": "2026-11-17T18:44:00-05:00"
+  },
+  "gulfport-ms-rb47-circled-bomber": {
+   "title": "RB-47 radar and light, Gulfport MS 1957",
+   "type": "case",
+   "location": "Gulfport, Mississippi",
+   "published_at": "2026-11-18T07:44:00-05:00"
+  },
+  "oscoda-mi-wurtsmith-tanker-chase": {
+   "title": "Wurtsmith AFB craft over weapons storage, Oscoda MI 1975",
+   "type": "case",
+   "location": "Oscoda, Michigan",
+   "published_at": "2026-11-18T08:47:00-05:00"
+  },
+  "weches-tx-rocks-from-the-dark": {
+   "title": "Rocks from the dark, Weches TX 2026",
+   "type": "case",
+   "location": "Weches, Texas",
+   "published_at": "2026-11-18T09:42:00-05:00"
+  },
+  "kehoe-house-savannah": {
+   "title": "The Children Upstairs, Kehoe House",
+   "type": "haunted",
+   "location": "Savannah, GA",
+   "published_at": "2026-11-18T18:31:00-05:00"
+  },
+  "fairbanks-ak-jal1628": {
+   "title": "JAL 1628 It Stayed in Trail",
+   "type": "case",
+   "location": "Fairbanks, Alaska",
+   "published_at": "2026-11-19T07:37:00-05:00"
+  },
+  "fargo-nd-gorman": {
+   "title": "It Came Head On",
+   "type": "case",
+   "location": "Fargo, North Dakota",
+   "published_at": "2026-11-19T08:41:00-05:00"
+  },
+  "las-vegas-nv-911": {
+   "title": "100% Not Human",
+   "type": "case",
+   "location": "Las Vegas, Nevada",
+   "published_at": "2026-11-19T09:40:00-05:00"
+  },
+  "tombstone-az-bird-cage-theatre": {
+   "title": "The Bird Cage Theatre haunting",
+   "type": "haunted",
+   "location": "Tombstone, AZ",
+   "published_at": "2026-11-19T18:30:04-05:00"
+  },
+  "fort-monmouth-nj-too-fast-to-track": {
+   "title": "Too Fast to Track",
+   "type": "case",
+   "location": "Fort Monmouth, NJ",
+   "published_at": "2026-11-20T07:37:00-05:00"
+  },
+  "kirtland-nm-it-fell-in-behind": {
+   "title": "It Fell In Behind",
+   "type": "case",
+   "location": "Albuquerque, NM",
+   "published_at": "2026-11-20T08:37:00-05:00"
+  },
+  "hudson-valley-ny-a-city-of-lights": {
+   "title": "A City of Lights",
+   "type": "case",
+   "location": "Hudson Valley, NY",
+   "published_at": "2026-11-20T09:38:00-05:00"
+  },
+  "alameda-ca-the-hornets-crew": {
+   "title": "The Hornet's Crew",
+   "type": "haunted",
+   "location": "Alameda, CA",
+   "published_at": "2026-11-20T18:31:48-05:00"
+  },
+  "norfolk-va-nash-fortenberry": {
+   "title": "Nash-Fortenberry 1952 discs",
+   "type": "case",
+   "location": "Norfolk, VA",
+   "published_at": "2026-11-23T07:50:00-05:00"
+  },
+  "delphos-ks-dry-ring": {
+   "title": "The Ring That Stayed Dry",
+   "type": "case",
+   "location": "Delphos, KS",
+   "published_at": "2026-11-23T08:38:08-05:00"
+  },
+  "mcminnville-or-two-frames": {
+   "title": "Two Frames",
+   "type": "case",
+   "location": "McMinnville, OR",
+   "published_at": "2026-11-23T09:46:00-05:00"
+  },
+  "jefferson-city-mo-the-last-ones-out": {
+   "title": "The Last Ones Out",
+   "type": "haunted",
+   "location": "Jefferson City, MO",
+   "published_at": "2026-11-23T18:35:31-05:00"
+  },
+  "agoura-ca-kelly-johnson": {
+   "title": "Kelly Johnson Agoura 1953 saucer",
+   "type": "case",
+   "location": "Agoura, CA",
+   "published_at": "2026-11-24T07:39:47-05:00"
+  },
+  "aguadilla-pr-uap-2013": {
+   "title": "Aguadilla PR 2013 UAP",
+   "type": "case",
+   "location": "Aguadilla, PR",
+   "published_at": "2026-11-24T08:46:00-05:00"
+  },
+  "galveston-tx-the-bride-in-room-501": {
+   "title": "The Bride in Room 501",
+   "type": "haunted",
+   "location": "Galveston, TX",
+   "published_at": "2026-11-24T18:37:44-05:00"
+  },
+  "holland-mi-1994-radar": {
+   "title": "Radar Saw It Too",
+   "type": "case",
+   "location": "Holland, MI",
+   "published_at": "2026-11-25T07:40:30-05:00"
+  },
+  "killian-williamsport-pa": {
+   "title": "Killian Williamsport Airliner Lights",
+   "type": "case",
+   "location": "Williamsport, PA",
+   "published_at": "2026-11-25T08:42:47-05:00"
+  },
+  "elmwood-wi": {
+   "title": "Hit By a UFO",
+   "type": "case",
+   "location": "Elmwood, WI",
+   "published_at": "2026-11-25T09:40:49-05:00"
+  },
+  "beaufort-nc-hammock-house": {
+   "title": "The Stain on the Stairs",
+   "type": "haunted",
+   "location": "Beaufort, NC",
+   "published_at": "2026-11-25T18:31:40-05:00"
+  },
+  "valentich-bass-strait-1978": {
+   "title": "Frederick Valentich disappearance (Oct 21, 1978)",
+   "type": "case",
+   "location": "Bass Strait, Australia",
+   "published_at": "2026-11-26T07:47:04-05:00"
+  },
+  "rapid-city-sd-ellsworth-1953": {
+   "title": "Ellsworth AFB radar and jet lock-on (Aug 5, 1953)",
+   "type": "case",
+   "location": "Rapid City, South Dakota",
+   "published_at": "2026-11-26T08:46:00-05:00"
+  },
+  "great-falls-mt-1950": {
+   "title": "Great Falls Legion Stadium film (Aug 15, 1950)",
+   "type": "case",
+   "location": "Great Falls, Montana",
+   "published_at": "2026-11-26T09:45:27-05:00"
+  }
+ },
+ "aliases": {
+  "adams": "adams-house",
+  "aguadilla": "aguadilla-pr-uap-2013",
+  "alameda": "alameda-ca-the-hornets-crew",
+  "alcatraz": "san-francisco-ca-alcatraz-cell-14d",
+  "altamaha": "altamaha-ha",
+  "amityville": "amityville-horror",
+  "anchorage": "anchorage-ak-jellyfish-jber",
+  "anoka": "anoka-mn-police-sphere",
+  "arbor": "wisconsin-dells-wi-rocky-arbor-dogman",
+  "ashtabula": "ashtabula-pendleton",
+  "bachelors": "bachelors-grove",
+  "bar-harbor": "bar-harbor-ufo-lights",
+  "barr": "manitou-springs-barr-trail-bigfoot",
+  "bass-river": "bass-river-nj-route-542-bigfoot",
+  "beaufort": "beaufort-nc-hammock-house",
+  "benewah": "st-maries-id-benewah-knocks",
+  "bird-cage": "tombstone-az-bird-cage-theatre",
+  "bladenboro": "bladenboro-beast",
+  "bobby": "wilder-ky-bobby-mackeys-haunted",
+  "borden": "fall-river-borden",
+  "boxford": "boxford-ma-crawling-figure",
+  "bradshaw": "bradshaw-ranch-bigfoot",
+  "branford": "branford-connecticut-uap",
+  "bregant": "bregant-house-evp",
+  "broken-arrow": "broken-arrow-ok-orb-figure",
+  "brookhaven": "brookhaven-uap",
+  "bulwagga": "bulwagga-bay-champ",
+  "bunny": "bunny-man",
+  "busco": "beast-of-busco",
+  "cameron": "cameron-parish-wood-ape",
+  "cardiff": "cardiff-giant",
+  "caribou": "caribou-county-id",
+  "carson": "wind-river-carson",
+  "cash": "huffman-cash-landrum",
+  "cedar-bluff": "cedar-bluff-va-lights",
+  "celo": "celo-nc-orange-lights",
+  "centennial": "valentine-ne-centennial-hall-schoolhouse",
+  "centralia": "centralia-il-triangle",
+  "charleston": "charleston-old-city-jail",
+  "chazy": "chazy-lake-orbs",
+  "cheesman": "denver-cheesman-park",
+  "chessie": "chessie-kent-island",
+  "chester-cheshire": "chester-castle",
+  "chester-new-york": "chester-ny-triangle-ufo",
+  "chili": "chili-ny-orbs-follow-truck",
+  "chupacabra": "canovanas-chupacabra",
+  "cody": "cedar-mountain-cody",
+  "coeur": "coeur-dalene-rectangle",
+  "conjuring": "burrillville-ri-conjuring-house",
+  "coronado": "coronado-ca-hotel-del-kate-morgan",
+  "crescent-eureka": "eureka-springs-ar-crescent-hotel",
+  "delphos": "delphos-ks-dry-ring",
+  "disneyland": "anaheim-ca-disneyland-1968-time-traveler",
+  "dover": "dover-demon",
+  "dublin": "dublin-pa-craft-tavern-boy",
+  "durupinar": "durupinar-formation",
+  "eastern-state": "eastern-state-penitentiary",
+  "edmore": "edmore-mi-michigan-relics",
+  "ellsworth-1953": "rapid-city-sd-ellsworth-1953",
+  "ellsworth-newell": "newell-sd-ellsworth-mario-woods",
+  "elmwood": "elmwood-wi",
+  "enfield": "enfield-poltergeist",
+  "erie": "erie-co-black-chevron",
+  "exeter": "exeter-incident",
+  "fairbanks": "fairbanks-ak-jal1628",
+  "fargo": "fargo-nd-gorman",
+  "fatima": "fatima-miracle-of-the-sun",
+  "flathead": "flathead-lake-monster",
+  "fletchertown": "fletchertown-road-goatman",
+  "florence": "florence-sc-airport-saucer",
+  "forks": "forks-wa-bigfoot",
+  "fort-monmouth": "fort-monmouth-nj-too-fast-to-track",
+  "fort-washakie": "fort-washakie-wy-ghost-soldier",
+  "fouke": "fouke-monster",
+  "franklin-cleveland": "franklin-castle",
+  "freeport": "freeport-me-candy-shop-attic",
+  "fresno": "fresno-nightcrawler",
+  "galveston": "galveston-tx-the-bride-in-room-501",
+  "garrettsville": "garrettsville-ohio-flap",
+  "gary": "gary-tx-nawac-creek-bed",
+  "gevaudan": "beast-of-gevaudan",
+  "gillette": "gillette-wy-rotating-lights",
+  "goodrich": "goodrich-tx-shape-shifter-uap",
+  "government": "government-meadows",
+  "great-falls": "great-falls-mt-1950",
+  "greenbrier": "greenbrier-ghost",
+  "gresham": "gresham-black-triangle",
+  "guadalupe": "our-lady-of-guadalupe",
+  "gulfport": "gulfport-ms-rb47-circled-bomber",
+  "hampton": "savannah-ga-hampton-lillibridge-house",
+  "haywood": "haywood-county-lights",
+  "hillyard": "spokane-hillyard-masonic-temple",
+  "hoh-river": "hoh-river-wa-bigfoot",
+  "holland": "holland-mi-1994-radar",
+  "holly": "holly-mi-black-triangle",
+  "hudson-valley": "hudson-valley-ny-a-city-of-lights",
+  "hunt-county": "hunt-county-tx",
+  "independence": "independence-mo-paranormal-pursuit",
+  "jackson": "jackson-tn-triangle-lights",
+  "jal1628": "fairbanks-ak-jal1628",
+  "jefferson": "jefferson-city-mo-the-last-ones-out",
+  "jemison": "tuscaloosa-al-jemison-mansion",
+  "johnstown": "johnstown-pa-singer-hill-white-fur",
+  "joplin": "joplin-mo-morphing-metallic",
+  "joshua": "joshua-ward-house-salem",
+  "juarez": "juarez-valley-creature",
+  "kecksburg": "kecksburg-ufo",
+  "keene": "keene-nd-black-triangle",
+  "kehoe": "kehoe-house-savannah",
+  "kelly": "agoura-ca-kelly-johnson",
+  "killian": "killian-williamsport-pa",
+  "kingsport": "kingsport-tn-teardrop-ufo",
+  "kirksville": "kirksville-mo-circling-lights",
+  "kirtland": "kirtland-nm-it-fell-in-behind",
+  "lake-crescent": "lake-crescent-bigfoot",
+  "lake-galena": "lake-galena-dam-four-lights",
+  "lake-lanier": "lake-lanier-ga-lady-of-the-lake",
+  "lake-norfork": "lake-norfork-bigfoot-howls",
+  "lakeland": "lakeland-fl-green-swamp",
+  "lakewood": "lakewood-vanishing-ufo",
+  "lalaurie": "lalaurie-mansion",
+  "larimer": "larimer-pa-bigfoot",
+  "las-vegas": "las-vegas-nv-911",
+  "lawndale": "lawndale-giant-birds",
+  "leary": "leary-ga-jimmy-carter-ufo",
+  "lemp": "lemp-mansion",
+  "lizzie-borden": "fall-river-borden",
+  "loretto": "loretto-chapel-staircase",
+  "los-lunas": "los-lunas-decalogue-stone",
+  "louisville": "louisville-ky-dark-disk-mud",
+  "mantell": "godman-mantell",
+  "marfa": "marfa-lights",
+  "mcminnville": "mcminnville-or-two-frames",
+  "minnesota": "minnesota-iceman",
+  "monroe-mothman": "monroe-county-mothman",
+  "montgomery": "montgomery-al-chiles-whitted",
+  "moses": "russell-ma-moses-scout-reservation",
+  "mothman": "point-pleasant-mothman",
+  "moundsville": "wv-penitentiary-moundsville",
+  "mount-mitchell": "mount-mitchell-nc-help-us",
+  "myrtles": "myrtles-plantation",
+  "nash": "norfolk-va-nash-fortenberry",
+  "new-albany": "new-albany-in-sugar-shoppe-frederick",
+  "new-jersey": "new-jersey-ufo-sightings",
+  "newburgh": "newburgh-ny-haunted-brewery",
+  "newcomerstown": "newcomerstown-oh-window-face",
+  "north-liberty": "north-liberty-ia-capsule-rainbow",
+  "occoquan": "occoquan-ghost-tad",
+  "octagon": "franklin-ky-octagon-hall",
+  "ohare": "ohare-airport-ufo",
+  "onondaga": "onondaga-pond-figure",
+  "osceola": "osceola-wi-radar-f51",
+  "palatka": "palatka-fl-antique-store-funeral-home",
+  "pantex": "pantex-plant-ufo-amarillo",
+  "patterson": "patterson-gimlin-bluff-creek",
+  "payette": "lost-valley-payette",
+  "pennhurst": "pennhurst-haunt",
+  "pepie": "pepie-lake-pepin-bounty",
+  "phoenix-arizona": "phoenix-lights",
+  "piney": "piney-woods-tx-figure-deer",
+  "point-lookout": "point-lookout-lighthouse-md",
+  "point-pleasant": "point-pleasant-mothman",
+  "pontefract": "pontefract-black-monk",
+  "portland": "portland-or-nina-shanghai-tunnels",
+  "pram": "ancient-ram-inn-pram",
+  "prim": "prim-arkansas",
+  "pursue": "pursue-07-black-triangle",
+  "red-bluff": "red-bluff-ca-chp-red-light",
+  "red-lion": "red-lion-inn-poltergeist",
+  "reef": "reef-station-troy21",
+  "reformatory": "ohio-state-reformatory-mansfield-oh",
+  "rendlesham": "rendlesham-forest",
+  "reno": "reno-nv-silver-wing",
+  "rock-springs": "rock-springs-wy-jim-bridger",
+  "rockville": "rockville-state-sanatorium",
+  "roswell": "roswell-incident",
+  "sallie": "atchison-ks-sallie-house",
+  "san-diego": "san-diego-ca-silver-sphere-airport",
+  "seaside": "seaside-or-lights",
+  "sedona": "edge-of-the-world-sedona",
+  "settle": "settle-north-yorkshire",
+  "seymour": "seymour-ct-hell-house",
+  "sister-lakes": "sister-lakes-monster",
+  "skinwalker": "uintah-skinwalker-ranch",
+  "skookumchuck": "skookumchuck-reservoir-bigfoot",
+  "sloss": "sloss-furnaces",
+  "slumgullion": "slumgullion-pass",
+  "sonora": "sonora-ca-bigfoot-yayali",
+  "sorrel": "savannah-ga-sorrel-weed-house-haunted",
+  "st-anthony": "st-anthony-id-dunes-orbs",
+  "st-augustine": "st-augustine-lighthouse",
+  "st-ignatius": "colfax-st-ignatius-hospital",
+  "st-paul": "st-paul-mn-mounds-theatre",
+  "stanley": "stanley-hotel-estes-park",
+  "ste-genevieve": "ste-genevieve-lights",
+  "sturgis": "sturgis-boulder-canyon",
+  "syracuse": "syracuse-ny-blackout-fireballs",
+  "tarrytown": "tarrytown-music-hall-shadow",
+  "tiffin": "tiffin-oh-pilots-silver-pill",
+  "titusville": "titusville-fl-merritt-island-bigfoot",
+  "tombstone": "tombstone-az-bird-cage-theatre",
+  "travis": "travis-walton",
+  "troy": "troy-oh-cornfield-bigfoot",
+  "tuttle": "tuttle-ok-canadian-river-bigfoot",
+  "us95": "us95-nv-gray-figures",
+  "valentich": "valentich-bass-strait-1978",
+  "vassalboro": "vassalboro-mill-captain",
+  "villisca": "villisca-axe-murder-house",
+  "washburn": "washburn-wi",
+  "washita": "washita-river-bigfoot",
+  "watson": "monroe-la-watson-brake",
+  "waverly": "waverly-hills-sanatorium",
+  "weches": "weches-tx-rocks-from-the-dark",
+  "westland": "westland-mi-pill-uap",
+  "whaley": "whaley-house-haunting",
+  "wilsonville": "wilsonville-or-see-through-visitor",
+  "winchester": "winchester-mystery-house",
+  "wrightsville": "wrightsville-beach-nc-orbs",
+  "wurtsmith": "oscoda-mi-wurtsmith-tanker-chase",
+  "zamora": "socorro-zamora"
+ }
+}

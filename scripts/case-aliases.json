@@ -1,0 +1,26 @@
+{
+  "_comment": "Manual short-link overrides for /c/<alias>. 'aliases' maps alias -> canonical slug and always wins. 'block' drops weak auto-aliases. 'exclude' lists slugs that never get a page (tests).",
+  "aliases": {
+    "sedona": "edge-of-the-world-sedona",
+    "chili": "chili-ny-orbs-follow-truck",
+    "palatka": "palatka-fl-antique-store-funeral-home",
+    "tombstone": "tombstone-az-bird-cage-theatre",
+    "bird-cage": "tombstone-az-bird-cage-theatre",
+    "guadalupe": "our-lady-of-guadalupe",
+    "great-falls": "great-falls-mt-1950",
+    "hudson-valley": "hudson-valley-ny-a-city-of-lights",
+    "eastern-state": "eastern-state-penitentiary",
+    "red-lion": "red-lion-inn-poltergeist",
+    "bar-harbor": "bar-harbor-ufo-lights",
+    "hoh-river": "hoh-river-wa-bigfoot",
+    "north-liberty": "north-liberty-ia-capsule-rainbow",
+    "bass-river": "bass-river-nj-route-542-bigfoot",
+    "new-jersey": "new-jersey-ufo-sightings",
+    "hunt-county": "hunt-county-tx",
+    "mothman": "point-pleasant-mothman",
+    "lizzie-borden": "fall-river-borden",
+    "jal1628": "fairbanks-ak-jal1628"
+  },
+  "block": ["world", "truck", "funeral", "cage", "lady-tepeyac"],
+  "exclude": ["mothman-test"]
+}
