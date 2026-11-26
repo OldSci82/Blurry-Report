@@ -34,6 +34,7 @@ import fs from "fs";
 import path from "path";
 import { execFileSync } from "child_process";
 import { fileURLToPath } from "url";
+import { directoryRecord, directoryMain, DIRECTORY_CSS } from "./case-directory.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(__dirname, "..");
@@ -83,6 +84,11 @@ function parsePost(text) {
   return { paras, sources };
 }
 
+// Hashtags from the post copy (parsePost drops them from the page body); used by the /c/ directory to classify type.
+function hashtags(text) {
+  return [...String(text || "").matchAll(/(?:^|\s)#([A-Za-z][A-Za-z0-9_]*)/g)].map((m) => m[1]);
+}
+
 function describe(paras, max = 200) {
   const text = paras.join(" ").replace(/\s+/g, " ").trim();
   if (text.length <= max) return text;
@@ -123,6 +129,7 @@ function loadCases(extra = []) {
         published_at: meta.published_at || `${fm[1]}T00:00:00-05:00`,
         x_url: meta.url || urlByDir.get(name) || urlByDir.get("slug:" + slug) || null,
         queue: meta.queue || null,
+        tags: hashtags(post),
         paras, sources, still, video,
       });
     } catch (e) {
@@ -154,6 +161,7 @@ function loadCases(extra = []) {
       slug, type: p.type, folder: `pending-${normQ(p.queue)}`, dir: media ? path.dirname(media) : null,
       title: String(p.title || slug).trim(), location: String(p.location || "").trim(),
       published_at: p.published_at, x_url: null, queue: p.queue, pending: true,
+      tags: hashtags(p.post || ""),
       paras, sources, still: undefined, video: media ? path.basename(media) : undefined,
     });
   }
@@ -265,7 +273,7 @@ function makeImage(c, outPath) {
 // ---------- html ----------
 const fmtDate = (iso) => { const d = new Date(iso); return isNaN(d) ? "" : d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "America/New_York" }); };
 
-function head({ title, desc, url, image, imageAlt, type = "article", published, jsonld }) {
+function head({ title, desc, url, image, imageAlt, type = "article", published, jsonld, extraCss = "" }) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -310,7 +318,7 @@ function head({ title, desc, url, image, imageAlt, type = "article", published, 
       .case .sources { font-size: .9rem; word-break: break-word; }
       .case-list { list-style: none; padding: 0; }
       .case-list li { border-bottom: 1px solid rgba(177,59,255,.35); padding: .55rem 0; }
-      .case-list .meta { color: burlywood; font-size: .85rem; }
+      .case-list .meta { color: burlywood; font-size: .85rem; }${extraCss}
     </style>
     <link rel="stylesheet" href="/public/styles/hit-counter.css">
 <script data-goatcounter="https://blurryreport.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -381,18 +389,11 @@ ${body}${src}
 
 function indexPage(cases) {
   const url = `${SITE}/c/`;
-  const items = [...cases].sort((a, b) => b.published_at.localeCompare(a.published_at)).map((c) =>
-    `            <li><a href="/c/${c.slug}">${esc(c.title)}</a><div class="meta">${c.type === "haunted" ? "Haunt" : "Case"}${c.location ? " · " + esc(c.location) : ""} · ${esc(fmtDate(c.published_at))}</div></li>`).join("\n");
-  const desc = "Every cryptid, UAP and haunted case The Blurry Report has posted, newest first.";
-  return head({ title: "All Cases | The Blurry Report", desc, url, image: `${SITE}/public/images/og/blurry-report-og.jpg`, imageAlt: "Neon retro sunset with a Bigfoot silhouette walking past a pine tree", type: "website", jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", "@id": url, url, name: "All Cases", description: desc, isPartOf: { "@id": SITE + "/#website" }, inLanguage: "en" } }) +
-`    <main class="case">
-        <h2>All Cases</h2>
-        <p class="where">${cases.length} case files, newest first</p>
-        <ul class="case-list">
-${items}
-        </ul>
-    </main>
-` + FOOT;
+  // Oldest-first order gives each record a stable index `i` (used as the tie-breaker when sorting by date in the browser).
+  const recs = [...cases].sort((a, b) => a.published_at.localeCompare(b.published_at) || a.slug.localeCompare(b.slug)).map((c, i) => ({ ...directoryRecord(c, fmtDate), i }));
+  const desc = "Every UFO, cryptid and haunted case The Blurry Report has posted. Filter by type and place, search by name, and sort by posted or event date.";
+  return head({ title: "All Cases | The Blurry Report", desc, url, image: `${SITE}/public/images/og/blurry-report-og.jpg`, imageAlt: "Neon retro sunset with a Bigfoot silhouette walking past a pine tree", type: "website", extraCss: DIRECTORY_CSS, jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", "@id": url, url, name: "All Cases", description: desc, isPartOf: { "@id": SITE + "/#website" }, inLanguage: "en" } }) +
+    directoryMain(recs) + FOOT;
 }
 
 function writeIfChanged(p, content) {
@@ -454,10 +455,20 @@ function prune() {
   console.log(`prune: ${pend.length - keep.length} pending entr${pend.length - keep.length === 1 ? "y" : "ies"} dropped (${SUPERSEDED.length} superseded by posts, ${STALE.length} stale)${changed ? ", alias locks remapped" : ""}${orphans ? `, ${orphans} orphan page dir(s) removed` : ""}`);
 }
 
+// Read-only: node scripts/build-case-pages.js --directory-report   (TSV of how each case is typed, placed and dated)
+function directoryReport(cases) {
+  const recs = cases.map((c) => directoryRecord(c, fmtDate));
+  for (const r of recs) console.log([r.k, r.p || "?", r.e || "?", r.s, r.t.slice(0, 50), r.w.slice(0, 40)].join("\t"));
+  const count = (f) => recs.reduce((m, r) => ((m[f(r)] = (m[f(r)] || 0) + 1), m), {});
+  console.error("types", JSON.stringify(count((r) => r.k)));
+  console.error("no place", recs.filter((r) => !r.p).length, "| no event date", recs.filter((r) => !r.e).length);
+}
+
 function main() {
   if (!fs.existsSync(PUBLISHED)) { console.error(`published dir missing: ${PUBLISHED}`); process.exit(1); }
   if (PLAN_FILE) { plan(PLAN_FILE); return; }
   const cases = loadCases();
+  if (ARGV.includes("--directory-report")) { directoryReport(cases); return; }
   const aliases = buildAliases(cases);
   let pages = 0, images = 0, imgFail = 0;
   for (const c of cases) {
