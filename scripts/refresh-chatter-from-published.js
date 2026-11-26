@@ -26,6 +26,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
+import { spawnSync } from "child_process";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -151,7 +152,31 @@ async function loadFromPublished(publishedDir) {
   return posts;
 }
 
+/**
+ * Case pages hook (blurryreport.com/c/<slug>): build pages for any new case/haunt post, then stage
+ * them so the usual chatter commit includes them. Never blocks the chatter refresh: any failure is
+ * logged and skipped. Opt out with --no-case-pages or SKIP_CASE_PAGES=1.
+ */
+function buildCasePages() {
+  if (process.argv.includes("--no-case-pages") || process.env.SKIP_CASE_PAGES === "1") return;
+  try {
+    const gen = spawnSync(process.execPath, [path.join(__dirname, "build-case-pages.js")], {
+      cwd: REPO_ROOT, stdio: "inherit", timeout: 10 * 60 * 1000, env: process.env,
+    });
+    if (gen.status !== 0) {
+      console.warn(`Case pages: generator failed (status ${gen.status ?? gen.signal}); chatter refresh continues.`);
+      return;
+    }
+    const add = spawnSync("git", ["add", "--", "c", "public/images/c", "sitemap.xml"], { cwd: REPO_ROOT, encoding: "utf8" });
+    if (add.status !== 0) console.warn(`Case pages: git add failed; chatter refresh continues. ${add.stderr || ""}`.trim());
+    else console.log("Case pages: staged c/, public/images/c/, sitemap.xml for the next commit.");
+  } catch (err) {
+    console.warn(`Case pages: skipped (${err.message}); chatter refresh continues.`);
+  }
+}
+
 async function main() {
+  buildCasePages();
   const { days } = parseArgs(process.argv.slice(2));
   const publishedDir = DEFAULT_PUBLISHED;
   const fromScout = await loadFromPublished(publishedDir);

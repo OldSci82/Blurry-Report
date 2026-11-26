@@ -10,6 +10,9 @@ GitHub Pages serves static files only. The live site cannot read Scout’s box p
    # optional: node scripts/refresh-chatter-from-published.js --days 7
    ```
 3. Commit and push `public/news/chatter.json` (and any news UI changes).
+   The refresh script also runs `scripts/build-case-pages.js` first and **stages** any new case pages
+   (`c/`, `public/images/c/`, `sitemap.xml`), so a plain `git commit` includes them. A generator failure
+   only logs a warning; the chatter refresh still runs. Skip with `--no-case-pages`.
 4. Hard-refresh https://blurryreport.com/public/news/news.html
 
 ## Windows

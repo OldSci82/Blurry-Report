@@ -9,12 +9,11 @@
     // Only these paths run the Worker; every other request stays a free static-asset hit.
     "run_worker_first": ["/c", "/c/*", "/stats", "/stats/*", "/stats.json"]
   },
-  // GO-LIVE: create the production D1 database (e.g. `blurry-clicks`), apply migrations/0001_clicks.sql,
-  // then uncomment and fill in its id. Without this binding case pages still work; clicks are just not counted.
-  // "d1_databases": [
-  //   { "binding": "DB", "database_name": "blurry-clicks", "database_id": "<prod-d1-id>", "migrations_dir": "migrations" }
-  // ],
-  // GO-LIVE: set the /stats password as a secret named STATS_PASSWORD (dashboard: Worker > Settings > Variables and Secrets).
+  // Click counts for /c/<slug> (aggregates only, no IPs). Schema: migrations/0001_clicks.sql.
+  "d1_databases": [
+    { "binding": "DB", "database_name": "blurry-clicks", "database_id": "5c6e9d46-f8d1-4266-9304-aac9a916b01b", "migrations_dir": "migrations" }
+  ],
+  // /stats password: Worker secret STATS_PASSWORD (set in Cloudflare, never in this repo).
   "routes": [
     { "pattern": "blurryreport.com", "custom_domain": true },
     { "pattern": "www.blurryreport.com", "custom_domain": true }
