@@ -1341,14 +1341,14 @@
   "gimbal-jacksonville-2015": {
    "title": "Navy GIMBAL video off Jacksonville (Jan 2015)",
    "type": "case",
-   "location": "Off Jacksonville, Florida",
-   "published_at": "2026-11-27T07:45:00-05:00"
+   "location": "Jacksonville, FL",
+   "published_at": "2026-11-27T07:50:00-05:00"
   },
-  "walesville-f94-crash-1954": {
-   "title": "Walesville F-94 crash (Jul 2, 1954)",
+  "walesville-1954": {
+   "title": "F-94C Walesville NY (1954)",
    "type": "case",
-   "location": "Walesville, New York, near Utica",
-   "published_at": "2026-11-27T08:45:00-05:00"
+   "location": "Walesville, NY",
+   "published_at": "2026-11-27T08:43:11-05:00"
   },
   "lobo-girl-devils-river-1845": {
    "title": "The Lobo Girl of Devil's River (1835-1852)",
@@ -1578,7 +1578,8 @@
   "valentich": "valentich-bass-strait-1978",
   "vassalboro": "vassalboro-mill-captain",
   "villisca": "villisca-axe-murder-house",
-  "walesville": "walesville-f94-crash-1954",
+  "walesville": "walesville-1954",
+  "walesville-f94-crash-1954": "walesville-1954",
   "washburn": "washburn-wi",
   "washita": "washita-river-bigfoot",
   "watson": "monroe-la-watson-brake",
