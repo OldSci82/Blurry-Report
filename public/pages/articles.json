@@ -1,6 +1,18 @@
 {
-  "updated": "2026-11-21",
+  "updated": "2026-11-27",
   "articles": [
+    {
+      "id": "2026-11-27",
+      "title": "There's a Whole Fleet of Them",
+      "date": "2026-11-27",
+      "display_date": "Nov 27, 2026",
+      "week": "Nov 23 to 27, 2026",
+      "teaser": "This week the strongest files were about crews who went after something they could not name. Navy pilots off Jacksonville filmed a rotating object and said there was a whole fleet of them. Two F-84s over Rapid City locked radar on a light that turned green. An F-94 crew over New York bailed out when their cockpit filled with heat, and the empty jet fell on a village.",
+      "cover": "../images/articles/2026-11-27.jpg",
+      "cover_alt": "A still from this week's Jacksonville GIMBAL package: four dark, oval objects with small lights under them, flying in a loose line just above a solid deck of clouds at dusk, with a thin orange horizon and a deep blue sky above.",
+      "article_url": "https://x.com/TheBlurryReport/status/2126471748266652007",
+      "share_url": "https://x.com/TheBlurryReport/status/2126471842341019871"
+    },
     {
       "id": "2026-11-20",
       "title": "They Asked If He Wanted Fighters",
